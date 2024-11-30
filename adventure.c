@@ -26,13 +26,8 @@ void handle_sigint(int sig)
         cheating = true;
     }
 }
-// Function to handle the response from the server, does not quite work, but good template
-// size_t write_callback(void *ptr, size_t size, size_t nmemb, char *data) {
-//     size_t total_size = size * nmemb;
-//     if(data==NULL||ptr==NULL){return 0;}
-//     strncat(data, ptr, total_size); // Append the response data to the response buffer
-//     return total_size;
-// }
+
+
 //The below callback works for what I need, if Jovi acts up lots of debugging to uncomment
 size_t write_callback(void *ptr, size_t size, size_t nmemb, char *data) {
     // Calculate the total size of the incoming data chunk (in bytes)
@@ -53,7 +48,7 @@ size_t write_callback(void *ptr, size_t size, size_t nmemb, char *data) {
     { 
         printf("(scratches behind ears)\n");
         //printf("Debug: Error - too much data received\n");
-        return total_size; 
+        return total_size; //return 0 here results in no information being printed to the screen, but Im not sure if this is correct, 0 felt more correct?
     }
 
     // Debug: Print the first few characters of the incoming data (to verify it's correct)
@@ -72,8 +67,8 @@ size_t write_callback(void *ptr, size_t size, size_t nmemb, char *data) {
 }
 
 //const for maxes and such
-const int MAX_INPUT_UNIQUE = 512;
-const int MAX_INPUT_UNIQUE_JOVI = 4096;
+const int MAX_INPUT_UNIQUE = 512; //512
+const int MAX_INPUT_UNIQUE_JOVI = 4096; //4096
 
 //typedefs and enums
 typedef struct {
@@ -102,7 +97,7 @@ typedef struct {
 
 Card *currentCard;
 Card deck[64];
-int TotalNumberOfCards = 29;//increment deck size by powers of two, when this value is close to it
+int TotalNumberOfCards = 45;//increment deck size by powers of two, when this value is close to the max
 
 enum CardTypes {
     CARD_HOME = 0,
@@ -134,6 +129,22 @@ enum CardTypes {
     CARD_IRONWOOD_CLEARING = 26,
     CARD_ECHOING_HOLLOW = 27,
     CARD_CINDERSPIRE = 28,
+    CARD_FIRST_SHED = 29,
+    CARD_SECOND_SHED = 30,
+    CARD_OTHER_SIDE_RIVER = 31,
+    CARD_OLD_MAN_MCCANN = 32,
+    CARD_WRENWOOD = 33,
+    CARD_FIRST_TRAIL = 34,
+    CARD_SECOND_STORE = 35,
+    CARD_MCCANN_GARDEN = 36,
+    CARD_THIRD_SHED = 37,
+    CARD_LOST_WOODS1 = 38,
+    CARD_LOST_WOODS2 = 39,
+    CARD_LOST_WOODS3 = 40,
+    CARD_FIRST_BRIDGE = 41,
+    CARD_WILLIAMS = 42,
+    CARD_WILLIAMS_STORE = 43,
+    CARD_WILLIAMS_TOWN_HALL = 44,
 };
 
 enum ItemTypes {
@@ -169,11 +180,14 @@ bool kingEventHasHappened = false;
 bool tomBomEventHasHappened = false;
 bool squirrelEventHasHappened = false;
 bool echoEventHasHappened = false;
+bool treeFallEventHasHappened = false;
 
-//global state bools for fireplaces and casting
+//global state bools for fireplaces
 bool homeFirePlaceIsLit = false;
 bool jeffersFirePlaceIsLit = false;
 bool cinderSpireFirePlaceIsLit = false;
+bool mccannsFirePlaceIsLit = false;
+bool williamsFirePlaceIsLit = false;
 
 //how many times has the game loop ran
 int loops = 0;
@@ -188,10 +202,11 @@ void handleFightSequence();
 int getDamage();
 void handleEvents();
 void handleCast(char* spell);
+void removeNonPrintableChars(char *str);
 void process_json_stream(char *response);
 void handleJovi(char* input);
 
-
+//here we go!
 int main()
 {
     //handle signal
@@ -252,6 +267,7 @@ int main()
                 printf("Where to move?: ");
                 if (fgets(buffer, MAX_INPUT_UNIQUE, stdin) != NULL)
                 {
+                    bool foundMatch = false;
                     //normalize input
                     formatInput(buffer);
                     //search for a match, if match set current card and break
@@ -259,6 +275,7 @@ int main()
                     {
                         if(strcmp(buffer, currentCard->linkedCards[i].name) == 0)
                         {
+                            foundMatch = true;
                             currentCard = &deck[currentCard->linkedCards[i].cardType];
                             printf("moved to %s\n", currentCard->name);
                             //if we have alive enemies to fight, on the new card
@@ -274,6 +291,10 @@ int main()
                             }
                             break;
                         }
+                    }
+                    if(!foundMatch)
+                    {
+                        printf("(No Move Made)\n");
                     }
                 }
                 else
@@ -385,8 +406,10 @@ int main()
                 }
                 printf("Places you can jump to: \n");
                 if(homeFirePlaceIsLit){printf(" - home\n");}
+                if(mccannsFirePlaceIsLit){printf(" - mccann\n");}
                 if(jeffersFirePlaceIsLit){printf(" - jeffers\n");}
                 if(cinderSpireFirePlaceIsLit){printf(" - spire\n");}
+                if(williamsFirePlaceIsLit){printf(" - williams\n");}
                 printf("\n> ");
                 if (fgets(buffer, MAX_INPUT_UNIQUE, stdin) != NULL)
                 {
@@ -398,13 +421,23 @@ int main()
                     }
                     else if (strcmp(buffer, "jeffers") == 0 && jeffersFirePlaceIsLit)
                     {
-                        printf("went to old man jeffers.\n"); 
+                        printf("went to old man Jeffers.\n"); 
                         currentCard = &deck[CARD_OLD_MAN_JEFFERS];
                     }
                     else if (strcmp(buffer, "spire") == 0 && cinderSpireFirePlaceIsLit)
                     {
                         printf("went to Cinderspire.\n"); 
                         currentCard = &deck[CARD_CINDERSPIRE];
+                    }
+                    else if (strcmp(buffer, "mccann") == 0 && mccannsFirePlaceIsLit)
+                    {
+                        printf("went to old man McCann's.\n"); 
+                        currentCard = &deck[CARD_OLD_MAN_MCCANN];
+                    }
+                    else if (strcmp(buffer, "williams") == 0 && williamsFirePlaceIsLit)
+                    {
+                        printf("went to Williams Town Hall.\n"); 
+                        currentCard = &deck[CARD_WILLIAMS_TOWN_HALL];
                     }
                     else
                     {
@@ -459,6 +492,11 @@ int main()
                         printf("received 100 health\n");
                         health+=100;
                     }
+                    else if (strcmp(buffer, "map") == 0)
+                    {
+                        printf("Got the Map\n");
+                        hasMap = true;
+                    }
                     else if (strcmp(buffer, "loop de loop") == 0)
                     {
                         printf("gameloop counter incremented by 100\n");
@@ -479,6 +517,8 @@ int main()
                         homeFirePlaceIsLit = true;
                         jeffersFirePlaceIsLit = true;
                         cinderSpireFirePlaceIsLit = true;
+                        mccannsFirePlaceIsLit = true;
+                        williamsFirePlaceIsLit = true;
                     }
                     else if (strcmp(buffer, "goto") == 0)
                     {
@@ -513,6 +553,7 @@ int main()
                     printf("Spellbook:\n");
                     printf(" - fire\n");
                     printf(" - grow\n");
+                    printf(" - open\n");
                     printf("\nSpell: ");
                     if (fgets(buffer, MAX_INPUT_UNIQUE, stdin) != NULL)
                     {
@@ -570,7 +611,7 @@ void initDeck() {
     // Card 2  - outside the front door
     deck[CARD_FRONTDOOR].cardType = CARD_FRONTDOOR;
     deck[CARD_FRONTDOOR].numLinkedCards = 3;
-    strcpy(deck[CARD_FRONTDOOR].name, "frontdoor");
+    strcpy(deck[CARD_FRONTDOOR].name, "Your Frontdoor");
     strcpy(deck[CARD_FRONTDOOR].description, "You are standing just outside your front door.\nThere is a dirt road.\nYou can go left or right.");
     deck[CARD_FRONTDOOR].linkedCards[0].cardType = CARD_HOME; //link back to home
     strcpy(deck[CARD_FRONTDOOR].linkedCards[0].name,"home"); //link name
@@ -582,20 +623,20 @@ void initDeck() {
     // Card 3  - left on the road outside your house
     deck[CARD_FIRST_ROAD_LEFT].cardType = CARD_FIRST_ROAD_LEFT;
     deck[CARD_FIRST_ROAD_LEFT].numLinkedCards = 2;
-    strcpy(deck[CARD_FIRST_ROAD_LEFT].name, "far down the road");
+    strcpy(deck[CARD_FIRST_ROAD_LEFT].name, "Far down the Road");
     strcpy(deck[CARD_FIRST_ROAD_LEFT].description, "You move left down the road until you come to a large tree.\nThe tree is very big and very old.");
     deck[CARD_FIRST_ROAD_LEFT].linkedCards[0].cardType = CARD_FRONTDOOR; //link to front door
-    strcpy(deck[CARD_FIRST_ROAD_LEFT].linkedCards[0].name,"frontdoor"); //link name
+    strcpy(deck[CARD_FIRST_ROAD_LEFT].linkedCards[0].name,"front"); //link name
     deck[CARD_FIRST_ROAD_LEFT].linkedCards[1].cardType = CARD_FIRST_CLIMB_TREE; //link to climable tree
-    strcpy(deck[CARD_FIRST_ROAD_LEFT].linkedCards[1].name,"climb tree"); //link name
+    strcpy(deck[CARD_FIRST_ROAD_LEFT].linkedCards[1].name,"tree"); //link name
 
     // Card 4  - right on the road outside your house
     deck[CARD_FIRST_ROAD_RIGHT].cardType = CARD_FIRST_ROAD_RIGHT;
     deck[CARD_FIRST_ROAD_RIGHT].numLinkedCards = 2;
-    strcpy(deck[CARD_FIRST_ROAD_RIGHT].name, "road toward town");
+    strcpy(deck[CARD_FIRST_ROAD_RIGHT].name, "Up the Road");
     strcpy(deck[CARD_FIRST_ROAD_RIGHT].description, "You move right down the road.\nLooks like trouble up ahead...");
     deck[CARD_FIRST_ROAD_RIGHT].linkedCards[0].cardType = CARD_FRONTDOOR; //link to front door
-    strcpy(deck[CARD_FIRST_ROAD_RIGHT].linkedCards[0].name,"left"); //link name
+    strcpy(deck[CARD_FIRST_ROAD_RIGHT].linkedCards[0].name,"front"); //link name
     deck[CARD_FIRST_ROAD_RIGHT].linkedCards[1].cardType = CARD_FIRST_TROUBLE; //first trouble
     strcpy(deck[CARD_FIRST_ROAD_RIGHT].linkedCards[1].name,"trouble"); //link name
 
@@ -603,12 +644,12 @@ void initDeck() {
     deck[CARD_FIRST_CLIMB_TREE].cardType = CARD_FIRST_CLIMB_TREE;
     deck[CARD_FIRST_CLIMB_TREE].numLinkedCards = 2;
     deck[CARD_FIRST_CLIMB_TREE].numLinkedItems = 2;
-    strcpy(deck[CARD_FIRST_CLIMB_TREE].name, "up in the tree");
+    strcpy(deck[CARD_FIRST_CLIMB_TREE].name, "Up in the Tree");
     strcpy(deck[CARD_FIRST_CLIMB_TREE].description, "You climb the tree.\nYou can see everything from up here.");
     deck[CARD_FIRST_CLIMB_TREE].linkedCards[0].cardType = CARD_DEAD_END; //link to first left road path
-    strcpy(deck[CARD_FIRST_CLIMB_TREE].linkedCards[0].name,"dead"); //link name
+    strcpy(deck[CARD_FIRST_CLIMB_TREE].linkedCards[0].name,"down"); //link name
     deck[CARD_FIRST_CLIMB_TREE].linkedCards[1].cardType = CARD_FIRST_ROAD_LEFT; //link to first left road path
-    strcpy(deck[CARD_FIRST_CLIMB_TREE].linkedCards[1].name,"down"); //link name
+    strcpy(deck[CARD_FIRST_CLIMB_TREE].linkedCards[1].name,"back"); //link name
     deck[CARD_FIRST_CLIMB_TREE].linkedItems[0] = ITEM_MAP; //map
     deck[CARD_FIRST_CLIMB_TREE].linkedItems[1] = ITEM_COINS; //some coins
 
@@ -616,7 +657,7 @@ void initDeck() {
     deck[CARD_FIRST_TROUBLE].cardType = CARD_FIRST_TROUBLE;
     deck[CARD_FIRST_TROUBLE].numLinkedCards = 2;
     deck[CARD_FIRST_TROUBLE].numLinkedEnemies = 2;
-    strcpy(deck[CARD_FIRST_TROUBLE].name, "clearing along road");
+    strcpy(deck[CARD_FIRST_TROUBLE].name, "Clearing along the Road");
     strcpy(deck[CARD_FIRST_TROUBLE].description, "You are in a clearing along the road.\nThere is a lot of open space.");
     deck[CARD_FIRST_TROUBLE].linkedCards[0].cardType = CARD_FIRST_ROAD_RIGHT; //back closer to home
     strcpy(deck[CARD_FIRST_TROUBLE].linkedCards[0].name,"back"); //link name
@@ -631,18 +672,20 @@ void initDeck() {
 
     // Card 7  - dead end after the tree - has event
     deck[CARD_DEAD_END].cardType = CARD_DEAD_END;
-    deck[CARD_DEAD_END].numLinkedCards = 2;
-    strcpy(deck[CARD_DEAD_END].name, "dead end");
-    strcpy(deck[CARD_DEAD_END].description, "You have reached a dead end after the tree.\nBut there is a path...");
+    deck[CARD_DEAD_END].numLinkedCards = 3;
+    strcpy(deck[CARD_DEAD_END].name, "Dead End after the Tree");
+    strcpy(deck[CARD_DEAD_END].description, "The road comes to a dead end after the tree.\nBut there is a path.\nYou could also follow the squirrel into the woods.");
     deck[CARD_DEAD_END].linkedCards[0].cardType = CARD_FIRST_PATH; //link to first path
     strcpy(deck[CARD_DEAD_END].linkedCards[0].name,"path"); //link name
     deck[CARD_DEAD_END].linkedCards[1].cardType = CARD_FIRST_CLIMB_TREE; //back to tree
     strcpy(deck[CARD_DEAD_END].linkedCards[1].name,"tree"); //link name
+    deck[CARD_DEAD_END].linkedCards[2].cardType = CARD_LOST_WOODS1; //begin lost in the woods sequence, leads to wrenwood
+    strcpy(deck[CARD_DEAD_END].linkedCards[2].name,"wood"); //link name
 
     // Card 8  - path to old man jeffers
     deck[CARD_FIRST_PATH].cardType = CARD_FIRST_PATH;
     deck[CARD_FIRST_PATH].numLinkedCards = 3;
-    strcpy(deck[CARD_FIRST_PATH].name, "path in the woods");
+    strcpy(deck[CARD_FIRST_PATH].name, "Path in the Woods");
     strcpy(deck[CARD_FIRST_PATH].description, "You are on a small path in the woods\nIt looks like there is a small cottage up ahead.");
     deck[CARD_FIRST_PATH].linkedCards[0].cardType = CARD_DEAD_END; //link back to dead end
     strcpy(deck[CARD_FIRST_PATH].linkedCards[0].name,"dead"); //link name
@@ -654,7 +697,7 @@ void initDeck() {
     // Card 9  - long stretch of road after trouble clearing
     deck[CARD_ROAD_AFTER_TROUBLE].cardType = CARD_ROAD_AFTER_TROUBLE;
     deck[CARD_ROAD_AFTER_TROUBLE].numLinkedCards = 3;
-    strcpy(deck[CARD_ROAD_AFTER_TROUBLE].name, "long stretch of road");
+    strcpy(deck[CARD_ROAD_AFTER_TROUBLE].name, "Long Stretch of Road near town");
     strcpy(deck[CARD_ROAD_AFTER_TROUBLE].description, "You are on a long stretch of road.\nYou are near town.\nThere is also a small path.");
     deck[CARD_ROAD_AFTER_TROUBLE].linkedCards[0].cardType = CARD_FIRST_PATH; //link to first path
     strcpy(deck[CARD_ROAD_AFTER_TROUBLE].linkedCards[0].name,"path"); //link name
@@ -667,7 +710,7 @@ void initDeck() {
     deck[CARD_OLD_MAN_JEFFERS].cardType = CARD_OLD_MAN_JEFFERS;
     deck[CARD_OLD_MAN_JEFFERS].numLinkedCards = 2;
     deck[CARD_OLD_MAN_JEFFERS].numLinkedItems = 2;
-    strcpy(deck[CARD_OLD_MAN_JEFFERS].name, "old man jeffers");
+    strcpy(deck[CARD_OLD_MAN_JEFFERS].name, "Old Man Jeffers");
     strcpy(deck[CARD_OLD_MAN_JEFFERS].description, "You come across old man Jeffers residence.\nHe has a garden and a fireplace.");
     deck[CARD_OLD_MAN_JEFFERS].linkedCards[0].cardType = CARD_FIRST_PATH; //link back to path
     strcpy(deck[CARD_OLD_MAN_JEFFERS].linkedCards[0].name,"path"); //link name
@@ -680,7 +723,7 @@ void initDeck() {
     deck[CARD_JEFFERS_GARDEN].cardType = CARD_JEFFERS_GARDEN;
     deck[CARD_JEFFERS_GARDEN].numLinkedCards = 1;
     deck[CARD_JEFFERS_GARDEN].numLinkedItems = 2;
-    strcpy(deck[CARD_JEFFERS_GARDEN].name, "jeffers garden");
+    strcpy(deck[CARD_JEFFERS_GARDEN].name, "Old Man Jeffers Garden");
     strcpy(deck[CARD_JEFFERS_GARDEN].description, "You are in old man Jeffers garden.\nThere is a tomoato plant.");
     deck[CARD_JEFFERS_GARDEN].linkedCards[0].cardType = CARD_OLD_MAN_JEFFERS; //link to first path
     strcpy(deck[CARD_JEFFERS_GARDEN].linkedCards[0].name,"jeffers"); //link name
@@ -691,7 +734,7 @@ void initDeck() {
     deck[CARD_TOWN_SQUARE].cardType = CARD_TOWN_SQUARE;
     deck[CARD_TOWN_SQUARE].numLinkedCards = 5;
     deck[CARD_TOWN_SQUARE].numLinkedItems = 6;
-    strcpy(deck[CARD_TOWN_SQUARE].name, "town square");
+    strcpy(deck[CARD_TOWN_SQUARE].name, "Town Square");
     strcpy(deck[CARD_TOWN_SQUARE].description, "You are in the town square.\nThere is a store here and a few paths.");
     deck[CARD_TOWN_SQUARE].linkedCards[0].cardType = CARD_ROAD_AFTER_TROUBLE; //link to first path
     strcpy(deck[CARD_TOWN_SQUARE].linkedCards[0].name,"road"); //link name
@@ -867,35 +910,36 @@ void initDeck() {
     deck[CARD_SECOND_PATH].cardType = CARD_SECOND_PATH;
     deck[CARD_SECOND_PATH].numLinkedCards = 2;
     strcpy(deck[CARD_SECOND_PATH].name, "Path in the Woods");
-    strcpy(deck[CARD_SECOND_PATH].description, "You take the path deep into the woods.\nThe path continues.");
+    strcpy(deck[CARD_SECOND_PATH].description, "You take the path deep into the woods.\nThe path continues to a garden.\nThere is also a deep river nearby. To deep to cross to the other side...");
     deck[CARD_SECOND_PATH].linkedCards[0].cardType = CARD_BACKDOOR; //link back to backyard/backdoor
     strcpy(deck[CARD_SECOND_PATH].linkedCards[0].name,"back"); //link name
     deck[CARD_SECOND_PATH].linkedCards[1].cardType = CARD_WILD_GARDEN; //link to wild garden
     strcpy(deck[CARD_SECOND_PATH].linkedCards[1].name,"garden"); //link name
 
-    // Card 25  - wild garden - has event, has grow
+    // Card 25  - wild garden - has event, has grow, has locked shed entrance to CARD_FIRST_SHED
     deck[CARD_WILD_GARDEN].cardType = CARD_WILD_GARDEN;
     deck[CARD_WILD_GARDEN].numLinkedCards = 1;
     strcpy(deck[CARD_WILD_GARDEN].name, "Wild Garden");
-    strcpy(deck[CARD_WILD_GARDEN].description, "You are in a wild garden with lots of plants to choose from.\nThere is an apple tree here.");
+    strcpy(deck[CARD_WILD_GARDEN].description, "You are in a wild garden with lots of plants to choose from.\nThere is an apple tree here.\nThere is a shed nearby but the door is locked.");
     deck[CARD_WILD_GARDEN].linkedCards[0].cardType = CARD_SECOND_PATH; //link to second path
     strcpy(deck[CARD_WILD_GARDEN].linkedCards[0].name,"path"); //link name
 
     // Card 26  - Bramblethorn Overlook
     deck[CARD_BRAMBLETHORN_OVERLOOK].cardType = CARD_BRAMBLETHORN_OVERLOOK;
-    deck[CARD_BRAMBLETHORN_OVERLOOK].numLinkedCards = 1;
+    deck[CARD_BRAMBLETHORN_OVERLOOK].numLinkedCards = 2;
     strcpy(deck[CARD_BRAMBLETHORN_OVERLOOK].name, "Bramblethorn Overlook");
     strcpy(deck[CARD_BRAMBLETHORN_OVERLOOK].description, "The view is quite impressive.\nYou can see out over much of the forest and a river.\nThere is a bridge nearby.");
     deck[CARD_BRAMBLETHORN_OVERLOOK].linkedCards[0].cardType = CARD_MIRKWOOD_EXIT; //link back to mirkwood exit
     strcpy(deck[CARD_BRAMBLETHORN_OVERLOOK].linkedCards[0].name,"wood"); //link name
-    //todo: bridge
+    deck[CARD_BRAMBLETHORN_OVERLOOK].linkedCards[1].cardType = CARD_FIRST_BRIDGE; //link to bridge
+    strcpy(deck[CARD_BRAMBLETHORN_OVERLOOK].linkedCards[1].name,"bridge"); //link name
     
     // Card 27  - Ironwood Clearing
     deck[CARD_IRONWOOD_CLEARING].cardType = CARD_IRONWOOD_CLEARING;
     deck[CARD_IRONWOOD_CLEARING].numLinkedCards = 1;
     deck[CARD_IRONWOOD_CLEARING].numLinkedEnemies = 2;
     strcpy(deck[CARD_IRONWOOD_CLEARING].name, "Ironwood Clearing");
-    strcpy(deck[CARD_IRONWOOD_CLEARING].description, "The road opens up into a rare, serene clearing.\nThere is a lot of space.\nThe air is heavy with a quiet power, a feeling that this place is not entirely of the natural world.");
+    strcpy(deck[CARD_IRONWOOD_CLEARING].description, "The road opens up into a rare, serene clearing.\nThere is a lot of space.\nThe air is heavy with a quiet power, a feeling that this place is not entirely of the natural world.\nThere is a small shed nearby, but the door is locked.");
     deck[CARD_IRONWOOD_CLEARING].linkedCards[0].cardType = CARD_MIRKWOOD_EXIT; //link back to mirkwood exit
     strcpy(deck[CARD_IRONWOOD_CLEARING].linkedCards[0].name,"wood"); //link name
     deck[CARD_IRONWOOD_CLEARING].linkedEnemies[0].enemyType = ENEMY_BEAR; //bear
@@ -925,12 +969,197 @@ void initDeck() {
     deck[CARD_CINDERSPIRE].linkedCards[0].cardType = CARD_MIRKWOOD_EXIT; //link back to mirkwood exit
     strcpy(deck[CARD_CINDERSPIRE].linkedCards[0].name,"wood"); //link name
 
+    // Card 30  - First Gardening Shed - locked, linked to CARD_WILD_GARDEN
+    deck[CARD_FIRST_SHED].cardType = CARD_FIRST_SHED;
+    deck[CARD_FIRST_SHED].numLinkedCards = 1;
+    deck[CARD_FIRST_SHED].numLinkedItems = 4;
+    strcpy(deck[CARD_FIRST_SHED].name, "Gardening Shed");
+    strcpy(deck[CARD_FIRST_SHED].description, "You are in a small gardening shed.\nThere are some tools and some soil.");
+    deck[CARD_FIRST_SHED].linkedCards[0].cardType = CARD_WILD_GARDEN; //link back to wild garden
+    strcpy(deck[CARD_FIRST_SHED].linkedCards[0].name,"garden"); //link name
+    deck[CARD_FIRST_SHED].linkedItems[0] = ITEM_MANA_POTION; //potion
+    deck[CARD_FIRST_SHED].linkedItems[1] = ITEM_HEALTH_POTION; //potion
+    deck[CARD_FIRST_SHED].linkedItems[2] = ITEM_COINS; //coins
+    deck[CARD_FIRST_SHED].linkedItems[3] = ITEM_COINS; //coins
+
+    // Card 31  - Second Gardening Shed - locked, linked to CARD_IRONWOOD_CLEARING
+    deck[CARD_SECOND_SHED].cardType = CARD_SECOND_SHED;
+    deck[CARD_SECOND_SHED].numLinkedCards = 1;
+    deck[CARD_SECOND_SHED].numLinkedItems = 4;
+    strcpy(deck[CARD_SECOND_SHED].name, "Workman's Shed");
+    strcpy(deck[CARD_SECOND_SHED].description, "You are in a small gardening shed.\nThere are some tools and some soil.");
+    deck[CARD_SECOND_SHED].linkedCards[0].cardType = CARD_IRONWOOD_CLEARING; //link back to ironwood clearing
+    strcpy(deck[CARD_SECOND_SHED].linkedCards[0].name,"clearing"); //link name
+    deck[CARD_SECOND_SHED].linkedItems[0] = ITEM_MANA_POTION; //potion
+    deck[CARD_SECOND_SHED].linkedItems[1] = ITEM_HEALTH_POTION; //potion
+    deck[CARD_SECOND_SHED].linkedItems[2] = ITEM_COINS; //coins
+    deck[CARD_SECOND_SHED].linkedItems[3] = ITEM_COINS; //coins
+
+    // Card 32  - other side of river, unlinked until event
+    deck[CARD_OTHER_SIDE_RIVER].cardType = CARD_OTHER_SIDE_RIVER;
+    deck[CARD_OTHER_SIDE_RIVER].numLinkedCards = 2;
+    deck[CARD_OTHER_SIDE_RIVER].numLinkedItems = 2;
+    strcpy(deck[CARD_OTHER_SIDE_RIVER].name, "Other Side of the River");
+    strcpy(deck[CARD_OTHER_SIDE_RIVER].description, "You cross the river to the otherside.\nThere is a trail here.");
+    deck[CARD_OTHER_SIDE_RIVER].linkedCards[0].cardType = CARD_SECOND_PATH; //link back to second path
+    strcpy(deck[CARD_OTHER_SIDE_RIVER].linkedCards[0].name,"tree"); //link name
+    deck[CARD_OTHER_SIDE_RIVER].linkedCards[1].cardType = CARD_FIRST_TRAIL; //link to trail
+    strcpy(deck[CARD_OTHER_SIDE_RIVER].linkedCards[1].name,"trail"); //link name
+    deck[CARD_OTHER_SIDE_RIVER].linkedItems[0] = ITEM_COINS; //coins
+    deck[CARD_OTHER_SIDE_RIVER].linkedItems[1] = ITEM_COINS; //coins
+
+    // Card 33  - Old man McCann's - has fireplace
+    deck[CARD_OLD_MAN_MCCANN].cardType = CARD_OLD_MAN_MCCANN;
+    deck[CARD_OLD_MAN_MCCANN].numLinkedCards = 2;
+    strcpy(deck[CARD_OLD_MAN_MCCANN].name, "Old Man McCann's");
+    strcpy(deck[CARD_OLD_MAN_MCCANN].description, "Old man McCann's residence.\nThere is a fireplace.");
+    deck[CARD_OLD_MAN_MCCANN].linkedCards[0].cardType = CARD_WRENWOOD; //link back to wrenwood
+    strcpy(deck[CARD_OLD_MAN_MCCANN].linkedCards[0].name,"town"); //link name
+    deck[CARD_OLD_MAN_MCCANN].linkedCards[1].cardType = CARD_MCCANN_GARDEN; //link to garden
+    strcpy(deck[CARD_OLD_MAN_MCCANN].linkedCards[1].name,"garden"); //link name
+
+    // Card 34  - Wrenwood
+    deck[CARD_WRENWOOD].cardType = CARD_WRENWOOD;
+    deck[CARD_WRENWOOD].numLinkedCards = 3;
+    deck[CARD_WRENWOOD].numLinkedItems = 2;
+    strcpy(deck[CARD_WRENWOOD].name, "Town of Wrenwood");
+    strcpy(deck[CARD_WRENWOOD].description, "You are in Wrenwood.\nThere is a store here.\nThere is a house nearby.");
+    deck[CARD_WRENWOOD].linkedCards[0].cardType = CARD_FIRST_TRAIL; //link back to trail
+    strcpy(deck[CARD_WRENWOOD].linkedCards[0].name,"trail"); //link name
+    deck[CARD_WRENWOOD].linkedCards[1].cardType = CARD_OLD_MAN_MCCANN; //link to McCanns
+    strcpy(deck[CARD_WRENWOOD].linkedCards[1].name,"house"); //link name
+    deck[CARD_WRENWOOD].linkedCards[2].cardType = CARD_SECOND_STORE; //link to store
+    strcpy(deck[CARD_WRENWOOD].linkedCards[2].name,"store"); //link name
+    deck[CARD_WRENWOOD].linkedItems[0] = ITEM_COINS; //coins
+    deck[CARD_WRENWOOD].linkedItems[1] = ITEM_COINS; //coins
+
+    // Card 35  - First Trail
+    deck[CARD_FIRST_TRAIL].cardType = CARD_FIRST_TRAIL;
+    deck[CARD_FIRST_TRAIL].numLinkedCards = 2;
+    strcpy(deck[CARD_FIRST_TRAIL].name, "Trail in the woods");
+    strcpy(deck[CARD_FIRST_TRAIL].description, "You follow the trail into the woods.\nYou are near Wrenwood.");
+    deck[CARD_FIRST_TRAIL].linkedCards[0].cardType = CARD_OTHER_SIDE_RIVER; //link back to mirkwood exit
+    strcpy(deck[CARD_FIRST_TRAIL].linkedCards[0].name,"river"); //link name
+    deck[CARD_FIRST_TRAIL].linkedCards[1].cardType = CARD_WRENWOOD; //link back to mirkwood exit
+    strcpy(deck[CARD_FIRST_TRAIL].linkedCards[1].name,"town"); //link name
+
+    // Card 36  - General store / second store
+    deck[CARD_SECOND_STORE].cardType = CARD_SECOND_STORE;
+    deck[CARD_SECOND_STORE].isStore = true;
+    deck[CARD_SECOND_STORE].numLinkedCards = 1;
+    strcpy(deck[CARD_SECOND_STORE].name, "General Store");
+    strcpy(deck[CARD_SECOND_STORE].description, "A small store where you can buy potions.");
+    deck[CARD_SECOND_STORE].linkedCards[0].cardType = CARD_WRENWOOD; //link back to wrenwood
+    strcpy(deck[CARD_SECOND_STORE].linkedCards[0].name,"town"); //link name
+
+    // Card 37  - McCann Garden
+    deck[CARD_MCCANN_GARDEN].cardType = CARD_MCCANN_GARDEN;
+    deck[CARD_MCCANN_GARDEN].numLinkedCards = 1;
+    strcpy(deck[CARD_MCCANN_GARDEN].name, "Old man McCann's Garden");
+    strcpy(deck[CARD_MCCANN_GARDEN].description, "You are in old man McCann's nice garden.\nThere are lots of plants to choose from.\nThere is a tomatoe plant.\nThere is also a shed here but the door is locked.");
+    deck[CARD_MCCANN_GARDEN].linkedCards[0].cardType = CARD_OLD_MAN_MCCANN; //link back to mccanns
+    strcpy(deck[CARD_MCCANN_GARDEN].linkedCards[0].name,"house"); //link name
+
+    // Card 38  - Third Gardening Shed - locked, linked to CARD_MCCANN_GARDEN
+    deck[CARD_THIRD_SHED].cardType = CARD_THIRD_SHED;
+    deck[CARD_THIRD_SHED].numLinkedCards = 1;
+    deck[CARD_THIRD_SHED].numLinkedItems = 4;
+    strcpy(deck[CARD_THIRD_SHED].name, "McCann's Shed");
+    strcpy(deck[CARD_THIRD_SHED].description, "You are in a small gardening shed.\nThere are some tools and some soil.");
+    deck[CARD_THIRD_SHED].linkedCards[0].cardType = CARD_MCCANN_GARDEN; //link back to mccann garden
+    strcpy(deck[CARD_THIRD_SHED].linkedCards[0].name,"garden"); //link name
+    deck[CARD_THIRD_SHED].linkedItems[0] = ITEM_MANA_POTION; //potion
+    deck[CARD_THIRD_SHED].linkedItems[1] = ITEM_MANA_POTION; //potion
+    deck[CARD_THIRD_SHED].linkedItems[2] = ITEM_COINS; //coins
+    deck[CARD_THIRD_SHED].linkedItems[3] = ITEM_COINS; //coins
+
+    // Card 39  - Lost in the woods sequence 1
+    deck[CARD_LOST_WOODS1].cardType = CARD_LOST_WOODS1;
+    deck[CARD_LOST_WOODS1].numLinkedCards = 1;
+    deck[CARD_LOST_WOODS1].numLinkedItems = 2;
+    strcpy(deck[CARD_LOST_WOODS1].name, "Deep in the Woods");
+    strcpy(deck[CARD_LOST_WOODS1].description, "You are Lost in the woods.");
+    deck[CARD_LOST_WOODS1].linkedCards[0].cardType = CARD_LOST_WOODS2; //link to lost in the woods 2
+    strcpy(deck[CARD_LOST_WOODS1].linkedCards[0].name,"lost"); //link name
+    deck[CARD_LOST_WOODS1].linkedItems[0] = ITEM_MANA_POTION; //potion
+    deck[CARD_LOST_WOODS1].linkedItems[1] = ITEM_MANA_POTION; //potion
+
+    // Card 40  - Lost in the woods sequence 2
+    deck[CARD_LOST_WOODS2].cardType = CARD_LOST_WOODS2;
+    deck[CARD_LOST_WOODS2].numLinkedCards = 1;
+    deck[CARD_LOST_WOODS2].numLinkedItems = 2;
+    strcpy(deck[CARD_LOST_WOODS2].name, "Lost in the Woods");
+    strcpy(deck[CARD_LOST_WOODS2].description, "You are Lost in the woods.");
+    deck[CARD_LOST_WOODS2].linkedCards[0].cardType = CARD_LOST_WOODS3; //link to lost in the woods 3
+    strcpy(deck[CARD_LOST_WOODS2].linkedCards[0].name,"lost"); //link name
+    deck[CARD_LOST_WOODS2].linkedItems[0] = ITEM_MANA_POTION; //potion
+    deck[CARD_LOST_WOODS2].linkedItems[1] = ITEM_MANA_POTION; //potion
+
+    // Card 41  - Lost in the woods sequence 3
+    deck[CARD_LOST_WOODS3].cardType = CARD_LOST_WOODS3;
+    deck[CARD_LOST_WOODS3].numLinkedCards = 1;
+    deck[CARD_LOST_WOODS3].numLinkedItems = 2;
+    strcpy(deck[CARD_LOST_WOODS3].name, "Lost in the Deep Woods");
+    strcpy(deck[CARD_LOST_WOODS3].description, "You are Lost deep in the woods.\nAs you walk further, suddenly the brush subsides.\nThere seems to be a small garden up ahead.");
+    deck[CARD_LOST_WOODS3].linkedCards[0].cardType = CARD_JEFFERS_GARDEN; //link to Jeffers Garden
+    strcpy(deck[CARD_LOST_WOODS3].linkedCards[0].name,"garden"); //link name
+    deck[CARD_LOST_WOODS3].linkedItems[0] = ITEM_MANA_POTION; //potion
+    deck[CARD_LOST_WOODS3].linkedItems[1] = ITEM_MANA_POTION; //potion
+
+    // Card 42  - First Bridge
+    deck[CARD_FIRST_BRIDGE].cardType = CARD_FIRST_BRIDGE;
+    deck[CARD_FIRST_BRIDGE].numLinkedCards = 2;
+    deck[CARD_FIRST_BRIDGE].numLinkedEnemies = 1;
+    strcpy(deck[CARD_FIRST_BRIDGE].name, "Bridge near Bramblethorn Overlook");
+    strcpy(deck[CARD_FIRST_BRIDGE].description, "You make your way to the bridge.\nA scenic crossing point over serene waters,\nwhere the wooden slats creak with the\nwhispers of secrets shared between friends.");
+    deck[CARD_FIRST_BRIDGE].linkedCards[0].cardType = CARD_BRAMBLETHORN_OVERLOOK; //link back to overlook
+    strcpy(deck[CARD_FIRST_BRIDGE].linkedCards[0].name,"overlook"); //link name
+    deck[CARD_FIRST_BRIDGE].linkedCards[1].cardType = CARD_WILLIAMS; //link to williams
+    strcpy(deck[CARD_FIRST_BRIDGE].linkedCards[1].name,"town"); //link name
+    deck[CARD_FIRST_BRIDGE].linkedEnemies[0].enemyType = ENEMY_GOBLIN; //goblin
+    deck[CARD_FIRST_BRIDGE].linkedEnemies[0].health = 100; 
+    deck[CARD_FIRST_BRIDGE].linkedEnemies[0].damage = 50;
+
+    // Card 43  - Williams
+    deck[CARD_WILLIAMS].cardType = CARD_WILLIAMS;
+    deck[CARD_WILLIAMS].numLinkedCards = 2;
+    deck[CARD_WILLIAMS].numLinkedItems = 4;
+    strcpy(deck[CARD_WILLIAMS].name, "Town of Williams");
+    strcpy(deck[CARD_WILLIAMS].description, "You are in the town of Williams.\nIts very nice here.\nThere is a small store nearby.\nTown hall is nearby but the door is locked.");
+    deck[CARD_WILLIAMS].linkedCards[0].cardType = CARD_FIRST_BRIDGE; //link back to bridge
+    strcpy(deck[CARD_WILLIAMS].linkedCards[0].name,"bridge"); //link name
+    deck[CARD_WILLIAMS].linkedCards[1].cardType = CARD_WILLIAMS_STORE; //link to store
+    strcpy(deck[CARD_WILLIAMS].linkedCards[1].name,"store"); //link name
+    deck[CARD_WILLIAMS].linkedItems[0] = ITEM_MANA_POTION; //potion
+    deck[CARD_WILLIAMS].linkedItems[1] = ITEM_HEALTH_POTION; //potion
+    deck[CARD_WILLIAMS].linkedItems[2] = ITEM_COINS; //coins
+    deck[CARD_WILLIAMS].linkedItems[3] = ITEM_COINS; //coins
+
+    // Card 44  - Williams General store
+    deck[CARD_WILLIAMS_STORE].cardType = CARD_WILLIAMS_STORE;
+    deck[CARD_WILLIAMS_STORE].isStore = true;
+    deck[CARD_WILLIAMS_STORE].numLinkedCards = 1;
+    strcpy(deck[CARD_WILLIAMS_STORE].name, "Williams General Store");
+    strcpy(deck[CARD_WILLIAMS_STORE].description, "You are in a small store.\nBuy items.");
+    deck[CARD_WILLIAMS_STORE].linkedCards[0].cardType = CARD_WILLIAMS; //link back to williams
+    strcpy(deck[CARD_WILLIAMS_STORE].linkedCards[0].name,"town"); //link name
+
+    // Card 45  - Williams Town Hall - locked, linked to CARD_WILD_GARDEN
+    deck[CARD_WILLIAMS_TOWN_HALL].cardType = CARD_WILLIAMS_TOWN_HALL;
+    deck[CARD_WILLIAMS_TOWN_HALL].numLinkedCards = 1;
+    strcpy(deck[CARD_WILLIAMS_TOWN_HALL].name, "Williams Town Hall");
+    strcpy(deck[CARD_WILLIAMS_TOWN_HALL].description, "You are in Williams Town Hall.\nThere is a fire place here.");
+    deck[CARD_WILLIAMS_TOWN_HALL].linkedCards[0].cardType = CARD_WILLIAMS; //link back to williams
+    strcpy(deck[CARD_WILLIAMS_TOWN_HALL].linkedCards[0].name,"town"); //link name
+ 
+
 
     // Set the starting room
-    currentCard = &deck[0];
+    currentCard = &deck[CARD_HOME];
 }
 
 
+//remove trailing new lines and convert uppercase to lowercase
 void formatInput(char* input)
 {
     // Remove trailing newline
@@ -945,6 +1174,7 @@ void formatInput(char* input)
     }
 }
 
+//handle the finding of items
 void printAndHandleItem(int itemType)
 {
     // switch statement
@@ -967,12 +1197,12 @@ void printAndHandleItem(int itemType)
     
     case ITEM_MANA_POTION:
         printf("Found mana potion\n");
-        mana += 200;
+        mana += 100;
         break;
 
     case ITEM_COINS:
         printf("Found some coins\n");
-        money += 200;
+        money += 100;
         break;
 
     default:
@@ -981,6 +1211,7 @@ void printAndHandleItem(int itemType)
     }
 }
 
+//return the correct enemy name string from the enum value
 char* getEnemyName(int enemyType)
 {
     static char* result;
@@ -1014,6 +1245,7 @@ char* getEnemyName(int enemyType)
     return result;
 }
 
+//return the correct enemy attack name string from the enum value
 char* getEnemyAttack(int enemyType)
 {
     static char* result;
@@ -1047,6 +1279,7 @@ char* getEnemyAttack(int enemyType)
     return result;
 }
 
+//handle the fighting
 void handleFightSequence()
 {
     for(int i = 0; i < currentCard->numLinkedEnemies; i++)
@@ -1064,14 +1297,35 @@ void handleFightSequence()
     {
         printf("you died...\n");//death in this game is like grand theft auto sort of...
         // Set the starting room back to home
-        currentCard = &deck[0];
-        health = 100;//set starting health to 100, you will have to gain a surplus back in most cases to continue
+        currentCard = &deck[CARD_HOME];
+        health = 100;//set starting health to 100, you will have to regain a surplus
     }
 }
 
+//truly, if there is an example of how much this is just all spaghetti code, this is it...
 int getDamage()
 {
-    if(xp > 1000)
+    if(xp > 6000)
+    {
+        return 700;
+    }
+    else if(xp > 5000)
+    {
+        return 600;
+    }
+    else if(xp > 4000)
+    {
+        return 500;
+    }
+    else if(xp > 3000)
+    {
+        return 400;
+    }
+    else if(xp > 2000)
+    {
+        return 300;
+    }
+    else if(xp > 1000)
     {
         return 200;
     }
@@ -1105,6 +1359,7 @@ int getDamage()
     }
 }
 
+//event handler
 void handleEvents()
 {
     if(currentCard->cardType == CARD_HOME && !ringEventHasHappened && loops > 10)
@@ -1116,7 +1371,7 @@ void handleEvents()
         printf("You got the ring\n");
         hasRing = true;
     }
-    if(currentCard->cardType == CARD_TOWN_SQUARE && !kingEventHasHappened && loops > 50)
+    else if(currentCard->cardType == CARD_TOWN_SQUARE && !kingEventHasHappened && loops > 50)
     {
         kingEventHasHappened = true;
         printf("\nThe king arrives...\n");
@@ -1129,12 +1384,12 @@ void handleEvents()
         if(hasMap)
         {
             printf("The King says 'I see you have the map, I trust you can make your way.'\n");
-            xp += 100;
-            printf("(received 100 experience points)'\n");
+            xp += 50;
+            printf("(received 50 experience points)\n");
         }
         printf("The king leaves and the crowd disbands.\n\n");
     }
-    if(currentCard->cardType == CARD_WILD_GARDEN && !tomBomEventHasHappened && loops > 25)
+    else if(currentCard->cardType == CARD_WILD_GARDEN && !tomBomEventHasHappened && loops > 25)
     {
         tomBomEventHasHappened = true;
         printf("\nA strange man walks out of the forest, he is singing:\n");
@@ -1156,9 +1411,9 @@ void handleEvents()
         xp += 50;
         printf("(received 50 experience points)'\n");
         health+=100;
-        printf("(received 100 health)'\n");
+        printf("(received 100 health)\n");
     }
-    if(currentCard->cardType == CARD_DEAD_END && !squirrelEventHasHappened ) //happens immedialtey, no loop requirement
+    else if(currentCard->cardType == CARD_DEAD_END && !squirrelEventHasHappened ) //happens immedialtey, no loop requirement
     {
         squirrelEventHasHappened = true;
         printf("\nA squirrel runs out of the forest...\n");
@@ -1167,7 +1422,7 @@ void handleEvents()
         xp += 5;
         printf("(received 5 experience points)\n");
     }
-    if(currentCard->cardType == CARD_ECHOING_HOLLOW && !echoEventHasHappened ) //happens immedialtey, no loop requirement
+    else if(currentCard->cardType == CARD_ECHOING_HOLLOW && !echoEventHasHappened ) //happens immedialtey, no loop requirement
     {
         echoEventHasHappened = true;
         printf("\nYou shout 'Hello!'\n");
@@ -1178,8 +1433,21 @@ void handleEvents()
         xp += 5;
         printf("(received 5 experience points)\n");
     }
+    else if(currentCard->cardType == CARD_SECOND_PATH && !treeFallEventHasHappened && loops > 150)
+    {
+        treeFallEventHasHappened = true;
+        printf("\nA tree falls and lands like a bridge across the river...\n");
+        printf("There is now a path to cross the river.\n\n");
+        //up the links by 1 and add the new transition
+        deck[CARD_SECOND_PATH].numLinkedCards = 3;//was 2 so now 3
+        deck[CARD_SECOND_PATH].linkedCards[2].cardType = CARD_OTHER_SIDE_RIVER; //add link to other side of river
+        strcpy(deck[CARD_SECOND_PATH].linkedCards[2].name,"tree"); //link name
+        //change description to fit
+        strcpy(deck[CARD_SECOND_PATH].description, "You take the path deep into the woods.\nThe path continues to a garden.\nThere is also a deep river nearby.\nA tree has fallen across the river so you can cross to the other side.");
+    }
 }
 
+//handle the casting of spells
 void handleCast(char* spell)
 {
     if(mana <= 0){printf("no mana\n");return;}
@@ -1204,6 +1472,16 @@ void handleCast(char* spell)
             printf("The fire place is lit at Cinderspire.\n");
             cinderSpireFirePlaceIsLit = true;
         }
+        else if(currentCard->cardType == CARD_OLD_MAN_MCCANN)
+        {
+            printf("The fire place is lit at old man McCann's.\n");
+            mccannsFirePlaceIsLit = true;
+        }
+        else if(currentCard->cardType == CARD_WILLIAMS_TOWN_HALL)
+        {
+            printf("The fire place is lit at Williams Town Hall.\n");
+            williamsFirePlaceIsLit = true;
+        }
         else
         {
             printf("no effect\n");
@@ -1222,8 +1500,8 @@ void handleCast(char* spell)
         else if(currentCard->cardType == CARD_TOWN_HOUSE)
         {
             printf("The woman's breasts grow larger.\n");
-            printf("(received 50 xp)\n");
-            xp += 50;
+            printf("(received 5 xp)\n");
+            xp += 5;
         }
         else if(currentCard->cardType == CARD_WILD_GARDEN)
         {
@@ -1231,6 +1509,44 @@ void handleCast(char* spell)
             printf("You pick it from the tree and eat it.\n");
             printf("(received 500 health)\n");
             health += 500;
+        }
+        else if(currentCard->cardType == CARD_MCCANN_GARDEN)
+        {
+            printf("One of the tomatoes grows incredibly large.\n");
+            printf("You eat it.\n");
+            printf("(received 800 health)\n");
+            health += 800;
+        }
+        else
+        {
+            printf("no effect\n");
+        }
+    }
+    else if (strcmp(spell, "open") == 0)
+    {
+        if(currentCard->cardType == CARD_WILD_GARDEN)
+        {
+            printf("The locked shed door opens.\n");
+            printf("You enter the gardening shed.\n");
+            currentCard = &deck[CARD_FIRST_SHED];
+        }
+        else if (currentCard->cardType == CARD_IRONWOOD_CLEARING)
+        {
+            printf("The locked shed door opens.\n");
+            printf("You enter the workman's shed.\n");
+            currentCard = &deck[CARD_SECOND_SHED];
+        }
+        else if(currentCard->cardType == CARD_MCCANN_GARDEN)
+        {
+            printf("The locked shed door opens.\n");
+            printf("You enter the McCann's gardening shed.\n");
+            currentCard = &deck[CARD_THIRD_SHED];
+        }
+        else if(currentCard->cardType == CARD_WILLIAMS)
+        {
+            printf("The locked door to Town Hall opens.\n");
+            printf("You enter the Williams Town Hall.\n");
+            currentCard = &deck[CARD_WILLIAMS_TOWN_HALL];
         }
         else
         {
@@ -1243,6 +1559,24 @@ void handleCast(char* spell)
     }
 }
 
+//I ran into a situation where I sent a message to jovi, and the LLM response contained what looked
+//like non-printable characters, and the game sort of froze, so to prevent that
+//we now sanatize the response before printing each token
+void removeNonPrintableChars(char *str) {
+    int i = 0, j = 0;
+    
+    // Traverse through the string
+    while (str[i]) {
+        // If the character is printable, copy it to the new position
+        if (isprint((unsigned char)str[i])) {
+            str[j++] = str[i];
+        }
+        i++;
+    }
+    
+    // Null terminate the modified string
+    str[j] = '\0';
+}
 
 // Function to process a stream of JSON objects
 void process_json_stream(char *response) {
@@ -1263,6 +1597,7 @@ void process_json_stream(char *response) {
             //printf("Received JSON object: %s\n", json_string);
             cJSON *response_item = cJSON_GetObjectItem(json_object, "response");
             //printf("response: %s\n", response_item->valuestring);
+            removeNonPrintableChars(response_item->valuestring);//does this cause a memory leak? I checked with valgrind and it does not seem to
             printf("%s",response_item->valuestring);
             free(json_string);
             cJSON_Delete(json_object);
@@ -1276,21 +1611,23 @@ void process_json_stream(char *response) {
         // Move the pointer to the next JSON object (skip the newline character)
         start = end + 1;
     }
-    printf("\n\n", result);
+    //printf("\n%s\n", result);
+    printf("\n\n");
 }
 
+//handle the networking calls of the jovi command
 void handleJovi(char* input) {
     CURL *curl;
     CURLcode res;
-    char response[MAX_NET_RESP_LENGTH]; // = "";  // Buffer to hold the response data
+    char response[MAX_NET_RESP_LENGTH]; // Buffer to hold the response data
 
-    char result[MAX_INPUT_UNIQUE_JOVI];  // Define a buffer
+    char result[MAX_INPUT_UNIQUE_JOVI];  // Define a buffer to hold the fully qualified prompt
     // Safely format into the result buffer using snprintf
-    snprintf(result, MAX_INPUT_UNIQUE, "You are a talking dog named Jovi, I say '%s', how do you respond? (please keep answer to 3 sentences or less)", input);
-
+    snprintf(result, MAX_INPUT_UNIQUE_JOVI, "You are a talking dog named Jovi, I say '%s', how do you respond? (please keep answer to 3 sentences or less)", input);
+    //printf("result - %s\n", result); //test the wrapped message
     // Prepare JSON data using cJSON
     cJSON *json_data = cJSON_CreateObject();
-    cJSON_AddStringToObject(json_data, "model", "llama3");
+    cJSON_AddStringToObject(json_data, "model", "llama3"); // update model name per your setup
     cJSON_AddStringToObject(json_data, "prompt", result);
 
     // Convert the JSON object to a string
