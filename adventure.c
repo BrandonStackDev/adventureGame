@@ -97,7 +97,7 @@ typedef struct {
 
 Card *currentCard;
 Card deck[128];
-int TotalNumberOfCards = 74;//increment deck size by powers of two, when this value is close to the max
+int TotalNumberOfCards = 89;//increment deck size by powers of two, when this value is close to the max
 
 enum CardTypes {
     CARD_HOME = 0,
@@ -174,6 +174,21 @@ enum CardTypes {
     CARD_VILLAGE_STORE = 71, //store in the village
     CARD_FORSAKEN_ROAD_2 = 72, //Forsaken Road
     CARD_MOUNTAIN = 73, //Stoneheart Mountain
+    CARD_MARSH_ENTER = 74, //The Whispering Marsh Entrance
+    CARD_MARSH_1 = 75, //The Whispering Marsh
+    CARD_MARSH_2 = 76, //The Whispering Marsh
+    CARD_MARSH_3 = 77, //The Whispering Marsh
+    CARD_MARSH_4 = 78, //The Whispering Marsh
+    CARD_MARSH_5 = 79, //The Whispering Marsh
+    CARD_MARSH_6 = 80, //The Whispering Marsh
+    CARD_MARSH_7 = 81, //The Whispering Marsh
+    CARD_MARSH_8 = 82, //The Whispering Marsh
+    CARD_MARSH_9 = 83, //The Whispering Marsh
+    CARD_MARSH_10 = 84, //The Whispering Marsh
+    CARD_MARSH_11 = 85, //The Whispering Marsh
+    CARD_MARSH_12 = 86, //The Whispering Marsh
+    CARD_MARSH_13 = 87, //The Whispering Marsh
+    CARD_MARSH_EXIT = 88, //The Whispering Marsh Exit
 };
 
 enum ItemTypes {
@@ -1507,7 +1522,7 @@ void initDeck() {
     strcpy(deck[CARD_GLYPHS].linkedCards[1].name,"south"); //link name
     deck[CARD_GLYPHS].linkedItems[0] = ITEM_BOOK; //book
 
-    // Card 70  - Forsaken Road
+    // Card 70  - Forsaken Road - Blue Wizard event
     deck[CARD_FORSAKEN_ROAD].cardType = CARD_FORSAKEN_ROAD;
     deck[CARD_FORSAKEN_ROAD].numLinkedCards = 1;
     deck[CARD_FORSAKEN_ROAD].numLinkedEnemies = 2;
@@ -1545,12 +1560,13 @@ void initDeck() {
     
     // Card 73  - Forsaken Road 2
     deck[CARD_FORSAKEN_ROAD_2].cardType = CARD_FORSAKEN_ROAD_2;
-    deck[CARD_FORSAKEN_ROAD_2].numLinkedCards = 1;
+    deck[CARD_FORSAKEN_ROAD_2].numLinkedCards = 2;
     strcpy(deck[CARD_FORSAKEN_ROAD_2].name, "Forsaken Road North");
     strcpy(deck[CARD_FORSAKEN_ROAD_2].description, "You walk for miles along the northern end of the Forsaken Road.");
     deck[CARD_FORSAKEN_ROAD_2].linkedCards[0].cardType = CARD_FORSAKEN_ROAD; //?
     strcpy(deck[CARD_FORSAKEN_ROAD_2].linkedCards[0].name,"south"); //link name
-    //todo: whats next
+    deck[CARD_FORSAKEN_ROAD_2].linkedCards[1].cardType = CARD_MARSH_ENTER; //?
+    strcpy(deck[CARD_FORSAKEN_ROAD_2].linkedCards[1].name,"north"); //link name
 
     // Card 74  - Stoneheart Mountain
     deck[CARD_MOUNTAIN].cardType = CARD_MOUNTAIN;
@@ -1560,10 +1576,255 @@ void initDeck() {
     strcpy(deck[CARD_MOUNTAIN].description, "You climb Stoneheart Mountain to the top.\nThe towering peak's slopes are blanketed in thick, glistening white drifts.\nThe jagged cliffs rise sharply against the sky,\ntheir dark stone contrasted by the endless stretch of frost and ice.\nWinds whip through the mountain's high passes,\ncarrying with them the bite of the cold\nIts too steep to climb back down.\nBut the south is less steep,\nand there is a path that leads down the mountain.");
     deck[CARD_MOUNTAIN].linkedCards[0].cardType = CARD_STACK_HOMESTEAD; //?
     strcpy(deck[CARD_MOUNTAIN].linkedCards[0].name,"path"); //link name
+    deck[CARD_MOUNTAIN].linkedItems[0] = ITEM_HEALTH_POTION; //potion
     deck[CARD_MOUNTAIN].linkedItems[1] = ITEM_HEALTH_POTION; //potion
-    deck[CARD_MOUNTAIN].linkedItems[2] = ITEM_HEALTH_POTION; //potion
+    deck[CARD_MOUNTAIN].linkedItems[2] = ITEM_MANA_POTION; //potion
     deck[CARD_MOUNTAIN].linkedItems[3] = ITEM_MANA_POTION; //potion
-    deck[CARD_MOUNTAIN].linkedItems[4] = ITEM_MANA_POTION; //potion
+
+    // Card 75  - The Whispering Marsh Entrance
+    deck[CARD_MARSH_ENTER].cardType = CARD_MARSH_ENTER;
+    deck[CARD_MARSH_ENTER].numLinkedCards = 4;
+    strcpy(deck[CARD_MARSH_ENTER].name, "The Whispering Marsh Entrance");
+    strcpy(deck[CARD_MARSH_ENTER].description, "Entrance to The Whispering Marsh.\nIts rumored to be the home of ogres.\nEnter if you dare...");
+    deck[CARD_MARSH_ENTER].linkedCards[0].cardType = CARD_MARSH_1; //?
+    strcpy(deck[CARD_MARSH_ENTER].linkedCards[0].name,"north"); //link name
+    deck[CARD_MARSH_ENTER].linkedCards[1].cardType = CARD_FORSAKEN_ROAD; //?
+    strcpy(deck[CARD_MARSH_ENTER].linkedCards[1].name,"south"); //link name
+    deck[CARD_MARSH_ENTER].linkedCards[2].cardType = CARD_MARSH_9; //?
+    strcpy(deck[CARD_MARSH_ENTER].linkedCards[2].name,"east"); //link name
+    deck[CARD_MARSH_ENTER].linkedCards[3].cardType = CARD_MARSH_3; //?
+    strcpy(deck[CARD_MARSH_ENTER].linkedCards[3].name,"west"); //link name
+
+    // Card 76  - The Whispering Marsh
+    deck[CARD_MARSH_1].cardType = CARD_MARSH_1;
+    deck[CARD_MARSH_1].numLinkedCards = 4;
+    deck[CARD_MARSH_1].numLinkedEnemies = 4;
+    strcpy(deck[CARD_MARSH_1].name, "The Whispering Marsh");
+    strcpy(deck[CARD_MARSH_1].description, "A vast,\nfog-covered swamp where the wind seems to carry faint whispers from all directions.\nThe ground is treacherous,\nand strange,\nglowing lights float above the muck.");
+    deck[CARD_MARSH_1].linkedCards[0].cardType = CARD_MARSH_2; //?
+    strcpy(deck[CARD_MARSH_1].linkedCards[0].name,"north"); //link name
+    deck[CARD_MARSH_1].linkedCards[1].cardType = CARD_MARSH_ENTER; //?
+    strcpy(deck[CARD_MARSH_1].linkedCards[1].name,"south"); //link name
+    deck[CARD_MARSH_1].linkedCards[2].cardType = CARD_MARSH_10; //?
+    strcpy(deck[CARD_MARSH_1].linkedCards[2].name,"east"); //link name
+    deck[CARD_MARSH_1].linkedCards[3].cardType = CARD_MARSH_4; //?
+    strcpy(deck[CARD_MARSH_1].linkedCards[3].name,"west"); //link name
+    deck[CARD_MARSH_1].linkedEnemies[0].enemyType = ENEMY_OGRE; //ogre
+    deck[CARD_MARSH_1].linkedEnemies[0].health = 300; 
+    deck[CARD_MARSH_1].linkedEnemies[0].damage = 80;
+    deck[CARD_MARSH_1].linkedEnemies[1].enemyType = ENEMY_OGRE; //ogre
+    deck[CARD_MARSH_1].linkedEnemies[1].health = 200; 
+    deck[CARD_MARSH_1].linkedEnemies[1].damage = 80;
+    deck[CARD_MARSH_1].linkedEnemies[2].enemyType = ENEMY_OGRE; //ogre
+    deck[CARD_MARSH_1].linkedEnemies[2].health = 200; 
+    deck[CARD_MARSH_1].linkedEnemies[2].damage = 80;
+    deck[CARD_MARSH_1].linkedEnemies[3].enemyType = ENEMY_OGRE; //ogre
+    deck[CARD_MARSH_1].linkedEnemies[3].health = 200; 
+    deck[CARD_MARSH_1].linkedEnemies[3].damage = 80;
+
+    // Card 77  - The Whispering Marsh
+    deck[CARD_MARSH_2].cardType = CARD_MARSH_2;
+    deck[CARD_MARSH_2].numLinkedCards = 1;
+    strcpy(deck[CARD_MARSH_2].name, "The Whispering Marsh");
+    strcpy(deck[CARD_MARSH_2].description, "A vast,\nfog-covered swamp where the wind seems to carry faint whispers from all directions.\nThe ground is treacherous,\nand strange,\nglowing lights float above the muck.");
+    deck[CARD_MARSH_2].linkedCards[0].cardType = CARD_MARSH_1; //?
+    strcpy(deck[CARD_MARSH_2].linkedCards[0].name,"south"); //link name
+
+    // Card 78  - The Whispering Marsh
+    deck[CARD_MARSH_3].cardType = CARD_MARSH_3;
+    deck[CARD_MARSH_3].numLinkedCards = 3;
+    deck[CARD_MARSH_3].numLinkedEnemies = 4;
+    strcpy(deck[CARD_MARSH_3].name, "The Whispering Marsh");
+    strcpy(deck[CARD_MARSH_3].description, "A vast,\nfog-covered swamp where the wind seems to carry faint whispers from all directions.\nThe ground is treacherous,\nand strange,\nglowing lights float above the muck.");
+    deck[CARD_MARSH_3].linkedCards[0].cardType = CARD_MARSH_4; //?
+    strcpy(deck[CARD_MARSH_3].linkedCards[0].name,"north"); //link name
+    deck[CARD_MARSH_3].linkedCards[1].cardType = CARD_MARSH_ENTER; //?
+    strcpy(deck[CARD_MARSH_3].linkedCards[1].name,"east"); //link name
+    deck[CARD_MARSH_3].linkedCards[2].cardType = CARD_MARSH_6; //?
+    strcpy(deck[CARD_MARSH_3].linkedCards[2].name,"west"); //link name
+    deck[CARD_MARSH_3].linkedEnemies[0].enemyType = ENEMY_OGRE; //ogre
+    deck[CARD_MARSH_3].linkedEnemies[0].health = 300; 
+    deck[CARD_MARSH_3].linkedEnemies[0].damage = 80;
+    deck[CARD_MARSH_3].linkedEnemies[1].enemyType = ENEMY_OGRE; //ogre
+    deck[CARD_MARSH_3].linkedEnemies[1].health = 200; 
+    deck[CARD_MARSH_3].linkedEnemies[1].damage = 80;
+    deck[CARD_MARSH_3].linkedEnemies[2].enemyType = ENEMY_OGRE; //ogre
+    deck[CARD_MARSH_3].linkedEnemies[2].health = 200; 
+    deck[CARD_MARSH_3].linkedEnemies[2].damage = 80;
+    deck[CARD_MARSH_3].linkedEnemies[3].enemyType = ENEMY_OGRE; //ogre
+    deck[CARD_MARSH_3].linkedEnemies[3].health = 200; 
+    deck[CARD_MARSH_3].linkedEnemies[3].damage = 80;
+
+    // Card 79  - The Whispering Marsh
+    deck[CARD_MARSH_4].cardType = CARD_MARSH_4;
+    deck[CARD_MARSH_4].numLinkedCards = 4;
+    deck[CARD_MARSH_4].numLinkedEnemies = 2;
+    strcpy(deck[CARD_MARSH_4].name, "The Whispering Marsh");
+    strcpy(deck[CARD_MARSH_4].description, "A vast,\nfog-covered swamp where the wind seems to carry faint whispers from all directions.\nThe ground is treacherous,\nand strange,\nglowing lights float above the muck.");
+    deck[CARD_MARSH_4].linkedCards[0].cardType = CARD_MARSH_5; //?
+    strcpy(deck[CARD_MARSH_4].linkedCards[0].name,"north"); //link name
+    deck[CARD_MARSH_4].linkedCards[1].cardType = CARD_MARSH_3; //?
+    strcpy(deck[CARD_MARSH_4].linkedCards[1].name,"south"); //link name
+    deck[CARD_MARSH_4].linkedCards[2].cardType = CARD_MARSH_1; //?
+    strcpy(deck[CARD_MARSH_4].linkedCards[2].name,"east"); //link name
+    deck[CARD_MARSH_4].linkedCards[3].cardType = CARD_MARSH_7; //?
+    strcpy(deck[CARD_MARSH_4].linkedCards[3].name,"west"); //link name
+    deck[CARD_MARSH_4].linkedEnemies[0].enemyType = ENEMY_OGRE; //ogre
+    deck[CARD_MARSH_4].linkedEnemies[0].health = 300; 
+    deck[CARD_MARSH_4].linkedEnemies[0].damage = 80;
+    deck[CARD_MARSH_4].linkedEnemies[1].enemyType = ENEMY_OGRE; //ogre
+    deck[CARD_MARSH_4].linkedEnemies[1].health = 200; 
+    deck[CARD_MARSH_4].linkedEnemies[1].damage = 80;
+
+    // Card 80  - The Whispering Marsh
+    deck[CARD_MARSH_5].cardType = CARD_MARSH_5;
+    deck[CARD_MARSH_5].numLinkedCards = 2;
+    strcpy(deck[CARD_MARSH_5].name, "The Whispering Marsh");
+    strcpy(deck[CARD_MARSH_5].description, "A vast,\nfog-covered swamp where the wind seems to carry faint whispers from all directions.\nThe ground is treacherous,\nand strange,\nglowing lights float above the muck.");
+    deck[CARD_MARSH_5].linkedCards[0].cardType = CARD_MARSH_EXIT; //?
+    strcpy(deck[CARD_MARSH_5].linkedCards[0].name,"out"); //link name
+    deck[CARD_MARSH_5].linkedCards[1].cardType = CARD_MARSH_4; //?
+    strcpy(deck[CARD_MARSH_5].linkedCards[1].name,"south"); //link name
+
+    // Card 81  - The Whispering Marsh
+    deck[CARD_MARSH_6].cardType = CARD_MARSH_6;
+    deck[CARD_MARSH_6].numLinkedCards = 2;
+    deck[CARD_MARSH_6].numLinkedEnemies = 2;
+    strcpy(deck[CARD_MARSH_6].name, "The Whispering Marsh");
+    strcpy(deck[CARD_MARSH_6].description, "A vast,\nfog-covered swamp where the wind seems to carry faint whispers from all directions.\nThe ground is treacherous,\nand strange,\nglowing lights float above the muck.");
+    deck[CARD_MARSH_6].linkedCards[0].cardType = CARD_MARSH_7; //?
+    strcpy(deck[CARD_MARSH_6].linkedCards[0].name,"north"); //link name
+    deck[CARD_MARSH_6].linkedCards[1].cardType = CARD_MARSH_3; //?
+    strcpy(deck[CARD_MARSH_6].linkedCards[1].name,"east"); //link name
+    deck[CARD_MARSH_6].linkedEnemies[0].enemyType = ENEMY_OGRE; //ogre
+    deck[CARD_MARSH_6].linkedEnemies[0].health = 300; 
+    deck[CARD_MARSH_6].linkedEnemies[0].damage = 80;
+    deck[CARD_MARSH_6].linkedEnemies[1].enemyType = ENEMY_OGRE; //ogre
+    deck[CARD_MARSH_6].linkedEnemies[1].health = 200; 
+    deck[CARD_MARSH_6].linkedEnemies[1].damage = 80;
+
+    // Card 82  - The Whispering Marsh
+    deck[CARD_MARSH_7].cardType = CARD_MARSH_7;
+    deck[CARD_MARSH_7].numLinkedCards = 2;
+    deck[CARD_MARSH_7].numLinkedEnemies = 1;
+    strcpy(deck[CARD_MARSH_7].name, "The Whispering Marsh");
+    strcpy(deck[CARD_MARSH_7].description, "A vast,\nfog-covered swamp where the wind seems to carry faint whispers from all directions.\nThe ground is treacherous,\nand strange,\nglowing lights float above the muck.");
+    deck[CARD_MARSH_7].linkedCards[0].cardType = CARD_MARSH_6; //?
+    strcpy(deck[CARD_MARSH_7].linkedCards[0].name,"south"); //link name
+    deck[CARD_MARSH_7].linkedCards[1].cardType = CARD_MARSH_4; //?
+    strcpy(deck[CARD_MARSH_7].linkedCards[1].name,"east"); //link name
+    deck[CARD_MARSH_7].linkedEnemies[0].enemyType = ENEMY_OGRE; //ogre
+    deck[CARD_MARSH_7].linkedEnemies[0].health = 400; 
+    deck[CARD_MARSH_7].linkedEnemies[0].damage = 110;
+
+    // Card 83  - The Whispering Marsh
+    deck[CARD_MARSH_8].cardType = CARD_MARSH_8;
+    deck[CARD_MARSH_8].numLinkedCards = 2;
+    strcpy(deck[CARD_MARSH_8].name, "The Whispering Marsh");
+    strcpy(deck[CARD_MARSH_8].description, "A vast,\nfog-covered swamp where the wind seems to carry faint whispers from all directions.\nThe ground is treacherous,\nand strange,\nglowing lights float above the muck.");
+    deck[CARD_MARSH_8].linkedCards[0].cardType = CARD_MARSH_9; //?
+    strcpy(deck[CARD_MARSH_8].linkedCards[0].name,"north"); //link name
+    deck[CARD_MARSH_8].linkedCards[1].cardType = CARD_MARSH_11; //?
+    strcpy(deck[CARD_MARSH_8].linkedCards[1].name,"east"); //link name
+
+    // Card 84  - The Whispering Marsh
+    deck[CARD_MARSH_9].cardType = CARD_MARSH_9;
+    deck[CARD_MARSH_9].numLinkedCards = 4;
+    strcpy(deck[CARD_MARSH_9].name, "The Whispering Marsh");
+    strcpy(deck[CARD_MARSH_9].description, "A vast,\nfog-covered swamp where the wind seems to carry faint whispers from all directions.\nThe ground is treacherous,\nand strange,\nglowing lights float above the muck.");
+    deck[CARD_MARSH_9].linkedCards[0].cardType = CARD_MARSH_10; //?
+    strcpy(deck[CARD_MARSH_9].linkedCards[0].name,"north"); //link name
+    deck[CARD_MARSH_9].linkedCards[1].cardType = CARD_MARSH_8; //?
+    strcpy(deck[CARD_MARSH_9].linkedCards[1].name,"south"); //link name
+    deck[CARD_MARSH_9].linkedCards[2].cardType = CARD_MARSH_12; //?
+    strcpy(deck[CARD_MARSH_9].linkedCards[2].name,"east"); //link name
+    deck[CARD_MARSH_9].linkedCards[3].cardType = CARD_MARSH_ENTER; //?
+    strcpy(deck[CARD_MARSH_9].linkedCards[3].name,"west"); //link name
+
+    // Card 85  - The Whispering Marsh
+    deck[CARD_MARSH_10].cardType = CARD_MARSH_10;
+    deck[CARD_MARSH_10].numLinkedCards = 3;
+    deck[CARD_MARSH_10].numLinkedEnemies = 4;
+    strcpy(deck[CARD_MARSH_10].name, "The Whispering Marsh");
+    strcpy(deck[CARD_MARSH_10].description, "A vast,\nfog-covered swamp where the wind seems to carry faint whispers from all directions.\nThe ground is treacherous,\nand strange,\nglowing lights float above the muck.");
+    deck[CARD_MARSH_10].linkedCards[0].cardType = CARD_MARSH_9; //?
+    strcpy(deck[CARD_MARSH_10].linkedCards[0].name,"south"); //link name
+    deck[CARD_MARSH_10].linkedCards[1].cardType = CARD_MARSH_13; //?
+    strcpy(deck[CARD_MARSH_10].linkedCards[1].name,"east"); //link name
+    deck[CARD_MARSH_10].linkedCards[2].cardType = CARD_MARSH_1; //?
+    strcpy(deck[CARD_MARSH_10].linkedCards[2].name,"west"); //link name
+    deck[CARD_MARSH_10].linkedEnemies[0].enemyType = ENEMY_OGRE; //ogre
+    deck[CARD_MARSH_10].linkedEnemies[0].health = 300; 
+    deck[CARD_MARSH_10].linkedEnemies[0].damage = 80;
+    deck[CARD_MARSH_10].linkedEnemies[1].enemyType = ENEMY_OGRE; //ogre
+    deck[CARD_MARSH_10].linkedEnemies[1].health = 200; 
+    deck[CARD_MARSH_10].linkedEnemies[1].damage = 80;
+    deck[CARD_MARSH_10].linkedEnemies[2].enemyType = ENEMY_OGRE; //ogre
+    deck[CARD_MARSH_10].linkedEnemies[2].health = 300; 
+    deck[CARD_MARSH_10].linkedEnemies[2].damage = 80;
+    deck[CARD_MARSH_10].linkedEnemies[3].enemyType = ENEMY_OGRE; //ogre
+    deck[CARD_MARSH_10].linkedEnemies[3].health = 200; 
+    deck[CARD_MARSH_10].linkedEnemies[3].damage = 80;
+
+    // Card 86  - The Whispering Marsh
+    deck[CARD_MARSH_11].cardType = CARD_MARSH_11;
+    deck[CARD_MARSH_11].numLinkedCards = 2;
+    deck[CARD_MARSH_11].numLinkedItems = 1;
+    strcpy(deck[CARD_MARSH_11].name, "The Whispering Marsh");
+    strcpy(deck[CARD_MARSH_11].description, "A vast,\nfog-covered swamp where the wind seems to carry faint whispers from all directions.\nThe ground is treacherous,\nand strange,\nglowing lights float above the muck.");
+    deck[CARD_MARSH_11].linkedCards[0].cardType = CARD_MARSH_12; //?
+    strcpy(deck[CARD_MARSH_11].linkedCards[0].name,"north"); //link name
+    deck[CARD_MARSH_11].linkedCards[1].cardType = CARD_MARSH_8; //?
+    strcpy(deck[CARD_MARSH_11].linkedCards[1].name,"west"); //link name
+    deck[CARD_MARSH_11].linkedItems[0] = ITEM_BOOK; //book
+
+    // Card 87  - The Whispering Marsh
+    deck[CARD_MARSH_12].cardType = CARD_MARSH_12;
+    deck[CARD_MARSH_12].numLinkedCards = 3;
+    deck[CARD_MARSH_12].numLinkedEnemies = 4;
+    strcpy(deck[CARD_MARSH_12].name, "The Whispering Marsh");
+    strcpy(deck[CARD_MARSH_12].description, "A vast,\nfog-covered swamp where the wind seems to carry faint whispers from all directions.\nThe ground is treacherous,\nand strange,\nglowing lights float above the muck.");
+    deck[CARD_MARSH_12].linkedCards[0].cardType = CARD_MARSH_13; //?
+    strcpy(deck[CARD_MARSH_12].linkedCards[0].name,"north"); //link name
+    deck[CARD_MARSH_12].linkedCards[1].cardType = CARD_MARSH_11; //?
+    strcpy(deck[CARD_MARSH_12].linkedCards[1].name,"south"); //link name
+    deck[CARD_MARSH_12].linkedCards[2].cardType = CARD_MARSH_9; //?
+    strcpy(deck[CARD_MARSH_12].linkedCards[2].name,"west"); //link name
+    deck[CARD_MARSH_12].linkedEnemies[0].enemyType = ENEMY_OGRE; //ogre
+    deck[CARD_MARSH_12].linkedEnemies[0].health = 300; 
+    deck[CARD_MARSH_12].linkedEnemies[0].damage = 80;
+    deck[CARD_MARSH_12].linkedEnemies[1].enemyType = ENEMY_OGRE; //ogre
+    deck[CARD_MARSH_12].linkedEnemies[1].health = 200; 
+    deck[CARD_MARSH_12].linkedEnemies[1].damage = 80;
+    deck[CARD_MARSH_12].linkedEnemies[2].enemyType = ENEMY_OGRE; //ogre
+    deck[CARD_MARSH_12].linkedEnemies[2].health = 300; 
+    deck[CARD_MARSH_12].linkedEnemies[2].damage = 80;
+    deck[CARD_MARSH_12].linkedEnemies[3].enemyType = ENEMY_OGRE; //ogre
+    deck[CARD_MARSH_12].linkedEnemies[3].health = 200; 
+    deck[CARD_MARSH_12].linkedEnemies[3].damage = 80;
+
+    // Card 88  - The Whispering Marsh
+    deck[CARD_MARSH_13].cardType = CARD_MARSH_13;
+    deck[CARD_MARSH_13].numLinkedCards = 2;
+    deck[CARD_MARSH_13].numLinkedEnemies = 1;
+    strcpy(deck[CARD_MARSH_13].name, "The Whispering Marsh");
+    strcpy(deck[CARD_MARSH_13].description, "A vast,\nfog-covered swamp where the wind seems to carry faint whispers from all directions.\nThe ground is treacherous,\nand strange,\nglowing lights float above the muck.");
+    deck[CARD_MARSH_13].linkedCards[0].cardType = CARD_MARSH_12; //?
+    strcpy(deck[CARD_MARSH_13].linkedCards[0].name,"south"); //link name
+    deck[CARD_MARSH_13].linkedCards[1].cardType = CARD_MARSH_10; //?
+    strcpy(deck[CARD_MARSH_13].linkedCards[1].name,"west"); //link name
+    deck[CARD_MARSH_13].linkedEnemies[0].enemyType = ENEMY_OGRE; //ogre
+    deck[CARD_MARSH_13].linkedEnemies[0].health = 500; 
+    deck[CARD_MARSH_13].linkedEnemies[0].damage = 160;
+
+    // Card 89  - The Whispering Marsh Exit
+    deck[CARD_MARSH_EXIT].cardType = CARD_MARSH_EXIT;
+    deck[CARD_MARSH_EXIT].numLinkedCards = 1;
+    strcpy(deck[CARD_MARSH_EXIT].name, "The Whispering Marsh Exit");
+    strcpy(deck[CARD_MARSH_EXIT].description, "You can head south back into the marsh, or north...");
+    deck[CARD_MARSH_EXIT].linkedCards[0].cardType = CARD_MARSH_5; //?
+    strcpy(deck[CARD_MARSH_EXIT].linkedCards[0].name,"south"); //link name
+    //todo: north. what next?
  
 
 
@@ -1721,9 +1982,22 @@ void handleFightSequence()
 }
 
 //truly, if there is an example of how much this is just all spaghetti code, this is it...
+//max damage = 1000, at 9000 xp
 int getDamage()
 {
-    if(xp > 6000)
+    if(xp > 9000)
+    {
+        return 1000;//max damage
+    }
+    else if(xp > 800)
+    {
+        return 900;
+    }
+    else if(xp > 7000)
+    {
+        return 800;
+    }
+    else if(xp > 6000)
     {
         return 700;
     }
@@ -1784,7 +2058,7 @@ void handleEvents()
     {
         ringEventHasHappened = true;
         printf("\nThere is a knock at the door...\n");
-        printf("You open the door and standing there is a blue wizard.\n");
+        printf("You open the door and standing there is the Blue Wizard.\n");
         printf("He hands you a magic ring, and then he leaves.\n\n");
         printf("You got the ring\n");
         hasRing = true;
@@ -1893,7 +2167,7 @@ void handleEvents()
         //change description to fit the change
         strcpy(deck[CARD_STACK_HOMESTEAD].description, "You are at the Stack Homestead.\nThere is a mountain to the north.\nOn the far western side of the homestead, there is a river.\nA tree has fallen across the river so you can cross to the other side.\nThere is a pumpkin patch.\nThere is a fireplace here.");
     }
-    else if(currentCard->cardType == CARD_FORSAKEN_ROAD && !chasmEventHasHappened && xp > 150 && loops > 1000)
+    else if(currentCard->cardType == CARD_FORSAKEN_ROAD && !chasmEventHasHappened && xp > 150 && deck[CARD_FORSAKEN_ROAD].numLinkedEnemies == 0 && loops > 600)
     {
         chasmEventHasHappened = true;
         printf("\nThe Blue Wizard appears ...\n");
