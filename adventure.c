@@ -96,8 +96,8 @@ typedef struct {
 } Card;
 
 Card *currentCard;
-Card deck[64];
-int TotalNumberOfCards = 45;//increment deck size by powers of two, when this value is close to the max
+Card deck[128];
+int TotalNumberOfCards = 62;//increment deck size by powers of two, when this value is close to the max
 
 enum CardTypes {
     CARD_HOME = 0,
@@ -145,6 +145,23 @@ enum CardTypes {
     CARD_WILLIAMS = 42,
     CARD_WILLIAMS_STORE = 43,
     CARD_WILLIAMS_TOWN_HALL = 44,
+    CARD_WILLIAMS_ROAD = 45,
+    CARD_STACK_HOMESTEAD = 46,
+    CARD_ELDERFERN_FOREST_ENTER = 47,
+    CARD_EMBERFELL_CASTLE_ENTER = 48,
+    CARD_ELDERFERN_1 = 49,
+    CARD_ELDERFERN_2 = 50,
+    CARD_ELDERFERN_3 = 51,
+    CARD_ELDERFERN_4 = 52,
+    CARD_EMBERFELL_HALL = 53,//The Emberhall
+    CARD_EMBERFELL_CHAMBER = 54,//The Chamber of Ashes
+    CARD_EMBERFELL_LIBRARY = 55,//The Library of Forgotten Lore
+    CARD_EMBERFELL_GARDEN = 56,//The Forgotten Garden
+    CARD_EMBERFELL_STAIRS = 57,//Spiral Staircase
+    CARD_EMBERFELL_DUNGEON = 58,//The Dungeon of Emberfell
+    CARD_EMBERFELL_TOWER = 59,//The Ashen Tower
+    CARD_EMBERFELL_ROAD = 60,//Road outside of the dungeons exit
+    CARD_GREY = 61, //Alistair Grey
 };
 
 enum ItemTypes {
@@ -153,6 +170,7 @@ enum ItemTypes {
     ITEM_HEALTH_POTION = 2,
     ITEM_MANA_POTION = 3,
     ITEM_COINS = 4,
+    ITEM_BOOK = 5,
 };
 
 enum EnemyTypes {
@@ -168,6 +186,7 @@ int health = 100;
 int mana = 100;
 int money = 400;
 int xp = 0;
+int books = 0;
 
 //global state bools
 bool hasSword = false;
@@ -181,6 +200,7 @@ bool tomBomEventHasHappened = false;
 bool squirrelEventHasHappened = false;
 bool echoEventHasHappened = false;
 bool treeFallEventHasHappened = false;
+bool elderfernEventHasHappened = false;
 
 //global state bools for fireplaces
 bool homeFirePlaceIsLit = false;
@@ -188,6 +208,7 @@ bool jeffersFirePlaceIsLit = false;
 bool cinderSpireFirePlaceIsLit = false;
 bool mccannsFirePlaceIsLit = false;
 bool williamsFirePlaceIsLit = false;
+bool stackFirePlaceIsLit = false;
 
 //how many times has the game loop ran
 int loops = 0;
@@ -309,6 +330,7 @@ int main()
                 printf(" - mana         :  %d\n", mana);
                 printf(" - ex_points    :  %d\n", xp);
                 printf(" - money        : $%d\n", money);
+                printf(" - books        :  %d\n", books);
                 printf(" - loops        :  %d\n", loops);
                 if(hasSword){printf(" - you are holding a sword\n");}
                 if(hasSword){printf(" - damage       :  %d\n", getDamage());}
@@ -410,6 +432,7 @@ int main()
                 if(jeffersFirePlaceIsLit){printf(" - jeffers\n");}
                 if(cinderSpireFirePlaceIsLit){printf(" - spire\n");}
                 if(williamsFirePlaceIsLit){printf(" - williams\n");}
+                if(stackFirePlaceIsLit){printf(" - stack\n");}
                 printf("\n> ");
                 if (fgets(buffer, MAX_INPUT_UNIQUE, stdin) != NULL)
                 {
@@ -438,6 +461,11 @@ int main()
                     {
                         printf("went to Williams Town Hall.\n"); 
                         currentCard = &deck[CARD_WILLIAMS_TOWN_HALL];
+                    }
+                    else if (strcmp(buffer, "stack") == 0 && stackFirePlaceIsLit)
+                    {
+                        printf("went to Stack Homestead.\n"); 
+                        currentCard = &deck[CARD_STACK_HOMESTEAD];
                     }
                     else
                     {
@@ -519,6 +547,7 @@ int main()
                         cinderSpireFirePlaceIsLit = true;
                         mccannsFirePlaceIsLit = true;
                         williamsFirePlaceIsLit = true;
+                        stackFirePlaceIsLit = true;
                     }
                     else if (strcmp(buffer, "goto") == 0)
                     {
@@ -1012,7 +1041,7 @@ void initDeck() {
     deck[CARD_OLD_MAN_MCCANN].cardType = CARD_OLD_MAN_MCCANN;
     deck[CARD_OLD_MAN_MCCANN].numLinkedCards = 2;
     strcpy(deck[CARD_OLD_MAN_MCCANN].name, "Old Man McCann's");
-    strcpy(deck[CARD_OLD_MAN_MCCANN].description, "Old man McCann's residence.\nThere is a fireplace.");
+    strcpy(deck[CARD_OLD_MAN_MCCANN].description, "Old man McCann's residence.\nThere is a path to a small garden.\nThere is a fireplace here.");
     deck[CARD_OLD_MAN_MCCANN].linkedCards[0].cardType = CARD_WRENWOOD; //link back to wrenwood
     strcpy(deck[CARD_OLD_MAN_MCCANN].linkedCards[0].name,"town"); //link name
     deck[CARD_OLD_MAN_MCCANN].linkedCards[1].cardType = CARD_MCCANN_GARDEN; //link to garden
@@ -1020,7 +1049,7 @@ void initDeck() {
 
     // Card 34  - Wrenwood
     deck[CARD_WRENWOOD].cardType = CARD_WRENWOOD;
-    deck[CARD_WRENWOOD].numLinkedCards = 3;
+    deck[CARD_WRENWOOD].numLinkedCards = 4;
     deck[CARD_WRENWOOD].numLinkedItems = 2;
     strcpy(deck[CARD_WRENWOOD].name, "Town of Wrenwood");
     strcpy(deck[CARD_WRENWOOD].description, "You are in Wrenwood.\nThere is a store here.\nThere is a house nearby.");
@@ -1030,6 +1059,8 @@ void initDeck() {
     strcpy(deck[CARD_WRENWOOD].linkedCards[1].name,"house"); //link name
     deck[CARD_WRENWOOD].linkedCards[2].cardType = CARD_SECOND_STORE; //link to store
     strcpy(deck[CARD_WRENWOOD].linkedCards[2].name,"store"); //link name
+    deck[CARD_WRENWOOD].linkedCards[3].cardType = CARD_GREY; //link to alistair grey's
+    strcpy(deck[CARD_WRENWOOD].linkedCards[3].name,"grey"); //link name
     deck[CARD_WRENWOOD].linkedItems[0] = ITEM_COINS; //coins
     deck[CARD_WRENWOOD].linkedItems[1] = ITEM_COINS; //coins
 
@@ -1122,14 +1153,16 @@ void initDeck() {
 
     // Card 43  - Williams
     deck[CARD_WILLIAMS].cardType = CARD_WILLIAMS;
-    deck[CARD_WILLIAMS].numLinkedCards = 2;
+    deck[CARD_WILLIAMS].numLinkedCards = 3;
     deck[CARD_WILLIAMS].numLinkedItems = 4;
     strcpy(deck[CARD_WILLIAMS].name, "Town of Williams");
-    strcpy(deck[CARD_WILLIAMS].description, "You are in the town of Williams.\nIts very nice here.\nThere is a small store nearby.\nTown hall is nearby but the door is locked.");
+    strcpy(deck[CARD_WILLIAMS].description, "You are in the town of Williams.\nIts very nice here.\nThere is a small store here.\nTown hall is nearby but the door is locked.\nA small road leads north out of town.");
     deck[CARD_WILLIAMS].linkedCards[0].cardType = CARD_FIRST_BRIDGE; //link back to bridge
     strcpy(deck[CARD_WILLIAMS].linkedCards[0].name,"bridge"); //link name
     deck[CARD_WILLIAMS].linkedCards[1].cardType = CARD_WILLIAMS_STORE; //link to store
     strcpy(deck[CARD_WILLIAMS].linkedCards[1].name,"store"); //link name
+    deck[CARD_WILLIAMS].linkedCards[2].cardType = CARD_WILLIAMS_ROAD; //link to road
+    strcpy(deck[CARD_WILLIAMS].linkedCards[2].name,"road"); //link name
     deck[CARD_WILLIAMS].linkedItems[0] = ITEM_MANA_POTION; //potion
     deck[CARD_WILLIAMS].linkedItems[1] = ITEM_HEALTH_POTION; //potion
     deck[CARD_WILLIAMS].linkedItems[2] = ITEM_COINS; //coins
@@ -1144,13 +1177,216 @@ void initDeck() {
     deck[CARD_WILLIAMS_STORE].linkedCards[0].cardType = CARD_WILLIAMS; //link back to williams
     strcpy(deck[CARD_WILLIAMS_STORE].linkedCards[0].name,"town"); //link name
 
-    // Card 45  - Williams Town Hall - locked, linked to CARD_WILD_GARDEN
+    // Card 45  - Williams Town Hall - locked, linked to CARD_WILLIAMS, also has fireplace
     deck[CARD_WILLIAMS_TOWN_HALL].cardType = CARD_WILLIAMS_TOWN_HALL;
     deck[CARD_WILLIAMS_TOWN_HALL].numLinkedCards = 1;
     strcpy(deck[CARD_WILLIAMS_TOWN_HALL].name, "Williams Town Hall");
     strcpy(deck[CARD_WILLIAMS_TOWN_HALL].description, "You are in Williams Town Hall.\nThere is a fire place here.");
     deck[CARD_WILLIAMS_TOWN_HALL].linkedCards[0].cardType = CARD_WILLIAMS; //link back to williams
     strcpy(deck[CARD_WILLIAMS_TOWN_HALL].linkedCards[0].name,"town"); //link name
+
+    // Card 46  - Road north of Williams
+    deck[CARD_WILLIAMS_ROAD].cardType = CARD_WILLIAMS_ROAD;
+    deck[CARD_WILLIAMS_ROAD].numLinkedCards = 4;
+    deck[CARD_WILLIAMS_ROAD].numLinkedEnemies = 5;
+    strcpy(deck[CARD_WILLIAMS_ROAD].name, "Road north of Williams");
+    strcpy(deck[CARD_WILLIAMS_ROAD].description, "You walk along the road north of Willams until you reach a split.\nYou can go north, east, west, or south back to Williams.");
+    deck[CARD_WILLIAMS_ROAD].linkedCards[0].cardType = CARD_WILLIAMS; //link back to williams
+    strcpy(deck[CARD_WILLIAMS_ROAD].linkedCards[0].name,"south"); //link name
+    deck[CARD_WILLIAMS_ROAD].linkedCards[1].cardType = CARD_STACK_HOMESTEAD; //link back to williams
+    strcpy(deck[CARD_WILLIAMS_ROAD].linkedCards[1].name,"west"); //link name
+    deck[CARD_WILLIAMS_ROAD].linkedCards[2].cardType = CARD_ELDERFERN_FOREST_ENTER; //link back to williams
+    strcpy(deck[CARD_WILLIAMS_ROAD].linkedCards[2].name,"east"); //link name
+    deck[CARD_WILLIAMS_ROAD].linkedCards[3].cardType = CARD_EMBERFELL_CASTLE_ENTER; //link back to williams
+    strcpy(deck[CARD_WILLIAMS_ROAD].linkedCards[3].name,"north"); //link name
+    deck[CARD_WILLIAMS_ROAD].linkedEnemies[0].enemyType = ENEMY_ORC; //orc
+    deck[CARD_WILLIAMS_ROAD].linkedEnemies[0].health = 100; 
+    deck[CARD_WILLIAMS_ROAD].linkedEnemies[0].damage = 100;
+    deck[CARD_WILLIAMS_ROAD].linkedEnemies[1].enemyType = ENEMY_OGRE; //ogre
+    deck[CARD_WILLIAMS_ROAD].linkedEnemies[1].health = 100; 
+    deck[CARD_WILLIAMS_ROAD].linkedEnemies[1].damage = 80;
+    deck[CARD_WILLIAMS_ROAD].linkedEnemies[2].enemyType = ENEMY_GOBLIN; //goblin
+    deck[CARD_WILLIAMS_ROAD].linkedEnemies[2].health = 20; 
+    deck[CARD_WILLIAMS_ROAD].linkedEnemies[2].damage = 10;
+    deck[CARD_WILLIAMS_ROAD].linkedEnemies[3].enemyType = ENEMY_GOBLIN; //goblin
+    deck[CARD_WILLIAMS_ROAD].linkedEnemies[3].health = 30; 
+    deck[CARD_WILLIAMS_ROAD].linkedEnemies[3].damage = 20;
+    deck[CARD_WILLIAMS_ROAD].linkedEnemies[4].enemyType = ENEMY_GOBLIN; //goblin
+    deck[CARD_WILLIAMS_ROAD].linkedEnemies[4].health = 40; 
+    deck[CARD_WILLIAMS_ROAD].linkedEnemies[4].damage = 30;
+
+    // Card 47  - Stack Homestead - has fireplace
+    deck[CARD_STACK_HOMESTEAD].cardType = CARD_STACK_HOMESTEAD;
+    deck[CARD_STACK_HOMESTEAD].numLinkedCards = 1;
+    strcpy(deck[CARD_STACK_HOMESTEAD].name, "Stack Homestead");
+    strcpy(deck[CARD_STACK_HOMESTEAD].description, "You are at the Stack Homestead.\nThere is a pumpkin patch.\nThere is a fireplace here.");
+    deck[CARD_STACK_HOMESTEAD].linkedCards[0].cardType = CARD_WILLIAMS_ROAD; //link back to williams road
+    strcpy(deck[CARD_STACK_HOMESTEAD].linkedCards[0].name,"east"); //link name
+    
+    // Card 48  - Elderfern Forest Entrance
+    deck[CARD_ELDERFERN_FOREST_ENTER].cardType = CARD_ELDERFERN_FOREST_ENTER;
+    deck[CARD_ELDERFERN_FOREST_ENTER].numLinkedCards = 2;
+    strcpy(deck[CARD_ELDERFERN_FOREST_ENTER].name, "Elderfern Forest Entrance");
+    strcpy(deck[CARD_ELDERFERN_FOREST_ENTER].description, "You walk until you reach the entrance to Elderfern Forest.\nThe winding paths through Elderfern are often shrouded in mist,\nmaking it easy to lose one's way and harder still to shake\nthe feeling of being watched by unseen eyes.");
+    deck[CARD_ELDERFERN_FOREST_ENTER].linkedCards[0].cardType = CARD_WILLIAMS_ROAD; //link back to williams road
+    strcpy(deck[CARD_ELDERFERN_FOREST_ENTER].linkedCards[0].name,"west"); //link name
+    deck[CARD_ELDERFERN_FOREST_ENTER].linkedCards[1].cardType = CARD_ELDERFERN_1; //link to wood loop
+    strcpy(deck[CARD_ELDERFERN_FOREST_ENTER].linkedCards[1].name,"wood"); //link name
+    
+    // Card 49  - Emberfell Castle Entrance
+    deck[CARD_EMBERFELL_CASTLE_ENTER].cardType = CARD_EMBERFELL_CASTLE_ENTER;
+    deck[CARD_EMBERFELL_CASTLE_ENTER].numLinkedCards = 1;
+    strcpy(deck[CARD_EMBERFELL_CASTLE_ENTER].name, "Emberfell Castle Entrance");
+    strcpy(deck[CARD_EMBERFELL_CASTLE_ENTER].description, "You are outside of Emberfell castle.\nIts blackened stone walls rising dramatically against the backdrop of a stormy sky.\nOnce a stronghold of ancient kings,\nit is now a haunting silhouette in the mist.\nThe door is locked.");
+    deck[CARD_EMBERFELL_CASTLE_ENTER].linkedCards[0].cardType = CARD_WILLIAMS_ROAD; //link back to williams road
+    strcpy(deck[CARD_EMBERFELL_CASTLE_ENTER].linkedCards[0].name,"south"); //link name
+    //todo: create castle
+
+    // Card 50  - Elderfern Forest 1
+    deck[CARD_ELDERFERN_1].cardType = CARD_ELDERFERN_1;
+    deck[CARD_ELDERFERN_1].numLinkedCards = 1;
+    deck[CARD_ELDERFERN_1].numLinkedEnemies = 2;
+    strcpy(deck[CARD_ELDERFERN_1].name, "Elderfern Forest Clearing");
+    strcpy(deck[CARD_ELDERFERN_1].description, "You are lost in the forest.");
+    deck[CARD_ELDERFERN_1].linkedCards[0].cardType = CARD_ELDERFERN_2; //link back to forest next
+    strcpy(deck[CARD_ELDERFERN_1].linkedCards[0].name,"wood"); //link name
+    deck[CARD_ELDERFERN_1].linkedEnemies[0].enemyType = ENEMY_WOLF; //wolf
+    deck[CARD_ELDERFERN_1].linkedEnemies[0].health = 100; 
+    deck[CARD_ELDERFERN_1].linkedEnemies[0].damage = 100;
+    deck[CARD_ELDERFERN_1].linkedEnemies[1].enemyType = ENEMY_WOLF; //wolf
+    deck[CARD_ELDERFERN_1].linkedEnemies[1].health = 100; 
+    deck[CARD_ELDERFERN_1].linkedEnemies[1].damage = 80;
+
+    // Card 51  - Elderfern Forest 2
+    deck[CARD_ELDERFERN_2].cardType = CARD_ELDERFERN_2;
+    deck[CARD_ELDERFERN_2].numLinkedCards = 1;
+    strcpy(deck[CARD_ELDERFERN_2].name, "Elderfern Forest Path");
+    strcpy(deck[CARD_ELDERFERN_2].description, "You are lost in the forest.");
+    deck[CARD_ELDERFERN_2].linkedCards[0].cardType = CARD_ELDERFERN_3; //link back to forest next
+    strcpy(deck[CARD_ELDERFERN_2].linkedCards[0].name,"wood"); //link name
+
+    // Card 52  - Elderfern Forest 3
+    deck[CARD_ELDERFERN_3].cardType = CARD_ELDERFERN_3;
+    deck[CARD_ELDERFERN_3].numLinkedCards = 1;
+    deck[CARD_ELDERFERN_3].numLinkedEnemies = 2;
+    strcpy(deck[CARD_ELDERFERN_3].name, "Elderfern Forest Brush");
+    strcpy(deck[CARD_ELDERFERN_3].description, "You are lost in the forest.");
+    deck[CARD_ELDERFERN_3].linkedCards[0].cardType = CARD_ELDERFERN_4; //link back to forest next
+    strcpy(deck[CARD_ELDERFERN_3].linkedCards[0].name,"wood"); //link name
+    deck[CARD_ELDERFERN_3].linkedEnemies[0].enemyType = ENEMY_WOLF; //wolf
+    deck[CARD_ELDERFERN_3].linkedEnemies[0].health = 100; 
+    deck[CARD_ELDERFERN_3].linkedEnemies[0].damage = 100;
+    deck[CARD_ELDERFERN_3].linkedEnemies[1].enemyType = ENEMY_WOLF; //wolf
+    deck[CARD_ELDERFERN_3].linkedEnemies[1].health = 100; 
+    deck[CARD_ELDERFERN_3].linkedEnemies[1].damage = 80;
+
+    // Card 53  - Elderfern Forest 4
+    deck[CARD_ELDERFERN_4].cardType = CARD_ELDERFERN_4;
+    deck[CARD_ELDERFERN_4].numLinkedCards = 1;
+    deck[CARD_ELDERFERN_4].numLinkedItems = 5;
+    strcpy(deck[CARD_ELDERFERN_4].name, "Elderfern Forest");
+    strcpy(deck[CARD_ELDERFERN_4].description, "You are lost in the forest.");
+    deck[CARD_ELDERFERN_4].linkedCards[0].cardType = CARD_ELDERFERN_FOREST_ENTER; //link back to forest out
+    strcpy(deck[CARD_ELDERFERN_4].linkedCards[0].name,"wood"); //link name
+    deck[CARD_ELDERFERN_4].linkedItems[0] = ITEM_MANA_POTION; //potion
+    deck[CARD_ELDERFERN_4].linkedItems[1] = ITEM_MANA_POTION; //potion
+    deck[CARD_ELDERFERN_4].linkedItems[2] = ITEM_MANA_POTION; //potion
+    deck[CARD_ELDERFERN_4].linkedItems[3] = ITEM_MANA_POTION; //potion
+    deck[CARD_ELDERFERN_4].linkedItems[4] = ITEM_MANA_POTION; //potion
+
+    // Card 54  - The Emberhall
+    deck[CARD_EMBERFELL_HALL].cardType = CARD_EMBERFELL_HALL;
+    deck[CARD_EMBERFELL_HALL].numLinkedCards = 4;
+    deck[CARD_EMBERFELL_HALL].numLinkedItems = 1;
+    strcpy(deck[CARD_EMBERFELL_HALL].name, "The Emberhall");
+    strcpy(deck[CARD_EMBERFELL_HALL].description, "You are in the grand entrance hall,\nwhere flickering torches cast long shadows on the stone walls.\nThe echoes of footsteps seem to linger long after someone has passed through.");
+    deck[CARD_EMBERFELL_HALL].linkedCards[0].cardType = CARD_EMBERFELL_CASTLE_ENTER; //link back to entrance
+    strcpy(deck[CARD_EMBERFELL_HALL].linkedCards[0].name,"out"); //link name
+    deck[CARD_EMBERFELL_HALL].linkedCards[1].cardType = CARD_EMBERFELL_CHAMBER; //link to chamber
+    strcpy(deck[CARD_EMBERFELL_HALL].linkedCards[1].name,"chamber"); //link name
+    deck[CARD_EMBERFELL_HALL].linkedCards[2].cardType = CARD_EMBERFELL_LIBRARY; //link to library
+    strcpy(deck[CARD_EMBERFELL_HALL].linkedCards[2].name,"books"); //link name
+    deck[CARD_EMBERFELL_HALL].linkedCards[3].cardType = CARD_EMBERFELL_STAIRS; //link stairs
+    strcpy(deck[CARD_EMBERFELL_HALL].linkedCards[3].name,"stairs"); //link name
+    deck[CARD_EMBERFELL_HALL].linkedItems[0] = ITEM_MANA_POTION; //potion
+
+    // Card 55  - The Chamber of Ashes
+    deck[CARD_EMBERFELL_CHAMBER].cardType = CARD_EMBERFELL_CHAMBER;
+    deck[CARD_EMBERFELL_CHAMBER].numLinkedCards = 1;
+    strcpy(deck[CARD_EMBERFELL_CHAMBER].name, "The Chamber of Ashes");
+    strcpy(deck[CARD_EMBERFELL_CHAMBER].description, "A small, private room where the remains of past monarchs are kept in urns.\nA haunting silence fills the air,\nbroken only by the occasional gust of wind through the cracks in the walls.\nThe ashes are said to hold the spirits of the fallen,\ntheir whispers faint but ever present.");
+    deck[CARD_EMBERFELL_CHAMBER].linkedCards[0].cardType = CARD_EMBERFELL_HALL; //link back to hall
+    strcpy(deck[CARD_EMBERFELL_CHAMBER].linkedCards[0].name,"hall"); //link name
+
+    // Card 56  - The Library of Forgotten Lore
+    deck[CARD_EMBERFELL_LIBRARY].cardType = CARD_EMBERFELL_LIBRARY;
+    deck[CARD_EMBERFELL_LIBRARY].numLinkedCards = 2;
+    deck[CARD_EMBERFELL_LIBRARY].numLinkedItems = 1;
+    strcpy(deck[CARD_EMBERFELL_LIBRARY].name, "The Library of Forgotten Lore");
+    strcpy(deck[CARD_EMBERFELL_LIBRARY].description, "An immense, dusty library,\nfilled with ancient tomes, scrolls, and forbidden texts.\nThe bookshelves are stacked high with knowledge lost to time,\nand some say the books themselves can whisper dark secrets if one listens closely enough.");
+    deck[CARD_EMBERFELL_LIBRARY].linkedCards[0].cardType = CARD_EMBERFELL_HALL; //link back to hall
+    strcpy(deck[CARD_EMBERFELL_LIBRARY].linkedCards[0].name,"hall"); //link name
+    deck[CARD_EMBERFELL_LIBRARY].linkedCards[1].cardType = CARD_EMBERFELL_GARDEN; //link to garden
+    strcpy(deck[CARD_EMBERFELL_LIBRARY].linkedCards[1].name,"garden"); //link name
+    deck[CARD_EMBERFELL_LIBRARY].linkedItems[0] = ITEM_BOOK; //book
+
+    // Card 57  - The Forgotten Garden
+    deck[CARD_EMBERFELL_GARDEN].cardType = CARD_EMBERFELL_GARDEN;
+    deck[CARD_EMBERFELL_GARDEN].numLinkedCards = 1;
+    strcpy(deck[CARD_EMBERFELL_GARDEN].name, "The Forgotten Garden");
+    strcpy(deck[CARD_EMBERFELL_GARDEN].description, "A once beautiful garden now overrun with tangled vines,\ntwisted trees,\nand flowers that bloom in strange, otherworldly colors.\nThere is a tomatoe plant here.");
+    deck[CARD_EMBERFELL_GARDEN].linkedCards[0].cardType = CARD_EMBERFELL_LIBRARY; //link back to library
+    strcpy(deck[CARD_EMBERFELL_GARDEN].linkedCards[0].name,"books"); //link name
+
+    // Card 58  - Spiral Staircase
+    deck[CARD_EMBERFELL_STAIRS].cardType = CARD_EMBERFELL_STAIRS;
+    deck[CARD_EMBERFELL_STAIRS].numLinkedCards = 3;
+    strcpy(deck[CARD_EMBERFELL_STAIRS].name, "Spiral Staircase");
+    strcpy(deck[CARD_EMBERFELL_STAIRS].description, "You are on large spiral staricase. You can go up or down.");
+    deck[CARD_EMBERFELL_STAIRS].linkedCards[0].cardType = CARD_EMBERFELL_HALL; //link back to hall
+    strcpy(deck[CARD_EMBERFELL_STAIRS].linkedCards[0].name,"hall"); //link name
+    deck[CARD_EMBERFELL_STAIRS].linkedCards[1].cardType = CARD_EMBERFELL_TOWER; //link to tower
+    strcpy(deck[CARD_EMBERFELL_STAIRS].linkedCards[1].name,"up"); //link name
+    deck[CARD_EMBERFELL_STAIRS].linkedCards[2].cardType = CARD_EMBERFELL_DUNGEON; //link to dungeon
+    strcpy(deck[CARD_EMBERFELL_STAIRS].linkedCards[2].name,"down"); //link name
+
+    // Card 59  - The Dungeon of Emberfell
+    deck[CARD_EMBERFELL_DUNGEON].cardType = CARD_EMBERFELL_DUNGEON;
+    deck[CARD_EMBERFELL_DUNGEON].numLinkedCards = 2;
+    deck[CARD_EMBERFELL_DUNGEON].numLinkedEnemies = 1;
+    strcpy(deck[CARD_EMBERFELL_DUNGEON].name, "The Dungeon of Emberfell");
+    strcpy(deck[CARD_EMBERFELL_DUNGEON].description, "You take the staircase down, beneath the castle.\nShackles and chains still hang from the walls,\nand the faint sound of water dripping echoes throughout.\nIt is said that those imprisoned here were never meant to leave.");
+    deck[CARD_EMBERFELL_DUNGEON].linkedCards[0].cardType = CARD_EMBERFELL_STAIRS; //link back to stairs
+    strcpy(deck[CARD_EMBERFELL_DUNGEON].linkedCards[0].name,"up"); //link name
+    deck[CARD_EMBERFELL_DUNGEON].linkedCards[1].cardType = CARD_EMBERFELL_ROAD; //link out to road
+    strcpy(deck[CARD_EMBERFELL_DUNGEON].linkedCards[1].name,"out"); //link name
+    deck[CARD_EMBERFELL_DUNGEON].linkedEnemies[0].enemyType = ENEMY_ORC; //orc
+    deck[CARD_EMBERFELL_DUNGEON].linkedEnemies[0].health = 400; 
+    deck[CARD_EMBERFELL_DUNGEON].linkedEnemies[0].damage = 100;
+
+    // Card 60  - The Ashen Tower
+    deck[CARD_EMBERFELL_TOWER].cardType = CARD_EMBERFELL_TOWER;
+    deck[CARD_EMBERFELL_TOWER].numLinkedCards = 1;
+    strcpy(deck[CARD_EMBERFELL_TOWER].name, "The Ashen Tower");
+    strcpy(deck[CARD_EMBERFELL_TOWER].description, "You climb the spiral staircase all the way to the top of the castle.\nThere is a small room at the top.\nThe room contains a large treasure chest, but it is locked.");
+    deck[CARD_EMBERFELL_TOWER].linkedCards[0].cardType = CARD_EMBERFELL_STAIRS; //link back to spiral staircase
+    strcpy(deck[CARD_EMBERFELL_TOWER].linkedCards[0].name,"down"); //link name
+
+    // Card 61  - Road outside Emberfell Dungeon
+    deck[CARD_EMBERFELL_ROAD].cardType = CARD_EMBERFELL_ROAD;
+    deck[CARD_EMBERFELL_ROAD].numLinkedCards = 1;
+    strcpy(deck[CARD_EMBERFELL_ROAD].name, "Road outside Emberfell Dungeon");
+    strcpy(deck[CARD_EMBERFELL_ROAD].description, "You are just outside Emberfell Castle.\nYou can enter through the dungeon.");
+    deck[CARD_EMBERFELL_ROAD].linkedCards[0].cardType = CARD_EMBERFELL_DUNGEON; //link back to dungeon
+    strcpy(deck[CARD_EMBERFELL_ROAD].linkedCards[0].name,"castle"); //link name
+
+    // Card 62  - Alistair Grey's House
+    deck[CARD_GREY].cardType = CARD_GREY;
+    deck[CARD_GREY].numLinkedCards = 1;
+    strcpy(deck[CARD_GREY].name, "Alistair Grey's House");
+    strcpy(deck[CARD_GREY].description, "You are at Alistair Grey's House.\nAlistair is here.\nHe looks at you and says 'I am looking for some good books,\nIf you find any and bring them to me,\nI will make it worth your while'.");
+    deck[CARD_GREY].linkedCards[0].cardType = CARD_WRENWOOD; //link back to wrenwood
+    strcpy(deck[CARD_GREY].linkedCards[0].name,"town"); //link name
  
 
 
@@ -1203,6 +1439,11 @@ void printAndHandleItem(int itemType)
     case ITEM_COINS:
         printf("Found some coins\n");
         money += 100;
+        break;
+
+    case ITEM_BOOK:
+        printf("Found a book\n");
+        books += 1;
         break;
 
     default:
@@ -1442,8 +1683,25 @@ void handleEvents()
         deck[CARD_SECOND_PATH].numLinkedCards = 3;//was 2 so now 3
         deck[CARD_SECOND_PATH].linkedCards[2].cardType = CARD_OTHER_SIDE_RIVER; //add link to other side of river
         strcpy(deck[CARD_SECOND_PATH].linkedCards[2].name,"tree"); //link name
-        //change description to fit
+        //change description to fit the change
         strcpy(deck[CARD_SECOND_PATH].description, "You take the path deep into the woods.\nThe path continues to a garden.\nThere is also a deep river nearby.\nA tree has fallen across the river so you can cross to the other side.");
+    }
+    else if(currentCard->cardType == CARD_ELDERFERN_2 && !elderfernEventHasHappened ) //happens immedialtey, no loop requirement
+    {
+        elderfernEventHasHappened = true;
+        printf("\nThe mist of the forest is too thick, you cant see...\n");
+        printf("You can hear the howl of wolves.\n\n");
+    }
+    else if(currentCard->cardType == CARD_GREY && books > 0 ) //happens immedialtey, no loop requirement
+    {
+        printf("Alistair says 'Great, you brought me some books!'\n");
+        for(int i = 0; i < books; i++)
+        {
+            printf("(received 1000 coins)\n");
+            money+=1000;
+        }
+        printf("\n\n");
+        books=0;
     }
 }
 
@@ -1482,6 +1740,11 @@ void handleCast(char* spell)
             printf("The fire place is lit at Williams Town Hall.\n");
             williamsFirePlaceIsLit = true;
         }
+        else if(currentCard->cardType == CARD_STACK_HOMESTEAD)
+        {
+            printf("The fire place is lit at Stack Homestead.\n");
+            stackFirePlaceIsLit = true;
+        }
         else
         {
             printf("no effect\n");
@@ -1511,6 +1774,20 @@ void handleCast(char* spell)
             health += 500;
         }
         else if(currentCard->cardType == CARD_MCCANN_GARDEN)
+        {
+            printf("One of the tomatoes grows incredibly large.\n");
+            printf("You eat it.\n");
+            printf("(received 800 health)\n");
+            health += 800;
+        }
+        else if(currentCard->cardType == CARD_STACK_HOMESTEAD)
+        {
+            printf("One of the pumpkins grows incredibly large.\n");
+            printf("You eat it.\n");
+            printf("(received 600 health)\n");
+            health += 600;
+        }
+        else if(currentCard->cardType == CARD_EMBERFELL_GARDEN)
         {
             printf("One of the tomatoes grows incredibly large.\n");
             printf("You eat it.\n");
@@ -1547,6 +1824,18 @@ void handleCast(char* spell)
             printf("The locked door to Town Hall opens.\n");
             printf("You enter the Williams Town Hall.\n");
             currentCard = &deck[CARD_WILLIAMS_TOWN_HALL];
+        }
+        else if(currentCard->cardType == CARD_EMBERFELL_CASTLE_ENTER)
+        {
+            printf("The locked door to Emberfell Castle opens.\n");
+            printf("You enter The Grand Emberfell Hall.\n");
+            currentCard = &deck[CARD_EMBERFELL_HALL];
+        }
+        else if(currentCard->cardType == CARD_EMBERFELL_TOWER)
+        {
+            printf("The locked treasure chest opens.\n");
+            printf("(received 1000 coins)\n");
+            money+=1000;
         }
         else
         {
