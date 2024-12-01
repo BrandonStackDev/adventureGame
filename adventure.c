@@ -19,7 +19,7 @@ bool cheating = false;
 // Handler for SIGINT, caused by 
 // Ctrl-C at keyboard 
 void handle_sigint(int sig) 
-{ 
+{
     if(!cheating)
     {
         printf("\n***Cheats enabled***\n");
@@ -97,7 +97,7 @@ typedef struct {
 
 Card *currentCard;
 Card deck[128];
-int TotalNumberOfCards = 62;//increment deck size by powers of two, when this value is close to the max
+int TotalNumberOfCards = 72;//increment deck size by powers of two, when this value is close to the max
 
 enum CardTypes {
     CARD_HOME = 0,
@@ -161,7 +161,17 @@ enum CardTypes {
     CARD_EMBERFELL_DUNGEON = 58,//The Dungeon of Emberfell
     CARD_EMBERFELL_TOWER = 59,//The Ashen Tower
     CARD_EMBERFELL_ROAD = 60,//Road outside of the dungeons exit
-    CARD_GREY = 61, //Alistair Grey
+    CARD_GREY = 61, //Alistair Grey, this is where you take books to get paid
+    CARD_STACK_RIVER = 62,
+    CARD_OBSERVATORY = 63, //The Celestial Observatory
+    CARD_CAVERNS = 64, //Crystal Caverns
+    CARD_TOMBS = 65, //Ancient Tombs
+    CARD_VILLAGE = 66, //The Enchanted Village
+    CARD_PEAKS = 67, //Skyward Peaks
+    CARD_GLYPHS = 68, //Ancient Glyphs
+    CARD_FORSAKEN_ROAD = 69, //Forsaken Road
+    CARD_HIDDEN_PASSAGE = 70, //Hidden Passage
+    CARD_VILLAGE_STORE = 71, //store in the village
 };
 
 enum ItemTypes {
@@ -201,6 +211,7 @@ bool squirrelEventHasHappened = false;
 bool echoEventHasHappened = false;
 bool treeFallEventHasHappened = false;
 bool elderfernEventHasHappened = false;
+bool stackTreeFallEventHasHappened = false;
 
 //global state bools for fireplaces
 bool homeFirePlaceIsLit = false;
@@ -209,6 +220,10 @@ bool cinderSpireFirePlaceIsLit = false;
 bool mccannsFirePlaceIsLit = false;
 bool williamsFirePlaceIsLit = false;
 bool stackFirePlaceIsLit = false;
+bool villageFirePlaceIsLit = false;
+
+//global state bools for treasure chests
+bool emberfellTowerChestOpened = false;
 
 //how many times has the game loop ran
 int loops = 0;
@@ -433,6 +448,7 @@ int main()
                 if(cinderSpireFirePlaceIsLit){printf(" - spire\n");}
                 if(williamsFirePlaceIsLit){printf(" - williams\n");}
                 if(stackFirePlaceIsLit){printf(" - stack\n");}
+                if(villageFirePlaceIsLit){printf(" - village\n");}
                 printf("\n> ");
                 if (fgets(buffer, MAX_INPUT_UNIQUE, stdin) != NULL)
                 {
@@ -466,6 +482,11 @@ int main()
                     {
                         printf("went to Stack Homestead.\n"); 
                         currentCard = &deck[CARD_STACK_HOMESTEAD];
+                    }
+                    else if (strcmp(buffer, "village") == 0 && villageFirePlaceIsLit)
+                    {
+                        printf("went to The Enchanted Village.\n"); 
+                        currentCard = &deck[CARD_VILLAGE];
                     }
                     else
                     {
@@ -548,6 +569,7 @@ int main()
                         mccannsFirePlaceIsLit = true;
                         williamsFirePlaceIsLit = true;
                         stackFirePlaceIsLit = true;
+                        villageFirePlaceIsLit = true;
                     }
                     else if (strcmp(buffer, "goto") == 0)
                     {
@@ -626,16 +648,17 @@ void initDeck() {
     // Card 1 (Starting Room) your home - has event, has fireplace
     deck[CARD_HOME].cardType = CARD_HOME;
     deck[CARD_HOME].numLinkedCards = 2;
-    deck[CARD_HOME].numLinkedItems = 3;
+    deck[CARD_HOME].numLinkedItems = 4;
     strcpy(deck[CARD_HOME].name, "home");
-    strcpy(deck[CARD_HOME].description, "You are in your home. Its dimly lit but cozy.\nThere is a fire place and a front door...");
+    strcpy(deck[CARD_HOME].description, "You are in your home.\nIts dimly lit but cozy.\nThe light from an old lamp beside a cozy armchair pools softly over a stack of books,\ninviting anyone to curl up with a cup of tea or coffee.\nEvery corner feels like a sanctuary, a quiet world where time slows down,\nand every object seems to have its own story to tell.\nThere is a front door and a back door.\nThere is a fire place here.");
     deck[CARD_HOME].linkedCards[0].cardType = CARD_FRONTDOOR; //link to front door
     strcpy(deck[CARD_HOME].linkedCards[0].name,"front"); //frontdoor link name
     deck[CARD_HOME].linkedCards[1].cardType = CARD_BACKDOOR; //link to back door / back yard
     strcpy(deck[CARD_HOME].linkedCards[1].name,"back"); //frontdoor link name
     deck[CARD_HOME].linkedItems[0] = ITEM_SWORD; //sword
-    deck[CARD_HOME].linkedItems[1] = ITEM_HEALTH_POTION; //potion
-    deck[CARD_HOME].linkedItems[2] = ITEM_MANA_POTION; //potion
+    deck[CARD_HOME].linkedItems[1] = ITEM_BOOK; //sword
+    deck[CARD_HOME].linkedItems[2] = ITEM_HEALTH_POTION; //potion
+    deck[CARD_HOME].linkedItems[3] = ITEM_MANA_POTION; //potion
 
     // Card 2  - outside the front door
     deck[CARD_FRONTDOOR].cardType = CARD_FRONTDOOR;
@@ -753,7 +776,7 @@ void initDeck() {
     deck[CARD_JEFFERS_GARDEN].numLinkedCards = 1;
     deck[CARD_JEFFERS_GARDEN].numLinkedItems = 2;
     strcpy(deck[CARD_JEFFERS_GARDEN].name, "Old Man Jeffers Garden");
-    strcpy(deck[CARD_JEFFERS_GARDEN].description, "You are in old man Jeffers garden.\nThere is a tomoato plant.");
+    strcpy(deck[CARD_JEFFERS_GARDEN].description, "You are in old man Jeffers garden.\nThere is a tomatoe plant.");
     deck[CARD_JEFFERS_GARDEN].linkedCards[0].cardType = CARD_OLD_MAN_JEFFERS; //link to first path
     strcpy(deck[CARD_JEFFERS_GARDEN].linkedCards[0].name,"jeffers"); //link name
     deck[CARD_JEFFERS_GARDEN].linkedItems[0] = ITEM_HEALTH_POTION; //health
@@ -795,7 +818,7 @@ void initDeck() {
     deck[CARD_MIRKWOOD_ENTER].cardType = CARD_MIRKWOOD_ENTER;
     deck[CARD_MIRKWOOD_ENTER].numLinkedCards = 2;
     strcpy(deck[CARD_MIRKWOOD_ENTER].name, "Mirkwood Entrance");
-    strcpy(deck[CARD_MIRKWOOD_ENTER].description, "You take a small path to the entrance of Mirkwood forest.\nAll the trees seem to be dead.");
+    strcpy(deck[CARD_MIRKWOOD_ENTER].description, "You take a small path to the entrance of Mirkwood forest.\nAll the trees seem to be dead.\nThe air is heavy with mist,\nand the silence is broken only by the occasional rustle of unseen creatures.\nA sense of unease lingers,\nas if the forest itself watches those who enter.");
     deck[CARD_MIRKWOOD_ENTER].linkedCards[0].cardType = CARD_TOWN_SQUARE; //link back to town
     strcpy(deck[CARD_MIRKWOOD_ENTER].linkedCards[0].name,"town"); //link name
     deck[CARD_MIRKWOOD_ENTER].linkedCards[1].cardType = CARD_MIRKWOOD_1; //link to mirkwood 1
@@ -826,7 +849,7 @@ void initDeck() {
     deck[CARD_CAVE_DEEP].numLinkedCards = 1;
     deck[CARD_CAVE_DEEP].numLinkedItems = 6;
     strcpy(deck[CARD_CAVE_DEEP].name, "Deep in the Cave");
-    strcpy(deck[CARD_CAVE_DEEP].description, "You are deep inside a cave.");
+    strcpy(deck[CARD_CAVE_DEEP].description, "You are deep inside a cave.\nThere is a door here but it is locked.");
     deck[CARD_CAVE_DEEP].linkedCards[0].cardType = CARD_CAVE_MIDDLE; //link back to middle
     strcpy(deck[CARD_CAVE_DEEP].linkedCards[0].name,"out"); //link name
     deck[CARD_CAVE_DEEP].linkedItems[0] = ITEM_COINS; //some coins
@@ -939,7 +962,7 @@ void initDeck() {
     deck[CARD_SECOND_PATH].cardType = CARD_SECOND_PATH;
     deck[CARD_SECOND_PATH].numLinkedCards = 2;
     strcpy(deck[CARD_SECOND_PATH].name, "Path in the Woods");
-    strcpy(deck[CARD_SECOND_PATH].description, "You take the path deep into the woods.\nThe path continues to a garden.\nThere is also a deep river nearby. To deep to cross to the other side...");
+    strcpy(deck[CARD_SECOND_PATH].description, "You take the path deep into the woods.\nThe path continues to a garden.\nThere is also a deep river nearby. Too deep to cross to the other side...");
     deck[CARD_SECOND_PATH].linkedCards[0].cardType = CARD_BACKDOOR; //link back to backyard/backdoor
     strcpy(deck[CARD_SECOND_PATH].linkedCards[0].name,"back"); //link name
     deck[CARD_SECOND_PATH].linkedCards[1].cardType = CARD_WILD_GARDEN; //link to wild garden
@@ -1052,11 +1075,11 @@ void initDeck() {
     deck[CARD_WRENWOOD].numLinkedCards = 4;
     deck[CARD_WRENWOOD].numLinkedItems = 2;
     strcpy(deck[CARD_WRENWOOD].name, "Town of Wrenwood");
-    strcpy(deck[CARD_WRENWOOD].description, "You are in Wrenwood.\nThere is a store here.\nThere is a house nearby.");
+    strcpy(deck[CARD_WRENWOOD].description, "You are in Wrenwood.\nThere is a store here.\nThere are a few houses nearby.");
     deck[CARD_WRENWOOD].linkedCards[0].cardType = CARD_FIRST_TRAIL; //link back to trail
     strcpy(deck[CARD_WRENWOOD].linkedCards[0].name,"trail"); //link name
     deck[CARD_WRENWOOD].linkedCards[1].cardType = CARD_OLD_MAN_MCCANN; //link to McCanns
-    strcpy(deck[CARD_WRENWOOD].linkedCards[1].name,"house"); //link name
+    strcpy(deck[CARD_WRENWOOD].linkedCards[1].name,"mccann"); //link name
     deck[CARD_WRENWOOD].linkedCards[2].cardType = CARD_SECOND_STORE; //link to store
     strcpy(deck[CARD_WRENWOOD].linkedCards[2].name,"store"); //link name
     deck[CARD_WRENWOOD].linkedCards[3].cardType = CARD_GREY; //link to alistair grey's
@@ -1219,7 +1242,7 @@ void initDeck() {
     deck[CARD_STACK_HOMESTEAD].cardType = CARD_STACK_HOMESTEAD;
     deck[CARD_STACK_HOMESTEAD].numLinkedCards = 1;
     strcpy(deck[CARD_STACK_HOMESTEAD].name, "Stack Homestead");
-    strcpy(deck[CARD_STACK_HOMESTEAD].description, "You are at the Stack Homestead.\nThere is a pumpkin patch.\nThere is a fireplace here.");
+    strcpy(deck[CARD_STACK_HOMESTEAD].description, "You are at the Stack Homestead.\nOn the farside of the homestead, there is a river.\nThe river is too deep to cross.\nThere is a pumpkin patch.\nThere is a fireplace here.");
     deck[CARD_STACK_HOMESTEAD].linkedCards[0].cardType = CARD_WILLIAMS_ROAD; //link back to williams road
     strcpy(deck[CARD_STACK_HOMESTEAD].linkedCards[0].name,"east"); //link name
     
@@ -1240,7 +1263,6 @@ void initDeck() {
     strcpy(deck[CARD_EMBERFELL_CASTLE_ENTER].description, "You are outside of Emberfell castle.\nIts blackened stone walls rising dramatically against the backdrop of a stormy sky.\nOnce a stronghold of ancient kings,\nit is now a haunting silhouette in the mist.\nThe door is locked.");
     deck[CARD_EMBERFELL_CASTLE_ENTER].linkedCards[0].cardType = CARD_WILLIAMS_ROAD; //link back to williams road
     strcpy(deck[CARD_EMBERFELL_CASTLE_ENTER].linkedCards[0].name,"south"); //link name
-    //todo: create castle
 
     // Card 50  - Elderfern Forest 1
     deck[CARD_ELDERFERN_1].cardType = CARD_ELDERFERN_1;
@@ -1342,7 +1364,7 @@ void initDeck() {
     deck[CARD_EMBERFELL_STAIRS].cardType = CARD_EMBERFELL_STAIRS;
     deck[CARD_EMBERFELL_STAIRS].numLinkedCards = 3;
     strcpy(deck[CARD_EMBERFELL_STAIRS].name, "Spiral Staircase");
-    strcpy(deck[CARD_EMBERFELL_STAIRS].description, "You are on large spiral staricase. You can go up or down.");
+    strcpy(deck[CARD_EMBERFELL_STAIRS].description, "You are on a large spiral staricase. You can go up or down.");
     deck[CARD_EMBERFELL_STAIRS].linkedCards[0].cardType = CARD_EMBERFELL_HALL; //link back to hall
     strcpy(deck[CARD_EMBERFELL_STAIRS].linkedCards[0].name,"hall"); //link name
     deck[CARD_EMBERFELL_STAIRS].linkedCards[1].cardType = CARD_EMBERFELL_TOWER; //link to tower
@@ -1374,11 +1396,17 @@ void initDeck() {
 
     // Card 61  - Road outside Emberfell Dungeon
     deck[CARD_EMBERFELL_ROAD].cardType = CARD_EMBERFELL_ROAD;
-    deck[CARD_EMBERFELL_ROAD].numLinkedCards = 1;
+    deck[CARD_EMBERFELL_ROAD].numLinkedCards = 4;
     strcpy(deck[CARD_EMBERFELL_ROAD].name, "Road outside Emberfell Dungeon");
-    strcpy(deck[CARD_EMBERFELL_ROAD].description, "You are just outside Emberfell Castle.\nYou can enter through the dungeon.");
+    strcpy(deck[CARD_EMBERFELL_ROAD].description, "You are just outside Emberfell Castle.\nYou can enter through the dungeon.\nYou can also go north, east or west.");
     deck[CARD_EMBERFELL_ROAD].linkedCards[0].cardType = CARD_EMBERFELL_DUNGEON; //link back to dungeon
     strcpy(deck[CARD_EMBERFELL_ROAD].linkedCards[0].name,"castle"); //link name
+    deck[CARD_EMBERFELL_ROAD].linkedCards[1].cardType = CARD_VILLAGE; //
+    strcpy(deck[CARD_EMBERFELL_ROAD].linkedCards[1].name,"north"); //link name
+    deck[CARD_EMBERFELL_ROAD].linkedCards[2].cardType = CARD_TOMBS; //
+    strcpy(deck[CARD_EMBERFELL_ROAD].linkedCards[2].name,"west"); //link name
+    deck[CARD_EMBERFELL_ROAD].linkedCards[3].cardType = CARD_CAVERNS; //
+    strcpy(deck[CARD_EMBERFELL_ROAD].linkedCards[3].name,"east"); //link name
 
     // Card 62  - Alistair Grey's House
     deck[CARD_GREY].cardType = CARD_GREY;
@@ -1387,6 +1415,123 @@ void initDeck() {
     strcpy(deck[CARD_GREY].description, "You are at Alistair Grey's House.\nAlistair is here.\nHe looks at you and says 'I am looking for some good books,\nIf you find any and bring them to me,\nI will make it worth your while'.");
     deck[CARD_GREY].linkedCards[0].cardType = CARD_WRENWOOD; //link back to wrenwood
     strcpy(deck[CARD_GREY].linkedCards[0].name,"town"); //link name
+
+    // Card 63  - Across the river from the Stack Homestead
+    deck[CARD_STACK_RIVER].cardType = CARD_STACK_RIVER;
+    deck[CARD_STACK_RIVER].numLinkedCards = 2;
+    strcpy(deck[CARD_STACK_RIVER].name, "Across the river from the Stack Homestead");
+    strcpy(deck[CARD_STACK_RIVER].description, "You are on the other side of the river from the Stack Homestead.\nThere is a path...");
+    deck[CARD_STACK_RIVER].linkedCards[0].cardType = CARD_STACK_HOMESTEAD; //link back to stack homestead
+    strcpy(deck[CARD_STACK_RIVER].linkedCards[0].name,"tree"); //link name
+    deck[CARD_STACK_RIVER].linkedCards[1].cardType = CARD_OBSERVATORY; //link back to stack homestead
+    strcpy(deck[CARD_STACK_RIVER].linkedCards[1].name,"path"); //link name
+
+    // Card 64  - The Celestial Observatory
+    deck[CARD_OBSERVATORY].cardType = CARD_OBSERVATORY;
+    deck[CARD_OBSERVATORY].numLinkedCards = 1;
+    deck[CARD_OBSERVATORY].numLinkedItems = 1;
+    strcpy(deck[CARD_OBSERVATORY].name, "The Celestial Observatory");
+    strcpy(deck[CARD_OBSERVATORY].description, "You take the path to the Observatory.\nIts stone walls, adorned with celestial carvings,\nare weathered but sturdy, exuding an air of forgotten knowledge.\nInside, a grand telescope dominates the room,\nits crystal lenses glowing faintly as it seems to reach for the stars.\nThe observatory is filled with dusty tomes, celestial maps, and mysterious artifacts,\nall hinting at arcane studies of the heavens.");
+    deck[CARD_OBSERVATORY].linkedCards[0].cardType = CARD_STACK_RIVER; //link back to river next to stack homestead
+    strcpy(deck[CARD_OBSERVATORY].linkedCards[0].name,"path"); //link name
+    deck[CARD_OBSERVATORY].linkedItems[0] = ITEM_BOOK; //book
+
+    // Card 65  - Crystal Caverns
+    deck[CARD_CAVERNS].cardType = CARD_CAVERNS;
+    deck[CARD_CAVERNS].numLinkedCards = 2;
+    strcpy(deck[CARD_CAVERNS].name, "Crystal Caverns");
+    strcpy(deck[CARD_CAVERNS].description, "A breathtaking underground realm of glittering beauty and eerie silence.\nThe walls of the cavern are lined with towering,\ntranslucent crystals that glow with an ethereal light,\ncasting prismatic reflections across the dark, winding tunnels.\nThere is a door here but it is locked.");
+    deck[CARD_CAVERNS].linkedCards[0].cardType = CARD_GLYPHS; //?
+    strcpy(deck[CARD_CAVERNS].linkedCards[0].name,"north"); //link name
+    deck[CARD_CAVERNS].linkedCards[1].cardType = CARD_EMBERFELL_ROAD; //?
+    strcpy(deck[CARD_CAVERNS].linkedCards[1].name,"west"); //link name
+
+    // Card 66  - Ancient Tombs
+    deck[CARD_TOMBS].cardType = CARD_TOMBS;
+    deck[CARD_TOMBS].numLinkedCards = 2;
+    strcpy(deck[CARD_TOMBS].name, "Ancient Tombs");
+    strcpy(deck[CARD_TOMBS].description, "A dark, forgotten burial ground carved into the heart of a desolate hillside.\nThe air is heavy with the scent of dust and decay as stone doorways lead into shadowed chambers,\nwhere the remains of long-dead rulers and warriors lie undisturbed.\nFaded carvings and crumbling inscriptions line the walls,\ntelling tales of a lost civilization.");
+    deck[CARD_TOMBS].linkedCards[0].cardType = CARD_PEAKS; //?
+    strcpy(deck[CARD_TOMBS].linkedCards[0].name,"north"); //link name
+    deck[CARD_TOMBS].linkedCards[1].cardType = CARD_EMBERFELL_ROAD; //?
+    strcpy(deck[CARD_TOMBS].linkedCards[1].name,"east"); //link name
+
+    // Card 67  - The Enchanted Village - has fireplace
+    deck[CARD_VILLAGE].cardType = CARD_VILLAGE;
+    deck[CARD_VILLAGE].numLinkedCards = 5;
+    deck[CARD_VILLAGE].numLinkedItems = 3;
+    strcpy(deck[CARD_VILLAGE].name, "The Enchanted Village");
+    strcpy(deck[CARD_VILLAGE].description, "A quaint, seemingly timeless settlement hidden deep within the forest.\nIts cobblestone streets are lined with charming cottages,\ntheir windows glowing warmly with light.\nThere is a fire place here.");
+    deck[CARD_VILLAGE].linkedCards[0].cardType = CARD_FORSAKEN_ROAD; //?
+    strcpy(deck[CARD_VILLAGE].linkedCards[0].name,"north"); //link name
+    deck[CARD_VILLAGE].linkedCards[1].cardType = CARD_EMBERFELL_ROAD; //?
+    strcpy(deck[CARD_VILLAGE].linkedCards[1].name,"south"); //link name
+    deck[CARD_VILLAGE].linkedCards[2].cardType = CARD_GLYPHS; //?
+    strcpy(deck[CARD_VILLAGE].linkedCards[2].name,"east"); //link name
+    deck[CARD_VILLAGE].linkedCards[3].cardType = CARD_PEAKS; //?
+    strcpy(deck[CARD_VILLAGE].linkedCards[3].name,"west"); //link name
+    deck[CARD_VILLAGE].linkedCards[4].cardType = CARD_VILLAGE_STORE; //?
+    strcpy(deck[CARD_VILLAGE].linkedCards[4].name,"store"); //link name
+    deck[CARD_VILLAGE].linkedItems[0] = ITEM_MANA_POTION; //potion
+    deck[CARD_VILLAGE].linkedItems[1] = ITEM_HEALTH_POTION; //potion
+    deck[CARD_VILLAGE].linkedItems[2] = ITEM_COINS; //coins
+
+    // Card 68  - Skyward Peaks
+    deck[CARD_PEAKS].cardType = CARD_PEAKS;
+    deck[CARD_PEAKS].numLinkedCards = 2;
+    strcpy(deck[CARD_PEAKS].name, "Skyward Peaks");
+    strcpy(deck[CARD_PEAKS].description, "Towering, snow capped mountains that pierce the sky,\ntheir jagged summits lost in the clouds.\nThe air is thin and cold, and the winds howl through the rocky passes.\nOnly the most daring travelers attempt the climb.");
+    deck[CARD_PEAKS].linkedCards[0].cardType = CARD_VILLAGE; //?
+    strcpy(deck[CARD_PEAKS].linkedCards[0].name,"east"); //link name
+    deck[CARD_PEAKS].linkedCards[1].cardType = CARD_TOMBS; //?
+    strcpy(deck[CARD_PEAKS].linkedCards[1].name,"south"); //link name
+
+    // Card 69  - Ancient Glyphs
+    deck[CARD_GLYPHS].cardType = CARD_GLYPHS;
+    deck[CARD_GLYPHS].numLinkedCards = 2;
+    deck[CARD_GLYPHS].numLinkedItems = 1;
+    strcpy(deck[CARD_GLYPHS].name, "Ancient Glyphs");
+    strcpy(deck[CARD_GLYPHS].description, "Faded symbols etched into stone, their meanings long lost to time.\nThey pulse faintly with an otherworldly energy,\nhinting at forgotten knowledge and hidden power,\nwaiting for someone to decipher their secrets.");
+    deck[CARD_GLYPHS].linkedCards[0].cardType = CARD_VILLAGE; //?
+    strcpy(deck[CARD_GLYPHS].linkedCards[0].name,"west"); //link name
+    deck[CARD_GLYPHS].linkedCards[1].cardType = CARD_CAVERNS; //?
+    strcpy(deck[CARD_GLYPHS].linkedCards[1].name,"south"); //link name
+    deck[CARD_GLYPHS].linkedItems[0] = ITEM_BOOK; //book
+
+    // Card 70  - Forsaken Road
+    deck[CARD_FORSAKEN_ROAD].cardType = CARD_FORSAKEN_ROAD;
+    deck[CARD_FORSAKEN_ROAD].numLinkedCards = 1;
+    deck[CARD_FORSAKEN_ROAD].numLinkedEnemies = 2;
+    strcpy(deck[CARD_FORSAKEN_ROAD].name, "Forsaken Road");
+    strcpy(deck[CARD_FORSAKEN_ROAD].description, "A desolate, overgrown path,\nonce traveled but now abandoned.\nCracked stone and twisted roots litter the way,\nand an eerie silence hangs in the air,\nas if the road itself has been forgotten by time.");
+    deck[CARD_FORSAKEN_ROAD].linkedCards[0].cardType = CARD_VILLAGE; //?
+    strcpy(deck[CARD_FORSAKEN_ROAD].linkedCards[0].name,"south"); //link name
+    //todo: north, east, west
+    deck[CARD_FORSAKEN_ROAD].linkedEnemies[0].enemyType = ENEMY_OGRE; //ogre
+    deck[CARD_FORSAKEN_ROAD].linkedEnemies[0].health = 300; 
+    deck[CARD_FORSAKEN_ROAD].linkedEnemies[0].damage = 80;
+    deck[CARD_FORSAKEN_ROAD].linkedEnemies[1].enemyType = ENEMY_OGRE; //ogre
+    deck[CARD_FORSAKEN_ROAD].linkedEnemies[1].health = 200; 
+    deck[CARD_FORSAKEN_ROAD].linkedEnemies[1].damage = 80;
+
+    // Card 71  - Hidden Passage
+    deck[CARD_HIDDEN_PASSAGE].cardType = CARD_HIDDEN_PASSAGE;
+    deck[CARD_HIDDEN_PASSAGE].numLinkedCards = 2;
+    strcpy(deck[CARD_HIDDEN_PASSAGE].name, "Hidden Passage");
+    strcpy(deck[CARD_HIDDEN_PASSAGE].description, "A secret, very long, narrow tunnel beneath the earth,\nits entrance concealed by rubble and roots.\nThe air is damp and musty,\nand the faint echo of footsteps suggests forgotten travelers once walked this path.\nYou can go east or west.");
+    deck[CARD_HIDDEN_PASSAGE].linkedCards[0].cardType = CARD_CAVERNS; //?
+    strcpy(deck[CARD_HIDDEN_PASSAGE].linkedCards[0].name,"west"); //link name
+    deck[CARD_HIDDEN_PASSAGE].linkedCards[1].cardType = CARD_CAVE_DEEP; //?
+    strcpy(deck[CARD_HIDDEN_PASSAGE].linkedCards[1].name,"east"); //link name
+
+    // Card 72  - Enchanted Village Store
+    deck[CARD_VILLAGE_STORE].cardType = CARD_VILLAGE_STORE;
+    deck[CARD_VILLAGE_STORE].isStore = true;
+    deck[CARD_VILLAGE_STORE].numLinkedCards = 1;
+    strcpy(deck[CARD_VILLAGE_STORE].name, "Enchanted Village Store");
+    strcpy(deck[CARD_VILLAGE_STORE].description, "You are in a small store.\nBuy items.");
+    deck[CARD_VILLAGE_STORE].linkedCards[0].cardType = CARD_VILLAGE; //link back to village
+    strcpy(deck[CARD_VILLAGE_STORE].linkedCards[0].name,"town"); //link name
  
 
 
@@ -1694,7 +1839,7 @@ void handleEvents()
     }
     else if(currentCard->cardType == CARD_GREY && books > 0 ) //happens immedialtey, no loop requirement
     {
-        printf("Alistair says 'Great, you brought me some books!'\n");
+        printf("\nAlistair says 'Great, you brought me some books!'\n");
         for(int i = 0; i < books; i++)
         {
             printf("(received 1000 coins)\n");
@@ -1702,6 +1847,18 @@ void handleEvents()
         }
         printf("\n\n");
         books=0;
+    }
+    else if(currentCard->cardType == CARD_STACK_HOMESTEAD && !stackTreeFallEventHasHappened && xp > 250)
+    {
+        stackTreeFallEventHasHappened = true;
+        printf("\nA tree falls and lands like a bridge across the river...\n");
+        printf("There is now a path to cross the river.\n\n");
+        //up the links by 1 and add the new transition
+        deck[CARD_STACK_HOMESTEAD].numLinkedCards = 2;//was 1 so now 2
+        deck[CARD_STACK_HOMESTEAD].linkedCards[1].cardType = CARD_STACK_RIVER; //add link to other side of river
+        strcpy(deck[CARD_STACK_HOMESTEAD].linkedCards[1].name,"tree"); //link name
+        //change description to fit the change
+        strcpy(deck[CARD_STACK_HOMESTEAD].description, "You are at the Stack Homestead.\nOn the farside of the homestead, there is a river.\nA tree has fallen across the river so you can cross to the other side.\nThere is a pumpkin patch.\nThere is a fireplace here.");
     }
 }
 
@@ -1744,6 +1901,11 @@ void handleCast(char* spell)
         {
             printf("The fire place is lit at Stack Homestead.\n");
             stackFirePlaceIsLit = true;
+        }
+        else if(currentCard->cardType == CARD_VILLAGE)
+        {
+            printf("The fire place is lit at The Enchanted Village.\n");
+            villageFirePlaceIsLit = true;
         }
         else
         {
@@ -1831,11 +1993,24 @@ void handleCast(char* spell)
             printf("You enter The Grand Emberfell Hall.\n");
             currentCard = &deck[CARD_EMBERFELL_HALL];
         }
-        else if(currentCard->cardType == CARD_EMBERFELL_TOWER)
+        else if(currentCard->cardType == CARD_EMBERFELL_TOWER && !emberfellTowerChestOpened)
         {
+            emberfellTowerChestOpened = true;
             printf("The locked treasure chest opens.\n");
             printf("(received 1000 coins)\n");
             money+=1000;
+        }
+        else if(currentCard->cardType == CARD_CAVE_DEEP)
+        {
+            printf("The locked door to the Hidden Passage opens.\n");
+            printf("You enter the Hidden Passage.\n");
+            currentCard = &deck[CARD_HIDDEN_PASSAGE];
+        }
+        else if(currentCard->cardType == CARD_CAVERNS)
+        {
+            printf("The locked door to the Hidden Passage opens.\n");
+            printf("You enter the Hidden Passage.\n");
+            currentCard = &deck[CARD_HIDDEN_PASSAGE];
         }
         else
         {
@@ -1858,7 +2033,7 @@ void removeNonPrintableChars(char *str) {
     while (str[i]) {
         // If the character is printable, copy it to the new position
         if (isprint((unsigned char)str[i])) {
-            str[j++] = str[i];
+            str[j++] = str[i];//this code is kind of Genius, thanks to Chatgpt
         }
         i++;
     }
@@ -1905,6 +2080,7 @@ void process_json_stream(char *response) {
 }
 
 //handle the networking calls of the jovi command
+//big thanks to Chatgpt for helping me with the api call and the JSON stuff
 void handleJovi(char* input) {
     CURL *curl;
     CURLcode res;
