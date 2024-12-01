@@ -97,7 +97,7 @@ typedef struct {
 
 Card *currentCard;
 Card deck[128];
-int TotalNumberOfCards = 72;//increment deck size by powers of two, when this value is close to the max
+int TotalNumberOfCards = 74;//increment deck size by powers of two, when this value is close to the max
 
 enum CardTypes {
     CARD_HOME = 0,
@@ -172,6 +172,8 @@ enum CardTypes {
     CARD_FORSAKEN_ROAD = 69, //Forsaken Road
     CARD_HIDDEN_PASSAGE = 70, //Hidden Passage
     CARD_VILLAGE_STORE = 71, //store in the village
+    CARD_FORSAKEN_ROAD_2 = 72, //Forsaken Road
+    CARD_MOUNTAIN = 73, //Stoneheart Mountain
 };
 
 enum ItemTypes {
@@ -197,6 +199,7 @@ int mana = 100;
 int money = 400;
 int xp = 0;
 int books = 0;
+int booksDeliveredToAlistair = 0;
 
 //global state bools
 bool hasSword = false;
@@ -212,6 +215,7 @@ bool echoEventHasHappened = false;
 bool treeFallEventHasHappened = false;
 bool elderfernEventHasHappened = false;
 bool stackTreeFallEventHasHappened = false;
+bool chasmEventHasHappened = false;
 
 //global state bools for fireplaces
 bool homeFirePlaceIsLit = false;
@@ -346,6 +350,7 @@ int main()
                 printf(" - ex_points    :  %d\n", xp);
                 printf(" - money        : $%d\n", money);
                 printf(" - books        :  %d\n", books);
+                if(booksDeliveredToAlistair > 0){printf("  ( %d books delivered to Alistair )\n", booksDeliveredToAlistair);}
                 printf(" - loops        :  %d\n", loops);
                 if(hasSword){printf(" - you are holding a sword\n");}
                 if(hasSword){printf(" - damage       :  %d\n", getDamage());}
@@ -1242,9 +1247,11 @@ void initDeck() {
     deck[CARD_STACK_HOMESTEAD].cardType = CARD_STACK_HOMESTEAD;
     deck[CARD_STACK_HOMESTEAD].numLinkedCards = 1;
     strcpy(deck[CARD_STACK_HOMESTEAD].name, "Stack Homestead");
-    strcpy(deck[CARD_STACK_HOMESTEAD].description, "You are at the Stack Homestead.\nOn the farside of the homestead, there is a river.\nThe river is too deep to cross.\nThere is a pumpkin patch.\nThere is a fireplace here.");
+    strcpy(deck[CARD_STACK_HOMESTEAD].description, "You are at the Stack Homestead.\nThere is a mountain to the north.\nOn the farside of the homestead, there is a river.\nThe river is too deep to cross.\nThere is a pumpkin patch.\nThere is a fireplace here.");
     deck[CARD_STACK_HOMESTEAD].linkedCards[0].cardType = CARD_WILLIAMS_ROAD; //link back to williams road
     strcpy(deck[CARD_STACK_HOMESTEAD].linkedCards[0].name,"east"); //link name
+    deck[CARD_STACK_HOMESTEAD].linkedCards[1].cardType = CARD_MOUNTAIN; //link to mountain
+    strcpy(deck[CARD_STACK_HOMESTEAD].linkedCards[1].name,"path"); //link name
     
     // Card 48  - Elderfern Forest Entrance
     deck[CARD_ELDERFERN_FOREST_ENTER].cardType = CARD_ELDERFERN_FOREST_ENTER;
@@ -1478,13 +1485,15 @@ void initDeck() {
 
     // Card 68  - Skyward Peaks
     deck[CARD_PEAKS].cardType = CARD_PEAKS;
-    deck[CARD_PEAKS].numLinkedCards = 2;
+    deck[CARD_PEAKS].numLinkedCards = 3;
     strcpy(deck[CARD_PEAKS].name, "Skyward Peaks");
     strcpy(deck[CARD_PEAKS].description, "Towering, snow capped mountains that pierce the sky,\ntheir jagged summits lost in the clouds.\nThe air is thin and cold, and the winds howl through the rocky passes.\nOnly the most daring travelers attempt the climb.");
     deck[CARD_PEAKS].linkedCards[0].cardType = CARD_VILLAGE; //?
     strcpy(deck[CARD_PEAKS].linkedCards[0].name,"east"); //link name
     deck[CARD_PEAKS].linkedCards[1].cardType = CARD_TOMBS; //?
     strcpy(deck[CARD_PEAKS].linkedCards[1].name,"south"); //link name
+    deck[CARD_PEAKS].linkedCards[2].cardType = CARD_MOUNTAIN; //?
+    strcpy(deck[CARD_PEAKS].linkedCards[2].name,"climb"); //link name
 
     // Card 69  - Ancient Glyphs
     deck[CARD_GLYPHS].cardType = CARD_GLYPHS;
@@ -1503,10 +1512,9 @@ void initDeck() {
     deck[CARD_FORSAKEN_ROAD].numLinkedCards = 1;
     deck[CARD_FORSAKEN_ROAD].numLinkedEnemies = 2;
     strcpy(deck[CARD_FORSAKEN_ROAD].name, "Forsaken Road");
-    strcpy(deck[CARD_FORSAKEN_ROAD].description, "A desolate, overgrown path,\nonce traveled but now abandoned.\nCracked stone and twisted roots litter the way,\nand an eerie silence hangs in the air,\nas if the road itself has been forgotten by time.");
+    strcpy(deck[CARD_FORSAKEN_ROAD].description, "A desolate, overgrown path,\nonce traveled but now abandoned.\nCracked stone and twisted roots litter the way,\nand an eerie silence hangs in the air,\nas if the road itself has been forgotten by time.\nThe road continues north but a large chasm blocks you from continuing.");
     deck[CARD_FORSAKEN_ROAD].linkedCards[0].cardType = CARD_VILLAGE; //?
     strcpy(deck[CARD_FORSAKEN_ROAD].linkedCards[0].name,"south"); //link name
-    //todo: north, east, west
     deck[CARD_FORSAKEN_ROAD].linkedEnemies[0].enemyType = ENEMY_OGRE; //ogre
     deck[CARD_FORSAKEN_ROAD].linkedEnemies[0].health = 300; 
     deck[CARD_FORSAKEN_ROAD].linkedEnemies[0].damage = 80;
@@ -1517,12 +1525,14 @@ void initDeck() {
     // Card 71  - Hidden Passage
     deck[CARD_HIDDEN_PASSAGE].cardType = CARD_HIDDEN_PASSAGE;
     deck[CARD_HIDDEN_PASSAGE].numLinkedCards = 2;
+    deck[CARD_HIDDEN_PASSAGE].numLinkedItems = 1;
     strcpy(deck[CARD_HIDDEN_PASSAGE].name, "Hidden Passage");
     strcpy(deck[CARD_HIDDEN_PASSAGE].description, "A secret, very long, narrow tunnel beneath the earth,\nits entrance concealed by rubble and roots.\nThe air is damp and musty,\nand the faint echo of footsteps suggests forgotten travelers once walked this path.\nYou can go east or west.");
     deck[CARD_HIDDEN_PASSAGE].linkedCards[0].cardType = CARD_CAVERNS; //?
     strcpy(deck[CARD_HIDDEN_PASSAGE].linkedCards[0].name,"west"); //link name
     deck[CARD_HIDDEN_PASSAGE].linkedCards[1].cardType = CARD_CAVE_DEEP; //?
     strcpy(deck[CARD_HIDDEN_PASSAGE].linkedCards[1].name,"east"); //link name
+    deck[CARD_HIDDEN_PASSAGE].linkedItems[0] = ITEM_BOOK; //book
 
     // Card 72  - Enchanted Village Store
     deck[CARD_VILLAGE_STORE].cardType = CARD_VILLAGE_STORE;
@@ -1532,6 +1542,28 @@ void initDeck() {
     strcpy(deck[CARD_VILLAGE_STORE].description, "You are in a small store.\nBuy items.");
     deck[CARD_VILLAGE_STORE].linkedCards[0].cardType = CARD_VILLAGE; //link back to village
     strcpy(deck[CARD_VILLAGE_STORE].linkedCards[0].name,"town"); //link name
+    
+    // Card 73  - Forsaken Road 2
+    deck[CARD_FORSAKEN_ROAD_2].cardType = CARD_FORSAKEN_ROAD_2;
+    deck[CARD_FORSAKEN_ROAD_2].numLinkedCards = 1;
+    strcpy(deck[CARD_FORSAKEN_ROAD_2].name, "Forsaken Road North");
+    strcpy(deck[CARD_FORSAKEN_ROAD_2].description, "You walk for miles along the northern end of the Forsaken Road.");
+    deck[CARD_FORSAKEN_ROAD_2].linkedCards[0].cardType = CARD_FORSAKEN_ROAD; //?
+    strcpy(deck[CARD_FORSAKEN_ROAD_2].linkedCards[0].name,"south"); //link name
+    //todo: whats next
+
+    // Card 74  - Stoneheart Mountain
+    deck[CARD_MOUNTAIN].cardType = CARD_MOUNTAIN;
+    deck[CARD_MOUNTAIN].numLinkedCards = 1;
+    deck[CARD_MOUNTAIN].numLinkedItems = 4;
+    strcpy(deck[CARD_MOUNTAIN].name, "Stoneheart Mountain");
+    strcpy(deck[CARD_MOUNTAIN].description, "You climb Stoneheart Mountain to the top.\nThe towering peak's slopes are blanketed in thick, glistening white drifts.\nThe jagged cliffs rise sharply against the sky,\ntheir dark stone contrasted by the endless stretch of frost and ice.\nWinds whip through the mountain's high passes,\ncarrying with them the bite of the cold\nIts too steep to climb back down.\nBut the south is less steep,\nand there is a path that leads down the mountain.");
+    deck[CARD_MOUNTAIN].linkedCards[0].cardType = CARD_STACK_HOMESTEAD; //?
+    strcpy(deck[CARD_MOUNTAIN].linkedCards[0].name,"path"); //link name
+    deck[CARD_MOUNTAIN].linkedItems[1] = ITEM_HEALTH_POTION; //potion
+    deck[CARD_MOUNTAIN].linkedItems[2] = ITEM_HEALTH_POTION; //potion
+    deck[CARD_MOUNTAIN].linkedItems[3] = ITEM_MANA_POTION; //potion
+    deck[CARD_MOUNTAIN].linkedItems[4] = ITEM_MANA_POTION; //potion
  
 
 
@@ -1681,7 +1713,7 @@ void handleFightSequence()
 
     if(health <= 0)
     {
-        printf("you died...\n");//death in this game is like grand theft auto sort of...
+        printf("\n\nyou died...\n\n");//death in this game is like grand theft auto sort of...
         // Set the starting room back to home
         currentCard = &deck[CARD_HOME];
         health = 100;//set starting health to 100, you will have to regain a surplus
@@ -1844,6 +1876,7 @@ void handleEvents()
         {
             printf("(received 1000 coins)\n");
             money+=1000;
+            booksDeliveredToAlistair+=1;
         }
         printf("\n\n");
         books=0;
@@ -1854,11 +1887,30 @@ void handleEvents()
         printf("\nA tree falls and lands like a bridge across the river...\n");
         printf("There is now a path to cross the river.\n\n");
         //up the links by 1 and add the new transition
-        deck[CARD_STACK_HOMESTEAD].numLinkedCards = 2;//was 1 so now 2
-        deck[CARD_STACK_HOMESTEAD].linkedCards[1].cardType = CARD_STACK_RIVER; //add link to other side of river
-        strcpy(deck[CARD_STACK_HOMESTEAD].linkedCards[1].name,"tree"); //link name
+        deck[CARD_STACK_HOMESTEAD].numLinkedCards = 3;//was 2 so now 3
+        deck[CARD_STACK_HOMESTEAD].linkedCards[2].cardType = CARD_STACK_RIVER; //add link to other side of river
+        strcpy(deck[CARD_STACK_HOMESTEAD].linkedCards[2].name,"tree"); //link name
         //change description to fit the change
-        strcpy(deck[CARD_STACK_HOMESTEAD].description, "You are at the Stack Homestead.\nOn the farside of the homestead, there is a river.\nA tree has fallen across the river so you can cross to the other side.\nThere is a pumpkin patch.\nThere is a fireplace here.");
+        strcpy(deck[CARD_STACK_HOMESTEAD].description, "You are at the Stack Homestead.\nThere is a mountain to the north.\nOn the far western side of the homestead, there is a river.\nA tree has fallen across the river so you can cross to the other side.\nThere is a pumpkin patch.\nThere is a fireplace here.");
+    }
+    else if(currentCard->cardType == CARD_FORSAKEN_ROAD && !chasmEventHasHappened && xp > 150 && loops > 1000)
+    {
+        chasmEventHasHappened = true;
+        printf("\nThe Blue Wizard appears ...\n");
+        printf("\nAs the sky darkens and a swirling wind picks up,\nthe Blue Wizard steps forward,\nhis robes shimmering with arcane energy.\n");
+        printf("With a wave of his staff, the ground trembles,\nand ethereal blue light pours from the staff's tip,\nflowing into the vast chasm that splits the road.\n");
+        printf("Cracks in the earth glow as ancient magic mends the rift,\nstones rising from the depths and locking into place.");
+        printf("Slowly, the chasm begins to close, the road restored.\n");
+        printf("The air crackles with power as the wizard completes his work,\n");
+        printf("leaving behind a road once more passable,\nbut now marked with the faint glow of magic.\n");
+        printf("\nThe Blue Wizard leaves.\n");
+        printf("The chasm is now repaired. You can continue north.\n\n");
+        //up the links by 1 and add the new transition
+        deck[CARD_FORSAKEN_ROAD].numLinkedCards = 2;//was 1 so now 2
+        deck[CARD_FORSAKEN_ROAD].linkedCards[1].cardType = CARD_FORSAKEN_ROAD_2; //add link
+        strcpy(deck[CARD_FORSAKEN_ROAD].linkedCards[1].name,"north"); //link name
+        //change description to fit the change
+        strcpy(deck[CARD_FORSAKEN_ROAD].description, "A desolate, overgrown path,\nonce traveled but now abandoned.\nCracked stone and twisted roots litter the way,\nand an eerie silence hangs in the air,\nas if the road itself has been forgotten by time.\nThe chasm is repaired. You can go north or south.");
     }
 }
 
