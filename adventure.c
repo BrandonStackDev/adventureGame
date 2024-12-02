@@ -424,7 +424,6 @@ int main()
                 if(hasSword)
                 {
                     printf("You swing the sword and ...\n");
-                    bool allDead = true;
                     for(int i = 0; i < currentCard->numLinkedEnemies; i++)
                     {
                         if(currentCard->linkedEnemies[i].health > 0)
@@ -438,12 +437,19 @@ int main()
                                 printf("The %s is dead (gained 10 xp points)\n", getEnemyName(type));
                                 xp += 10;
                             }
-                            allDead = false;
                             break;
                         }
                         else
                         {
                             continue;
+                        }
+                    }
+                    bool allDead = true;
+                    for(int i = 0; i < currentCard->numLinkedEnemies; i++)
+                    {
+                        if(currentCard->linkedEnemies[i].health > 0)
+                        {
+                            allDead = false;
                         }
                     }
                     if(allDead)
