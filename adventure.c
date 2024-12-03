@@ -97,7 +97,7 @@ typedef struct {
 
 Card *currentCard;
 Card deck[128];
-int TotalNumberOfCards = 89;//increment deck size by powers of two, when this value is close to the max
+int TotalNumberOfCards = 96;//increment deck size by powers of two, when this value is close to the max
 
 enum CardTypes {
     CARD_HOME = 0,
@@ -189,6 +189,13 @@ enum CardTypes {
     CARD_MARSH_12 = 86, //The Whispering Marsh
     CARD_MARSH_13 = 87, //The Whispering Marsh
     CARD_MARSH_EXIT = 88, //The Whispering Marsh Exit
+    CARD_HEARTHSTONE = 89, //Town of Hearthstone
+    CARD_HEARTHSTONE_STORE = 90, //store in Hearthstone
+    CARD_COTTAGE_1 = 91, //Thistlehill Cottage
+    CARD_COTTAGE_2 = 92, //Sunbeam Cottage
+    CARD_FARM_BAKER = 93,//Family Farm
+    CARD_AJ = 94, //Old Man Aj's
+    CARD_HEARTHSTONE_ROAD = 95, //Road east of Town of Hearthstone
 };
 
 enum ItemTypes {
@@ -240,6 +247,7 @@ bool mccannsFirePlaceIsLit = false;
 bool williamsFirePlaceIsLit = false;
 bool stackFirePlaceIsLit = false;
 bool villageFirePlaceIsLit = false;
+bool ajFirePlaceIsLit = false;
 
 //global state bools for treasure chests
 bool emberfellTowerChestOpened = false;
@@ -475,6 +483,7 @@ int main()
                 if(williamsFirePlaceIsLit){printf(" - williams\n");}
                 if(stackFirePlaceIsLit){printf(" - stack\n");}
                 if(villageFirePlaceIsLit){printf(" - village\n");}
+                if(ajFirePlaceIsLit){printf(" - aj\n");}
                 printf("\n> ");
                 if (fgets(buffer, MAX_INPUT_UNIQUE, stdin) != NULL)
                 {
@@ -513,6 +522,11 @@ int main()
                     {
                         printf("went to The Enchanted Village.\n"); 
                         currentCard = &deck[CARD_VILLAGE];
+                    }
+                    else if (strcmp(buffer, "aj") == 0 && ajFirePlaceIsLit)
+                    {
+                        printf("went to old man AJ's.\n"); 
+                        currentCard = &deck[CARD_AJ];
                     }
                     else
                     {
@@ -596,6 +610,7 @@ int main()
                         williamsFirePlaceIsLit = true;
                         stackFirePlaceIsLit = true;
                         villageFirePlaceIsLit = true;
+                        ajFirePlaceIsLit = true;
                     }
                     else if (strcmp(buffer, "goto") == 0)
                     {
@@ -1825,12 +1840,105 @@ void initDeck() {
 
     // Card 89  - The Whispering Marsh Exit
     deck[CARD_MARSH_EXIT].cardType = CARD_MARSH_EXIT;
-    deck[CARD_MARSH_EXIT].numLinkedCards = 1;
+    deck[CARD_MARSH_EXIT].numLinkedCards = 2;
     strcpy(deck[CARD_MARSH_EXIT].name, "The Whispering Marsh Exit");
     strcpy(deck[CARD_MARSH_EXIT].description, "You can head south back into the marsh, or north...");
     deck[CARD_MARSH_EXIT].linkedCards[0].cardType = CARD_MARSH_5; //?
     strcpy(deck[CARD_MARSH_EXIT].linkedCards[0].name,"south"); //link name
-    //todo: north. what next?
+    deck[CARD_MARSH_EXIT].linkedCards[1].cardType = CARD_HEARTHSTONE; //?
+    strcpy(deck[CARD_MARSH_EXIT].linkedCards[1].name,"north"); //link name
+
+    // Card 90  - Town of Hearthstone
+    deck[CARD_HEARTHSTONE].cardType = CARD_HEARTHSTONE;
+    deck[CARD_HEARTHSTONE].numLinkedCards = 6;
+    deck[CARD_HEARTHSTONE].numLinkedItems = 4;
+    strcpy(deck[CARD_HEARTHSTONE].name, "Town of Hearthstone");
+    strcpy(deck[CARD_HEARTHSTONE].description, "Hearthstone is a charming town nestled in a peaceful valley.\nWith its cozy cottages, lush farmlands, and scenic countryside, it exudes a warm, welcoming atmosphere.\nThe quiet streets are lined with flower-filled gardens,\nand the air is fresh with the scent of nearby forests and fields.");
+    deck[CARD_HEARTHSTONE].linkedCards[0].cardType = CARD_COTTAGE_2; //?
+    strcpy(deck[CARD_HEARTHSTONE].linkedCards[0].name,"north"); //link name
+    deck[CARD_HEARTHSTONE].linkedCards[1].cardType = CARD_MARSH_EXIT; //?
+    strcpy(deck[CARD_HEARTHSTONE].linkedCards[1].name,"south"); //link name
+    deck[CARD_HEARTHSTONE].linkedCards[2].cardType = CARD_HEARTHSTONE_ROAD; //?
+    strcpy(deck[CARD_HEARTHSTONE].linkedCards[2].name,"east"); //link name
+    deck[CARD_HEARTHSTONE].linkedCards[3].cardType = CARD_COTTAGE_1; //?
+    strcpy(deck[CARD_HEARTHSTONE].linkedCards[3].name,"west"); //link name
+    deck[CARD_HEARTHSTONE].linkedCards[4].cardType = CARD_AJ; //?
+    strcpy(deck[CARD_HEARTHSTONE].linkedCards[4].name,"path"); //link name
+    deck[CARD_HEARTHSTONE].linkedCards[5].cardType = CARD_HEARTHSTONE_STORE; //?
+    strcpy(deck[CARD_HEARTHSTONE].linkedCards[5].name,"store"); //link name
+    deck[CARD_HEARTHSTONE].linkedItems[0] = ITEM_HEALTH_POTION; //potion
+    deck[CARD_HEARTHSTONE].linkedItems[1] = ITEM_HEALTH_POTION; //potion
+    deck[CARD_HEARTHSTONE].linkedItems[2] = ITEM_MANA_POTION; //potion
+    deck[CARD_HEARTHSTONE].linkedItems[3] = ITEM_MANA_POTION; //potion
+
+    // Card 91  - Willow and Wares
+    deck[CARD_HEARTHSTONE_STORE].cardType = CARD_HEARTHSTONE_STORE;
+    deck[CARD_HEARTHSTONE_STORE].numLinkedCards = 1;
+    deck[CARD_HEARTHSTONE_STORE].isStore = true;
+    strcpy(deck[CARD_HEARTHSTONE_STORE].name, "Willow and Wares");
+    strcpy(deck[CARD_HEARTHSTONE_STORE].description, "You are in a small store.\nBuy items.");
+    deck[CARD_HEARTHSTONE_STORE].linkedCards[0].cardType = CARD_HEARTHSTONE; //?
+    strcpy(deck[CARD_HEARTHSTONE_STORE].linkedCards[0].name,"town"); //link name
+
+    // Card 92  - Thistlehill Cottage
+    deck[CARD_COTTAGE_1].cardType = CARD_COTTAGE_1;
+    deck[CARD_COTTAGE_1].numLinkedCards = 2;
+    deck[CARD_COTTAGE_1].numLinkedItems = 2;
+    strcpy(deck[CARD_COTTAGE_1].name, "Thistlehill Cottage");
+    strcpy(deck[CARD_COTTAGE_1].description, "Thistlehill Cottage is a charming little retreat perched on a hillside,\nsurrounded by wildflowers and the gentle rustle of the breeze.");
+    deck[CARD_COTTAGE_1].linkedCards[0].cardType = CARD_FARM_BAKER; //?
+    strcpy(deck[CARD_COTTAGE_1].linkedCards[0].name,"north"); //link name
+    deck[CARD_COTTAGE_1].linkedCards[1].cardType = CARD_HEARTHSTONE; //?
+    strcpy(deck[CARD_COTTAGE_1].linkedCards[1].name,"east"); //link name
+    deck[CARD_COTTAGE_1].linkedItems[0] = ITEM_HEALTH_POTION; //potion
+    deck[CARD_COTTAGE_1].linkedItems[1] = ITEM_HEALTH_POTION; //potion
+
+    // Card 93  - Sunbeam Cottage
+    deck[CARD_COTTAGE_2].cardType = CARD_COTTAGE_2;
+    deck[CARD_COTTAGE_2].numLinkedCards = 2;
+    deck[CARD_COTTAGE_2].numLinkedItems = 2;
+    strcpy(deck[CARD_COTTAGE_2].name, "Sunbeam Cottage");
+    strcpy(deck[CARD_COTTAGE_2].description, "A bright, welcoming home bathed in natural light.\nWith its large windows that let the sun spill in,\nthe cottage feels warm and cheerful all year round.\nInside are soft wooden beams and colorful, hand-crafted decor");
+    deck[CARD_COTTAGE_2].linkedCards[0].cardType = CARD_HEARTHSTONE; //?
+    strcpy(deck[CARD_COTTAGE_2].linkedCards[0].name,"south"); //link name
+    deck[CARD_COTTAGE_2].linkedCards[1].cardType = CARD_FARM_BAKER; //?
+    strcpy(deck[CARD_COTTAGE_2].linkedCards[1].name,"west"); //link name
+    deck[CARD_COTTAGE_2].linkedItems[0] = ITEM_HEALTH_POTION; //potion
+    deck[CARD_COTTAGE_2].linkedItems[1] = ITEM_HEALTH_POTION; //potion
+
+    // Card 94  - Baker Farm
+    deck[CARD_FARM_BAKER].cardType = CARD_FARM_BAKER;
+    deck[CARD_FARM_BAKER].numLinkedCards = 2;
+    deck[CARD_FARM_BAKER].numLinkedItems = 1;
+    strcpy(deck[CARD_FARM_BAKER].name, "Baker Farm");
+    strcpy(deck[CARD_FARM_BAKER].description, "The Baker Farm is a cozy,\npicturesque homestead nestled at the edge of Hearthstone,\nwhere the sweet scent of fresh bread and earthy fields mingle in the air.\nThe farmhouse,\nwith its red-brick chimney and whitewashed walls,\nstands proudly beside neat rows of crops and flourishing orchards.\nThere is a beet plant here.");
+    deck[CARD_FARM_BAKER].linkedCards[0].cardType = CARD_COTTAGE_1; //?
+    strcpy(deck[CARD_FARM_BAKER].linkedCards[0].name,"south"); //link name
+    deck[CARD_FARM_BAKER].linkedCards[1].cardType = CARD_COTTAGE_2; //?
+    strcpy(deck[CARD_FARM_BAKER].linkedCards[1].name,"east"); //link name
+    deck[CARD_FARM_BAKER].linkedItems[0] = ITEM_BOOK; //book
+
+    // Card 95  - Old Man Aj's
+    deck[CARD_AJ].cardType = CARD_AJ;
+    deck[CARD_AJ].numLinkedCards = 1;
+    deck[CARD_AJ].numLinkedItems = 4;
+    strcpy(deck[CARD_AJ].name, "Old Man Aj's");
+    strcpy(deck[CARD_AJ].description, "Old Man Aj's house is a weathered,\nyet sturdy cottage nestled at the edge of Hearthstone.\nIts timbered walls are worn with age, and the roof, patched in places, is thick with moss.\nThe front porch is cluttered with an assortment of tools, jars of dried herbs, and an odd collection of knick-knacks.\nThere is a fireplace here.");
+    deck[CARD_AJ].linkedCards[0].cardType = CARD_HEARTHSTONE; //?
+    strcpy(deck[CARD_AJ].linkedCards[0].name,"path"); //link name
+    deck[CARD_AJ].linkedItems[0] = ITEM_MANA_POTION; //potion
+    deck[CARD_AJ].linkedItems[1] = ITEM_MANA_POTION; //potion
+    deck[CARD_AJ].linkedItems[2] = ITEM_MANA_POTION; //potion
+    deck[CARD_AJ].linkedItems[3] = ITEM_MANA_POTION; //potion
+
+    // Card 96  - Road near Hearthstone
+    deck[CARD_HEARTHSTONE_ROAD].cardType = CARD_HEARTHSTONE_ROAD;
+    deck[CARD_HEARTHSTONE_ROAD].numLinkedCards = 1;
+    strcpy(deck[CARD_HEARTHSTONE_ROAD].name, "Road near Hearthstone");
+    strcpy(deck[CARD_HEARTHSTONE_ROAD].description, "The Road near Hearthstone winds gently through lush meadows and wooded glades,\noffering peaceful views of the surrounding countryside.\nPaved with cobblestones that have worn smooth over the years,\nit's flanked by wildflowers and tall grasses that sway in the breeze.");
+    deck[CARD_HEARTHSTONE_ROAD].linkedCards[0].cardType = CARD_HEARTHSTONE; //?
+    strcpy(deck[CARD_HEARTHSTONE_ROAD].linkedCards[0].name,"west"); //link name
+    //todo: what next
  
 
 
@@ -2131,7 +2239,7 @@ void handleEvents()
         xp += 5;
         printf("(received 5 experience points)\n");
     }
-    else if(currentCard->cardType == CARD_SECOND_PATH && !treeFallEventHasHappened && loops > 150)
+    else if(currentCard->cardType == CARD_SECOND_PATH && !treeFallEventHasHappened && loops > 100)
     {
         treeFallEventHasHappened = true;
         printf("\nA tree falls and lands like a bridge across the river...\n");
@@ -2173,7 +2281,7 @@ void handleEvents()
         //change description to fit the change
         strcpy(deck[CARD_STACK_HOMESTEAD].description, "You are at the Stack Homestead.\nThere is a mountain to the north.\nOn the far western side of the homestead, there is a river.\nA tree has fallen across the river so you can cross to the other side.\nThere is a pumpkin patch.\nThere is a fireplace here.");
     }
-    else if(currentCard->cardType == CARD_FORSAKEN_ROAD && !chasmEventHasHappened && xp > 150 && deck[CARD_FORSAKEN_ROAD].numLinkedEnemies == 0 && loops > 600)
+    else if(currentCard->cardType == CARD_FORSAKEN_ROAD && !chasmEventHasHappened && xp > 120 && deck[CARD_FORSAKEN_ROAD].numLinkedEnemies == 0 && loops > 600)
     {
         chasmEventHasHappened = true;
         printf("\nThe Blue Wizard appears ...\n");
@@ -2239,6 +2347,11 @@ void handleCast(char* spell)
             printf("The fire place is lit at The Enchanted Village.\n");
             villageFirePlaceIsLit = true;
         }
+        else if(currentCard->cardType == CARD_AJ)
+        {
+            printf("The fire place is lit at old man AJ's.\n");
+            ajFirePlaceIsLit = true;
+        }
         else
         {
             printf("no effect\n");
@@ -2287,6 +2400,13 @@ void handleCast(char* spell)
             printf("You eat it.\n");
             printf("(received 800 health)\n");
             health += 800;
+        }
+        else if(currentCard->cardType == CARD_FARM_BAKER)
+        {
+            printf("One of the beets grows incredibly large.\n");
+            printf("You eat it.\n");
+            printf("(received 1200 health)\n");
+            health += 1200;
         }
         else
         {
