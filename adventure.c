@@ -97,7 +97,7 @@ typedef struct {
 
 Card *currentCard;
 Card deck[128];
-int TotalNumberOfCards = 96;//increment deck size by powers of two, when this value is close to the max
+int TotalNumberOfCards = 102;//increment deck size by powers of two, when this value is close to the max
 
 enum CardTypes {
     CARD_HOME = 0,
@@ -196,6 +196,12 @@ enum CardTypes {
     CARD_FARM_BAKER = 93,//Family Farm
     CARD_AJ = 94, //Old Man Aj's
     CARD_HEARTHSTONE_ROAD = 95, //Road east of Town of Hearthstone
+    CARD_FARM_TURNEY = 96, //Family Farm
+    CARD_PUB = 97, //Pub near Hearthstone
+    CARD_WRENWOOD_ROAD = 98, //Road east of Wrenwood
+    CARD_BELLEVILLE= 99, //Belleville
+    CARD_BELLEVILLE_STORE = 100, //Belleville
+    CARD_BELLEVILLE_LIBRARY = 101, //Belleville
 };
 
 enum ItemTypes {
@@ -238,6 +244,14 @@ bool treeFallEventHasHappened = false;
 bool elderfernEventHasHappened = false;
 bool stackTreeFallEventHasHappened = false;
 bool chasmEventHasHappened = false;
+bool jovi1EventHasHappened = false;
+bool jovi2EventHasHappened = false;
+bool jovi3EventHasHappened = false;
+bool jovi4EventHasHappened = false;
+bool jovi5EventHasHappened = false;
+bool jovi6EventHasHappened = false;
+bool pub1EventHasHappened = false;
+bool pub2EventHasHappened = false;
 
 //global state bools for fireplaces
 bool homeFirePlaceIsLit = false;
@@ -248,6 +262,7 @@ bool williamsFirePlaceIsLit = false;
 bool stackFirePlaceIsLit = false;
 bool villageFirePlaceIsLit = false;
 bool ajFirePlaceIsLit = false;
+bool bellevilleFirePlaceIsLit = false;
 
 //global state bools for treasure chests
 bool emberfellTowerChestOpened = false;
@@ -477,6 +492,7 @@ int main()
                 }
                 printf("Places you can jump to: \n");
                 if(homeFirePlaceIsLit){printf(" - home\n");}
+                if(bellevilleFirePlaceIsLit){printf(" - belleville\n");}
                 if(mccannsFirePlaceIsLit){printf(" - mccann\n");}
                 if(jeffersFirePlaceIsLit){printf(" - jeffers\n");}
                 if(cinderSpireFirePlaceIsLit){printf(" - spire\n");}
@@ -527,6 +543,11 @@ int main()
                     {
                         printf("went to old man AJ's.\n"); 
                         currentCard = &deck[CARD_AJ];
+                    }
+                    else if (strcmp(buffer, "belleville") == 0 && bellevilleFirePlaceIsLit)
+                    {
+                        printf("went to Belleville Library.\n"); 
+                        currentCard = &deck[CARD_BELLEVILLE_LIBRARY];
                     }
                     else
                     {
@@ -611,6 +632,7 @@ int main()
                         stackFirePlaceIsLit = true;
                         villageFirePlaceIsLit = true;
                         ajFirePlaceIsLit = true;
+                        bellevilleFirePlaceIsLit = true;
                     }
                     else if (strcmp(buffer, "goto") == 0)
                     {
@@ -982,8 +1004,8 @@ void initDeck() {
     // Card 22  - town house 1 - has grow
     deck[CARD_TOWN_HOUSE].cardType = CARD_TOWN_HOUSE;
     deck[CARD_TOWN_HOUSE].numLinkedCards = 1;
-    strcpy(deck[CARD_TOWN_HOUSE].name, "Small House");
-    strcpy(deck[CARD_TOWN_HOUSE].description, "You are in a small house.\nThere is a woman here.");
+    strcpy(deck[CARD_TOWN_HOUSE].name, "Small Wooden House");
+    strcpy(deck[CARD_TOWN_HOUSE].description, "You stand before a small wooden house,\nits weathered planks bearing the marks of time and countless storms.\nThe roof,\npatched with moss and stray shingles,\nslopes gently, giving the structure a quaint, inviting charm.\nThere is a woman here.");
     deck[CARD_TOWN_HOUSE].linkedCards[0].cardType = CARD_TOWN_SQUARE; //link back to town
     strcpy(deck[CARD_TOWN_HOUSE].linkedCards[0].name,"town"); //link name
 
@@ -1113,7 +1135,7 @@ void initDeck() {
 
     // Card 34  - Wrenwood
     deck[CARD_WRENWOOD].cardType = CARD_WRENWOOD;
-    deck[CARD_WRENWOOD].numLinkedCards = 4;
+    deck[CARD_WRENWOOD].numLinkedCards = 5;
     deck[CARD_WRENWOOD].numLinkedItems = 2;
     strcpy(deck[CARD_WRENWOOD].name, "Town of Wrenwood");
     strcpy(deck[CARD_WRENWOOD].description, "You are in Wrenwood.\nThere is a store here.\nThere are a few houses nearby.");
@@ -1125,6 +1147,8 @@ void initDeck() {
     strcpy(deck[CARD_WRENWOOD].linkedCards[2].name,"store"); //link name
     deck[CARD_WRENWOOD].linkedCards[3].cardType = CARD_GREY; //link to alistair grey's
     strcpy(deck[CARD_WRENWOOD].linkedCards[3].name,"grey"); //link name
+    deck[CARD_WRENWOOD].linkedCards[4].cardType = CARD_WRENWOOD_ROAD; //link east to road
+    strcpy(deck[CARD_WRENWOOD].linkedCards[4].name,"east"); //link name
     deck[CARD_WRENWOOD].linkedItems[0] = ITEM_COINS; //coins
     deck[CARD_WRENWOOD].linkedItems[1] = ITEM_COINS; //coins
 
@@ -1908,7 +1932,7 @@ void initDeck() {
 
     // Card 94  - Baker Farm
     deck[CARD_FARM_BAKER].cardType = CARD_FARM_BAKER;
-    deck[CARD_FARM_BAKER].numLinkedCards = 2;
+    deck[CARD_FARM_BAKER].numLinkedCards = 3;
     deck[CARD_FARM_BAKER].numLinkedItems = 1;
     strcpy(deck[CARD_FARM_BAKER].name, "Baker Farm");
     strcpy(deck[CARD_FARM_BAKER].description, "The Baker Farm is a cozy,\npicturesque homestead nestled at the edge of Hearthstone,\nwhere the sweet scent of fresh bread and earthy fields mingle in the air.\nThe farmhouse,\nwith its red-brick chimney and whitewashed walls,\nstands proudly beside neat rows of crops and flourishing orchards.\nThere is a beet plant here.");
@@ -1916,7 +1940,10 @@ void initDeck() {
     strcpy(deck[CARD_FARM_BAKER].linkedCards[0].name,"south"); //link name
     deck[CARD_FARM_BAKER].linkedCards[1].cardType = CARD_COTTAGE_2; //?
     strcpy(deck[CARD_FARM_BAKER].linkedCards[1].name,"east"); //link name
+    deck[CARD_FARM_BAKER].linkedCards[2].cardType = CARD_FARM_TURNEY; //?
+    strcpy(deck[CARD_FARM_BAKER].linkedCards[2].name,"west"); //link name
     deck[CARD_FARM_BAKER].linkedItems[0] = ITEM_BOOK; //book
+    
 
     // Card 95  - Old Man Aj's
     deck[CARD_AJ].cardType = CARD_AJ;
@@ -1933,12 +1960,76 @@ void initDeck() {
 
     // Card 96  - Road near Hearthstone
     deck[CARD_HEARTHSTONE_ROAD].cardType = CARD_HEARTHSTONE_ROAD;
-    deck[CARD_HEARTHSTONE_ROAD].numLinkedCards = 1;
+    deck[CARD_HEARTHSTONE_ROAD].numLinkedCards = 2;
     strcpy(deck[CARD_HEARTHSTONE_ROAD].name, "Road near Hearthstone");
     strcpy(deck[CARD_HEARTHSTONE_ROAD].description, "The Road near Hearthstone winds gently through lush meadows and wooded glades,\noffering peaceful views of the surrounding countryside.\nPaved with cobblestones that have worn smooth over the years,\nit's flanked by wildflowers and tall grasses that sway in the breeze.");
     deck[CARD_HEARTHSTONE_ROAD].linkedCards[0].cardType = CARD_HEARTHSTONE; //?
     strcpy(deck[CARD_HEARTHSTONE_ROAD].linkedCards[0].name,"west"); //link name
-    //todo: what next
+    deck[CARD_HEARTHSTONE_ROAD].linkedCards[1].cardType = CARD_PUB; //?
+    strcpy(deck[CARD_HEARTHSTONE_ROAD].linkedCards[1].name,"pub"); //link name
+
+    // Card 97  - Turney Farm
+    deck[CARD_FARM_TURNEY].cardType = CARD_FARM_TURNEY;
+    deck[CARD_FARM_TURNEY].numLinkedCards = 1;
+    deck[CARD_FARM_TURNEY].numLinkedItems = 1;
+    strcpy(deck[CARD_FARM_TURNEY].name, "Turney Farm");
+    strcpy(deck[CARD_FARM_TURNEY].description, "A nice, quiet, farm house in the country-side.\nLooks like a good place for a read.");
+    deck[CARD_FARM_TURNEY].linkedCards[0].cardType = CARD_FARM_BAKER; //?
+    strcpy(deck[CARD_FARM_TURNEY].linkedCards[0].name,"east"); //link name
+    deck[CARD_FARM_TURNEY].linkedItems[0] = ITEM_BOOK; //book
+
+    // Card 98  - Pub
+    deck[CARD_PUB].cardType = CARD_PUB;
+    deck[CARD_PUB].numLinkedCards = 1;
+    strcpy(deck[CARD_PUB].name, "The Stumbling Goat");
+    strcpy(deck[CARD_PUB].description, "A humorous, rustic tavern with a quirky feel, often the heart of village gossip.");
+    deck[CARD_PUB].linkedCards[0].cardType = CARD_HEARTHSTONE_ROAD; //?
+    strcpy(deck[CARD_PUB].linkedCards[0].name,"road"); //link name
+
+    // Card 99  - Road east of Wrenwood
+    deck[CARD_WRENWOOD_ROAD].cardType = CARD_WRENWOOD_ROAD;
+    deck[CARD_WRENWOOD_ROAD].numLinkedCards = 2;
+    deck[CARD_WRENWOOD_ROAD].numLinkedEnemies = 1;
+    strcpy(deck[CARD_WRENWOOD_ROAD].name, "Road east of Wrenwood");
+    strcpy(deck[CARD_WRENWOOD_ROAD].description, "You travel miles east of Wrenwood.\nIt looks like another town is nearby");
+    deck[CARD_WRENWOOD_ROAD].linkedCards[0].cardType = CARD_BELLEVILLE; //?
+    strcpy(deck[CARD_WRENWOOD_ROAD].linkedCards[0].name,"east"); //link name
+    deck[CARD_WRENWOOD_ROAD].linkedCards[1].cardType = CARD_WRENWOOD; //?
+    strcpy(deck[CARD_WRENWOOD_ROAD].linkedCards[1].name,"west"); //link name
+    deck[CARD_WRENWOOD_ROAD].linkedEnemies[0].enemyType = ENEMY_ORC; //orc
+    deck[CARD_WRENWOOD_ROAD].linkedEnemies[0].health = 1000; 
+    deck[CARD_WRENWOOD_ROAD].linkedEnemies[0].damage = 100;
+
+    // Card 100  - Belleville
+    deck[CARD_BELLEVILLE].cardType = CARD_BELLEVILLE;
+    deck[CARD_BELLEVILLE].numLinkedCards = 3;
+    strcpy(deck[CARD_BELLEVILLE].name, "Belleville");
+    strcpy(deck[CARD_BELLEVILLE].description, "At the center of Belleville lies a modest square,\ndominated by an ancient oak tree whose gnarled branches stretch wide,\ncasting dappled shadows over the market stalls below.");
+    deck[CARD_BELLEVILLE].linkedCards[0].cardType = CARD_BELLEVILLE_LIBRARY; //?
+    strcpy(deck[CARD_BELLEVILLE].linkedCards[0].name,"books"); //link name
+    deck[CARD_BELLEVILLE].linkedCards[1].cardType = CARD_BELLEVILLE_STORE; //?
+    strcpy(deck[CARD_BELLEVILLE].linkedCards[1].name,"store"); //link name
+    deck[CARD_BELLEVILLE].linkedCards[2].cardType = CARD_WRENWOOD_ROAD; //?
+    strcpy(deck[CARD_BELLEVILLE].linkedCards[2].name,"west"); //link name
+
+    // Card 101  - Belleville Store
+    deck[CARD_BELLEVILLE_STORE].cardType = CARD_BELLEVILLE_STORE;
+    deck[CARD_BELLEVILLE_STORE].numLinkedCards = 1;
+    deck[CARD_BELLEVILLE_STORE].isStore = true;
+    strcpy(deck[CARD_BELLEVILLE_STORE].name, "Ye Ol'e Dog House");
+    strcpy(deck[CARD_BELLEVILLE_STORE].description, "A quaint small shop known for its ice cream.");
+    deck[CARD_BELLEVILLE_STORE].linkedCards[0].cardType = CARD_BELLEVILLE; //?
+    strcpy(deck[CARD_BELLEVILLE_STORE].linkedCards[0].name,"town"); //link name
+
+    // Card 102  - Belleville Library - has fireplace
+    deck[CARD_BELLEVILLE_LIBRARY].cardType = CARD_BELLEVILLE_LIBRARY;
+    deck[CARD_BELLEVILLE_LIBRARY].numLinkedCards = 1;
+    deck[CARD_BELLEVILLE_LIBRARY].numLinkedItems = 1;
+    strcpy(deck[CARD_BELLEVILLE_LIBRARY].name, "Belleville Public Library");
+    strcpy(deck[CARD_BELLEVILLE_LIBRARY].description, "A public library for old and young.\nA good place for a read.\nThere is a fireplace here.");
+    deck[CARD_BELLEVILLE_LIBRARY].linkedCards[0].cardType = CARD_BELLEVILLE; //?
+    strcpy(deck[CARD_BELLEVILLE_LIBRARY].linkedCards[0].name,"town"); //link name
+    deck[CARD_BELLEVILLE_LIBRARY].linkedItems[0] = ITEM_BOOK;
  
 
 
@@ -2300,6 +2391,58 @@ void handleEvents()
         //change description to fit the change
         strcpy(deck[CARD_FORSAKEN_ROAD].description, "A desolate, overgrown path,\nonce traveled but now abandoned.\nCracked stone and twisted roots litter the way,\nand an eerie silence hangs in the air,\nas if the road itself has been forgotten by time.\nThe chasm is repaired. You can go north or south.");
     }
+    else if(currentCard->cardType == CARD_EMBERFELL_CHAMBER) //happens immedialtey, no loop requirement, and no boolean for this one, happens every time
+    {
+        printf("\nA ghost appears. Its very spooky. Jovi barks at it.\n");
+        printf("The ghost glides back into the wall and disappears.\n\n");
+    }
+    else if(currentCard->cardType == CARD_FIRST_ROAD_RIGHT && !jovi1EventHasHappened ) //happens immedialtey, no loop requirement
+    {
+        jovi1EventHasHappened = true;
+        printf("\nJovi barks...\n");
+    }
+    else if(currentCard->cardType == CARD_CAVE_DEEP && !jovi2EventHasHappened ) //happens immedialtey, no loop requirement
+    {
+        jovi2EventHasHappened = true;
+        printf("\nJovi barks...\n");
+    }
+    else if(currentCard->cardType == CARD_MIRKWOOD_ENTER && !jovi3EventHasHappened ) //happens immedialtey, no loop requirement
+    {
+        jovi3EventHasHappened = true;
+        printf("\nJovi barks...\n");
+    }
+    else if(currentCard->cardType == CARD_TOMBS && !jovi4EventHasHappened ) //happens immedialtey, no loop requirement
+    {
+        jovi4EventHasHappened = true;
+        printf("\nJovi barks...\n");
+    }
+    else if(currentCard->cardType == CARD_MARSH_11 && !jovi5EventHasHappened ) //happens immedialtey, no loop requirement
+    {
+        jovi5EventHasHappened = true;
+        printf("\nJovi barks...\n");
+    }
+    else if(currentCard->cardType == CARD_FARM_BAKER && !jovi6EventHasHappened ) //happens immedialtey, no loop requirement
+    {
+        jovi6EventHasHappened = true;
+        printf("\nJovi barks...\n");
+    }
+    else if(currentCard->cardType == CARD_PUB && !pub1EventHasHappened ) //happens immedialtey, no loop requirement
+    {
+        pub1EventHasHappened = true;
+        printf("\n'Hey there young fellow!'\n");
+        printf("A drunk patron Walks over to you.\n");
+        printf("'Whats your deal!' says the patron\n");
+    }
+    else if(currentCard->cardType == CARD_PUB && pub1EventHasHappened && !pub2EventHasHappened && hasSword) //no loop requirement, happens after event 1 and only if you have the sword
+    {
+        pub2EventHasHappened = true;
+        printf("\nThe drunk patron punches you.\n");
+        printf("You fall backward, but quickly get back up and draw your sword.\n");
+        printf("'... I dont want no trouble' says the patron.\n");
+        printf("He walks away.\n");
+        xp += 50;
+        printf("(received 50 experience points)\n");
+    }
 }
 
 //handle the casting of spells
@@ -2352,6 +2495,17 @@ void handleCast(char* spell)
             printf("The fire place is lit at old man AJ's.\n");
             ajFirePlaceIsLit = true;
         }
+        else if(currentCard->cardType == CARD_TOWN_HOUSE)
+        {
+            printf("The woman screams 'What are you doing, you are going to burn the place down!'.\n");
+            printf("(received 5 xp)\n");
+            xp += 5;
+        }
+        else if(currentCard->cardType == CARD_BELLEVILLE_LIBRARY)
+        {
+            printf("The fire place is lit at The Belleville Library.\n");
+            bellevilleFirePlaceIsLit = true;
+        }
         else
         {
             printf("no effect\n");
@@ -2366,12 +2520,6 @@ void handleCast(char* spell)
             printf("You eat it.\n");
             printf("(received 800 health)\n");
             health += 800;
-        }
-        else if(currentCard->cardType == CARD_TOWN_HOUSE)
-        {
-            printf("The woman's breasts grow larger.\n");
-            printf("(received 5 xp)\n");
-            xp += 5;
         }
         else if(currentCard->cardType == CARD_WILD_GARDEN)
         {
