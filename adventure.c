@@ -252,7 +252,7 @@ bool jovi5EventHasHappened = false;
 bool jovi6EventHasHappened = false;
 bool pub1EventHasHappened = false;
 bool pub2EventHasHappened = false;
-
+bool ghostEventHasHappened = false;
 //global state bools for fireplaces
 bool homeFirePlaceIsLit = false;
 bool jeffersFirePlaceIsLit = false;
@@ -546,7 +546,7 @@ int main()
                     }
                     else if (strcmp(buffer, "belleville") == 0 && bellevilleFirePlaceIsLit)
                     {
-                        printf("went to Belleville Library.\n"); 
+                        printf("went to Belleville Public Library.\n"); 
                         currentCard = &deck[CARD_BELLEVILLE_LIBRARY];
                     }
                     else
@@ -2310,7 +2310,7 @@ void handleEvents()
         health+=100;
         printf("(received 100 health)\n");
     }
-    else if(currentCard->cardType == CARD_DEAD_END && !squirrelEventHasHappened ) //happens immedialtey, no loop requirement
+    else if(currentCard->cardType == CARD_DEAD_END && !squirrelEventHasHappened ) //happens immediatley, no loop requirement
     {
         squirrelEventHasHappened = true;
         printf("\nA squirrel runs out of the forest...\n");
@@ -2319,7 +2319,7 @@ void handleEvents()
         xp += 5;
         printf("(received 5 experience points)\n");
     }
-    else if(currentCard->cardType == CARD_ECHOING_HOLLOW && !echoEventHasHappened ) //happens immedialtey, no loop requirement
+    else if(currentCard->cardType == CARD_ECHOING_HOLLOW && !echoEventHasHappened ) //happens immediatley, no loop requirement
     {
         echoEventHasHappened = true;
         printf("\nYou shout 'Hello!'\n");
@@ -2342,13 +2342,13 @@ void handleEvents()
         //change description to fit the change
         strcpy(deck[CARD_SECOND_PATH].description, "You take the path deep into the woods.\nThe path continues to a garden.\nThere is also a deep river nearby.\nA tree has fallen across the river so you can cross to the other side.");
     }
-    else if(currentCard->cardType == CARD_ELDERFERN_2 && !elderfernEventHasHappened ) //happens immedialtey, no loop requirement
+    else if(currentCard->cardType == CARD_ELDERFERN_2 && !elderfernEventHasHappened ) //happens immediatley, no loop requirement
     {
         elderfernEventHasHappened = true;
         printf("\nThe mist of the forest is too thick, you cant see...\n");
         printf("You can hear the howl of wolves.\n\n");
     }
-    else if(currentCard->cardType == CARD_GREY && books > 0 ) //happens immedialtey, no loop requirement
+    else if(currentCard->cardType == CARD_GREY && books > 0 ) //happens immediatley, no loop requirement
     {
         printf("\nAlistair says 'Great, you brought me some books!'\n");
         for(int i = 0; i < books; i++)
@@ -2391,42 +2391,43 @@ void handleEvents()
         //change description to fit the change
         strcpy(deck[CARD_FORSAKEN_ROAD].description, "A desolate, overgrown path,\nonce traveled but now abandoned.\nCracked stone and twisted roots litter the way,\nand an eerie silence hangs in the air,\nas if the road itself has been forgotten by time.\nThe chasm is repaired. You can go north or south.");
     }
-    else if(currentCard->cardType == CARD_EMBERFELL_CHAMBER) //happens immedialtey, no loop requirement, and no boolean for this one, happens every time
+    else if(currentCard->cardType == CARD_EMBERFELL_CHAMBER && !ghostEventHasHappened) //happens immediatley, no loop requirement
     {
+        ghostEventHasHappened = true;
         printf("\nA ghost appears. Its very spooky. Jovi barks at it.\n");
         printf("The ghost glides back into the wall and disappears.\n\n");
     }
-    else if(currentCard->cardType == CARD_FIRST_ROAD_RIGHT && !jovi1EventHasHappened ) //happens immedialtey, no loop requirement
+    else if(currentCard->cardType == CARD_FIRST_ROAD_RIGHT && !jovi1EventHasHappened ) //happens immediatley, no loop requirement
     {
         jovi1EventHasHappened = true;
         printf("\nJovi barks...\n");
     }
-    else if(currentCard->cardType == CARD_CAVE_DEEP && !jovi2EventHasHappened ) //happens immedialtey, no loop requirement
+    else if(currentCard->cardType == CARD_CAVE_DEEP && !jovi2EventHasHappened ) //happens immediatley, no loop requirement
     {
         jovi2EventHasHappened = true;
         printf("\nJovi barks...\n");
     }
-    else if(currentCard->cardType == CARD_MIRKWOOD_ENTER && !jovi3EventHasHappened ) //happens immedialtey, no loop requirement
+    else if(currentCard->cardType == CARD_MIRKWOOD_ENTER && !jovi3EventHasHappened ) //happens immediatley, no loop requirement
     {
         jovi3EventHasHappened = true;
         printf("\nJovi barks...\n");
     }
-    else if(currentCard->cardType == CARD_TOMBS && !jovi4EventHasHappened ) //happens immedialtey, no loop requirement
+    else if(currentCard->cardType == CARD_TOMBS && !jovi4EventHasHappened ) //happens immediatley, no loop requirement
     {
         jovi4EventHasHappened = true;
         printf("\nJovi barks...\n");
     }
-    else if(currentCard->cardType == CARD_MARSH_11 && !jovi5EventHasHappened ) //happens immedialtey, no loop requirement
+    else if(currentCard->cardType == CARD_MARSH_11 && !jovi5EventHasHappened ) //happens immediatley, no loop requirement
     {
         jovi5EventHasHappened = true;
         printf("\nJovi barks...\n");
     }
-    else if(currentCard->cardType == CARD_FARM_BAKER && !jovi6EventHasHappened ) //happens immedialtey, no loop requirement
+    else if(currentCard->cardType == CARD_FARM_BAKER && !jovi6EventHasHappened ) //happens immediatley, no loop requirement
     {
         jovi6EventHasHappened = true;
         printf("\nJovi barks...\n");
     }
-    else if(currentCard->cardType == CARD_PUB && !pub1EventHasHappened ) //happens immedialtey, no loop requirement
+    else if(currentCard->cardType == CARD_PUB && !pub1EventHasHappened ) //happens immediatley, no loop requirement
     {
         pub1EventHasHappened = true;
         printf("\n'Hey there young fellow!'\n");
