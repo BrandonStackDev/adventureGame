@@ -2705,7 +2705,7 @@ void handleJovi(char* input) {
 
     if (curl) {
         // Set the URL for the POST request
-        curl_easy_setopt(curl, CURLOPT_URL, "http://10.0.0.253:11434/api/generate");  // Update URL as per your setup
+        curl_easy_setopt(curl, CURLOPT_URL, "http://127.0.0.1:11434/api/generate");  // Update URL as per your setup
 
         // Set the HTTP request type to POST
         curl_easy_setopt(curl, CURLOPT_POST, 1L);
