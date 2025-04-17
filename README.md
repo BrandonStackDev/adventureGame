@@ -76,9 +76,13 @@ Places to move to:
     - then you can use the map to jump back to that location quickly
   - grow is used in gardens to food which gives you a lot of health
   - open is used to open chests and secret passages
+ 
  when in a store, you can buy items, right now that is a very simple system, but you can do it.
+ 
  jovi command is for talking to Jovi, Jovi is your companion, a talking dog.
+ 
  CTRL-D to exit quickly, or just use exit
+ 
  CTRL-C to enable cheats (look in the code for what you can do, feel free to add to them, and any of this can be copied and modified, It is fine with me)
 
 There are also events that happen based on the loop timer (increments every time you enter a command or press enter)
