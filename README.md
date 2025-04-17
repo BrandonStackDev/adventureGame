@@ -16,11 +16,13 @@ run on a good computer prefferably with a nicer GPU that can handle llama3,
 and change the following things in the adventure.c file
  - go to the handleJovi function all the way at the bottom of the file
  - change the url http://127.0.0.1:11434/api/generate
+   - curl_easy_setopt(curl, CURLOPT_URL, "http://127.0.0.1:11434/api/generate");
    - find the ip of the computer running the Ollama instance, and replace the ip address in the url with that
    - update the port also? I think Ollama always uses 11434 but look out for that
    - look out for other things like firewalls if you have trouble
  - if you are running a different LLM
    - find the line that specifies llama3 as the model, and replace "llama3" with whatever model you are running
+   - cJSON_AddStringToObject(json_data, "model", "llama3");
 
 Additionally, you may need to bind to all interfaces with 0.0.0.0.
 In a CMD prompt or bash shell
