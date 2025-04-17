@@ -1,3 +1,6 @@
+# ignore the binary
+adventure
+
 # Prerequisites
 *.d
 
