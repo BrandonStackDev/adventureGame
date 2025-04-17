@@ -57,8 +57,19 @@ the output of the help command looks like this:
   ```
 
  look is your bread and butter, use it to find items and read descriptions of the locations of where you currently are.
+ 
  move lets you change cards. use it to move around.
+```
+ Enter a command: move
+*You entered: move
+Places to move to: 
+ - front - Your Frontdoor
+ - back - Your Backyard
+```
+ type the text on the left like "front" or "back", the text on the right is the title of the card to move to.
+ 
  sword (s for short) is how you attack, fight enemies this way.
+ 
  cast spells with cast, it will list the options for you. you need the ring to use it.
   - fire is used to light fireplaces. Look for a fireplace mentioned in the description from the look command
     - if the current card has a fireplace, cast fire to light
