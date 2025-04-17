@@ -11,7 +11,8 @@ running with Ollama, I used llama3 which is nice and small. I actually cant run 
 pi's do not do that well, I have another computer locally on my network that I run the LLM on,
 and sorry for this but the networking stuff is hardcoded into the adventure.c file.
 
-to set this up locally, install Ollama, run on a good computer prefferably with a nicer GPU that can handle llama3,
+to set this up locally, install Ollama, use Ollama to install a LLM (I recommend llama3 as it is small but powerful), 
+run on a good computer prefferably with a nicer GPU that can handle llama3,
 and change the following things in the adventure.c file
  - go to the handleJovi function all the way at the bottom of the file
  - change the url http://127.0.0.1:11434/api/generate
