@@ -40,7 +40,8 @@ and the game is not complete.
 
 the output of the help command looks like this:
 
-  ```Enter a command: help
+  ```
+  Enter a command: help
   *You entered: help
   Commands:
   - help   -> display this help menu
@@ -52,7 +53,8 @@ the output of the help command looks like this:
   - cast   -> cast a spell, not helpful during fights
   - buy    -> when in a store, you can buy items
   - jovi   -> your best friend, she's a talking dog
-  - quit   -> quit the program```
+  - quit   -> quit the program
+  ```
 
  look is your bread and butter, use it to find items and read descriptions of the locations of where you currently are.
  move lets you change cards. use it to move around.
