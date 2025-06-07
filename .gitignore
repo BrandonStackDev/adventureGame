@@ -1,5 +1,6 @@
 # ignore the binary
 adventure
+dump
 
 # Prerequisites
 *.d

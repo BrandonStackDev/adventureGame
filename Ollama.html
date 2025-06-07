@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Ollama Prompt Tester</title>
+  <style>
+    body { font-family: sans-serif; margin: 20px; max-width: 800px; }
+    textarea, input, pre {
+      width: 100%;
+      margin-top: 10px;
+      font-family: monospace;
+    }
+    button { padding: 10px 20px; margin-top: 10px; }
+    label { font-weight: bold; margin-top: 15px; display: block; }
+    pre { background: #f0f0f0; padding: 10px; overflow: auto; max-height: 400px; }
+  </style>
+</head>
+<body>
+  <h2>Ollama API Prompt Tester</h2>
+
+  <label>Ollama API URL (e.g., http://localhost:11434)</label>
+  <input type="text" id="apiUrl" value="http://localhost:11434">
+
+  <label>Model Name</label>
+  <input type="text" id="modelName" value="llama3">
+
+  <label>Prompt</label>
+  <textarea id="prompt" rows="6">What is the capital of France?</textarea>
+
+  <button onclick="callOllama()">Send Prompt</button>
+
+  <label>Response Message</label>
+  <pre id="responseOutputShort"></pre>
+
+  <label>Full JSON Response</label>
+  <pre id="responseOutput">{}</pre>
+
+  <script>
+    async function callOllama() {
+      const apiUrl = document.getElementById('apiUrl').value;
+      const modelName = document.getElementById('modelName').value;
+      const prompt = document.getElementById('prompt').value;
+
+      const requestBody = {
+        model: modelName,
+        prompt: prompt,
+        stream: false
+      };
+
+      try {
+        const res = await fetch(`${apiUrl}/api/generate`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(requestBody),
+        });
+
+        if (!res.ok)
+        {
+            console.log(res.stringify());
+            throw new Error(`HTTP ${res.status}`);
+        }
+
+        const json = await res.json();
+        document.getElementById('responseOutputShort').textContent = json.response;
+        document.getElementById('responseOutput').textContent = JSON.stringify(json, null, 2);
+      } catch (err) {
+        document.getElementById('responseOutput').textContent = "Error: " + err;
+      }
+    }
+  </script>
+</body>
+</html>

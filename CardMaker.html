@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Card Builder</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    .section { margin-bottom: 20px; }
+    label { display: block; margin: 5px 0 2px; }
+    input, textarea, select { width: 100%; padding: 4px; }
+    button { margin-top: 10px; padding: 6px 12px; }
+    .json-output { white-space: pre-wrap; background: #f0f0f0; padding: 10px; }
+  </style>
+</head>
+<body>
+  <h1>Card Builder</h1>
+
+  <div class="section">
+    <label>Card Type:</label>
+    <input type="number" id="cardType">
+
+    <label>Is Store:</label>
+    <select id="isStore">
+      <option value="true">Yes</option>
+      <option value="false">No</option>
+    </select>
+
+    <label>Name:</label>
+    <input type="text" id="cardName">
+
+    <label>Description:</label>
+    <textarea id="cardDesc"></textarea>
+  </div>
+
+  <div class="section">
+    <h2>Linked Cards</h2>
+    <div id="linkedCards"></div>
+    <button onclick="addLinkedCard()">Add Linked Card</button>
+  </div>
+
+  <div class="section">
+    <h2>Linked Items</h2>
+    <div id="linkedItems"></div>
+    <button onclick="addLinkedItem()">Add Linked Item</button>
+  </div>
+
+  <div class="section">
+    <h2>Linked Enemies</h2>
+    <div id="linkedEnemies"></div>
+    <button onclick="addLinkedEnemy()">Add Linked Enemy</button>
+  </div>
+
+  <button onclick="generateJSON()">Generate JSON</button>
+
+  <div class="section">
+    <h2>JSON Output</h2>
+    <div class="json-output" id="jsonOutput"></div>
+  </div>
+
+  <script>
+    function addLinkedCard() {
+      const container = document.getElementById("linkedCards");
+      const index = container.children.length;
+      container.innerHTML += `
+        <div>
+          <label>Card ${index} Type:</label>
+          <input type="number" class="linkedCardType">
+          <label>Card ${index} Name:</label>
+          <input type="text" class="linkedCardName">
+        </div>
+      `;
+    }
+
+    function addLinkedItem() {
+      const container = document.getElementById("linkedItems");
+      const index = container.children.length;
+      container.innerHTML += `
+        <div>
+          <label>Item ${index} ID:</label>
+          <input type="number" class="linkedItem">
+        </div>
+      `;
+    }
+
+    function addLinkedEnemy() {
+      const container = document.getElementById("linkedEnemies");
+      const index = container.children.length;
+      container.innerHTML += `
+        <div>
+          <label>Enemy ${index} Type:</label>
+          <input type="number" class="enemyType">
+          <label>Health:</label>
+          <input type="number" class="enemyHealth">
+          <label>Damage:</label>
+          <input type="number" class="enemyDamage">
+        </div>
+      `;
+    }
+
+    function generateJSON() {
+      const card = {
+        cardType: parseInt(document.getElementById("cardType").value),
+        isStore: document.getElementById("isStore").value === "true",
+        name: document.getElementById("cardName").value,
+        description: document.getElementById("cardDesc").value,
+        numLinkedCards: 0,
+        linkedCards: [],
+        numLinkedItems: 0,
+        linkedItems: [],
+        numLinkedEnemies: 0,
+        linkedEnemies: []
+      };
+
+      document.querySelectorAll(".linkedCardType").forEach((el, i) => {
+        const name = document.querySelectorAll(".linkedCardName")[i].value;
+        card.linkedCards.push({ cardType: parseInt(el.value), name });
+      });
+      card.numLinkedCards = card.linkedCards.length;
+
+      document.querySelectorAll(".linkedItem").forEach(el => {
+        card.linkedItems.push(parseInt(el.value));
+      });
+      card.numLinkedItems = card.linkedItems.length;
+
+      const enemyTypes = document.querySelectorAll(".enemyType");
+      const enemyHealths = document.querySelectorAll(".enemyHealth");
+      const enemyDamages = document.querySelectorAll(".enemyDamage");
+      for (let i = 0; i < enemyTypes.length; i++) {
+        card.linkedEnemies.push({
+          enemyType: parseInt(enemyTypes[i].value),
+          health: parseInt(enemyHealths[i].value),
+          damage: parseInt(enemyDamages[i].value)
+        });
+      }
+      card.numLinkedEnemies = card.linkedEnemies.length;
+
+      document.getElementById("jsonOutput").textContent = JSON.stringify(card, null, 2);
+    }
+  </script>
+</body>
+</html>

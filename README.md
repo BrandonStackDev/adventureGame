@@ -100,4 +100,7 @@ Deliver books to Alister in the south. He will pay you well.
 In the future I do plan to finish the game, and break it into seperate files, and provide a config file for easy networking setup.
 I think it would also be cool to extend the LLM stuff, maybe have many NPC's that you can talk with instead of just Jovi the talking dog.
 
+...update on 2025-06-06, I decided I am going to make a card/deck builder in html/js, and also remake the game in html/js
+ .... I plan to use something like a RAG system for NPC characters, allow the saving of a config file and the game state, and other improvments
+
 also, sorry for one big c file, I dont know what I am doing
