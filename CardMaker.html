@@ -27,7 +27,7 @@
     }
 
     #cardDescription {
-      height: 300px; /* or more */
+      height: 250px; /* or more */
       resize: vertical; /* lets the user drag to resize if desired */
     }
 
@@ -84,6 +84,11 @@
   <h2>Card Editor</h2>
   <button onclick="newCard()">New Card</button>
 
+  <div class="cardtypeRow">
+    <label>Card Type</label>
+    <h3 id="cardType"></h3>
+  </div>
+
   <label>Name</label>
   <input id="cardName" />
 
@@ -94,22 +99,32 @@
     <label for="isStore">Is Store?</label>
     <input type="checkbox" id="isStore" />
   </div>
-  
 
-  <div class="cardtypeRow">
-    <label>Card Type</label>
-    <h3 id="cardType"></h3>
+  <div class="section">
+    <h2>Linked Items</h2>
+    <div id="linkedItems"></div>
+    <button onclick="addLinkedItem()">Add Linked Item</button>
   </div>
-  
 
-  <label>Linked Items (comma-separated)</label>
-  <input id="linkedItems" />
+  <div class="section">
+    <h2>Linked Enemies</h2>
+    <div id="linkedEnemies"></div>
+    <button onclick="addLinkedEnemy()">Add Linked Enemy</button>
+  </div>
+
+  <div class="section">
+    <h2>Linked Cards</h2>
+    <div id="linkedCards"></div>
+    <button onclick="addLinkedCard()">Add Linked Card</button>
+  </div>
 
   <button onclick="saveCard()">Save Card</button>
+  <button onclick="saveDeck()">Save Deck</button>
 </div>
 
 <script>
 let deck = [];
+let types = {};
 let selectedCardIndex = null;
 const canvas = document.getElementById('deckCanvas');
 const ctx = canvas.getContext('2d');
@@ -127,6 +142,72 @@ async function loadDeck() {
     deck = [];
   }
 }
+
+// Load deck.json and draw cards
+async function loadTypes() {
+  try {
+    const res = await fetch('types.json');
+    types = await res.json();
+    console.log(types);
+  } catch (err) {
+    console.error('Could not load types.json:', err);
+    types = { items:[], enemies:[]};
+  }
+}
+
+function createDropdown(options, selectedValue, className = '') {
+  const select = document.createElement('select');
+  if (className) select.className = className;
+  options.forEach(opt => {
+    const o = document.createElement('option');
+    o.value = opt.value;
+    o.textContent = opt.displayName;
+    o.dataset.type = opt.type;
+    if (opt.value === selectedValue) o.selected = true;
+    select.appendChild(o);
+  });
+  return select;
+}
+
+function addLinkedItem(selected = null) {
+  const container = document.getElementById('linkedItems');
+  const dropdown = createDropdown(types.items, selected);
+  container.appendChild(dropdown);
+}
+
+function addLinkedEnemy(selected = null) {
+  const container = document.getElementById('linkedEnemies');
+
+  const wrapper = document.createElement('div');
+  wrapper.className = 'linkedEnemyEntry';
+  wrapper.style.marginBottom = '10px';
+
+  // Create dropdown
+  const dropdown = createDropdown(types.enemies, selected?.value ?? selected ?? null);
+  dropdown.style.marginRight = '10px';
+
+  // Health input
+  const healthInput = document.createElement('input');
+  healthInput.type = 'number';
+  healthInput.placeholder = 'Health';
+  healthInput.value = selected?.health ?? 100;
+  healthInput.style.width = '70px';
+  healthInput.style.marginRight = '10px';
+
+  // Damage input
+  const damageInput = document.createElement('input');
+  damageInput.type = 'number';
+  damageInput.placeholder = 'Damage';
+  damageInput.value = selected?.damage ?? 10;
+  damageInput.style.width = '70px';
+
+  wrapper.appendChild(dropdown);
+  wrapper.appendChild(healthInput);
+  wrapper.appendChild(damageInput);
+  container.appendChild(wrapper);
+}
+
+
 
 function drawDeck() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -173,7 +254,6 @@ function clearEditor() {
   document.getElementById('cardDescription').value = '';
   document.getElementById('isStore').checked = false;
   document.getElementById('cardType').innerText = 0;
-  document.getElementById('linkedItems').value = '';
 }
 
 function populateEditor(card) {
@@ -181,8 +261,24 @@ function populateEditor(card) {
   document.getElementById('cardDescription').value = card.description || '';
   document.getElementById('isStore').checked = !!card.isStore;
   document.getElementById('cardType').innerText = card.cardType || 0;
-  document.getElementById('linkedItems').value = (card.linkedItems || []).join(',');
+
+  // Clear and re-add linked items
+  const itemContainer = document.getElementById('linkedItems');
+  itemContainer.innerHTML = '';
+  (card.linkedItems || []).forEach(val => addLinkedItem(val));
+
+  const enemyContainer = document.getElementById('linkedEnemies');
+  enemyContainer.innerHTML = '';
+  (card.linkedEnemies || []).forEach(enemy => {
+    if (typeof enemy === 'number') {
+      addLinkedEnemy({ value: enemy, health: 100, damage: 10 }); // fallback
+    } else {
+      addLinkedEnemy(enemy);
+    }
+  });
+
 }
+
 
 function newCard() {
   selectedCardIndex = null;
@@ -194,22 +290,37 @@ function newCard() {
 }
 
 function saveCard() {
+  const linkedItems = Array.from(document.querySelectorAll('#linkedItems select'))
+    .map(sel => parseInt(sel.value));
+
+  const linkedEnemies = Array.from(document.querySelectorAll('#linkedEnemies .linkedEnemyEntry')).map(entry => {
+      const select = entry.querySelector('select');
+      const health = parseInt(entry.querySelector('input[placeholder="Health"]').value) || 0;
+      const damage = parseInt(entry.querySelector('input[placeholder="Damage"]').value) || 0;
+      return {
+        value: parseInt(select.value),
+        health,
+        damage
+      };
+  });
+
+
   const card = {
     cardType: parseInt(document.getElementById('cardType').innerText),
     isStore: document.getElementById('isStore').checked,
     name: document.getElementById('cardName').value,
     description: document.getElementById('cardDescription').value,
-    linkedItems: document.getElementById('linkedItems').value
-      .split(',')
-      .map(s => parseInt(s.trim()))
-      .filter(n => !isNaN(n)),
+    linkedItems,
+    linkedEnemies,
     linkedCards: [],
-    linkedEnemies: [],
     numLinkedCards: 0,
-    numLinkedItems: 0,
-    numLinkedEnemies: 0
+    numLinkedItems: linkedItems.length,
+    numLinkedEnemies: linkedEnemies.length
   };
-  card.numLinkedItems = card.linkedItems.length;
+
+  if(card.cardType <= 0) {
+    card.cardType = deck.length;
+  }
 
   if (selectedCardIndex !== null) {
     deck[selectedCardIndex] = card;
@@ -219,8 +330,11 @@ function saveCard() {
 
   canvas.height = deck.length * 100 + 20;
   drawDeck();
+}
 
-  // Optional: trigger file save (requires server support to persist, or download)
+
+function saveDeck() {
+  // trigger file save (requires server support to persist, or download)
   const blob = new Blob([JSON.stringify(deck, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -230,6 +344,7 @@ function saveCard() {
   URL.revokeObjectURL(url);
 }
 
+loadTypes();
 loadDeck();
 </script>
 </body>

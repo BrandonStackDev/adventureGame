@@ -1,0 +1,18 @@
+{
+    "items": [
+      { "type": "ITEM_SWORD", "displayName": "Sword", "value": 0 },
+      { "type": "ITEM_MAP", "displayName": "Map", "value": 1 },
+      { "type": "ITEM_HEALTH_POTION", "displayName": "Health Potion", "value": 2 },
+      { "type": "ITEM_MANA_POTION", "displayName": "Mana Potion", "value": 3 },
+      { "type": "ITEM_COINS", "displayName": "Coins", "value": 4 },
+      { "type": "ITEM_BOOK", "displayName": "Book", "value": 5 }
+    ],
+    "enemies": [
+      { "type": "ENEMY_OGRE", "displayName": "Ogre", "value": 0 },
+      { "type": "ENEMY_WOLF", "displayName": "Wolf", "value": 1 },
+      { "type": "ENEMY_BEAR", "displayName": "Bear", "value": 2 },
+      { "type": "ENEMY_GOBLIN", "displayName": "Goblin", "value": 3 },
+      { "type": "ENEMY_ORC", "displayName": "Orc", "value": 4 }
+    ]
+}
+  
