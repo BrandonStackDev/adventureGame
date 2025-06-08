@@ -1,1630 +1,2656 @@
-[{
-		"cardType":	0,
-		"isStore":	false,
-		"name":	"home",
-		"description":	"You are in your home.\nIts dimly lit but cozy.\nThe light from an old lamp beside a cozy armchair pools softly over a stack of books,\ninviting anyone to curl up with a cup of tea or coffee.\nEvery corner feels like a sanctuary, a quiet world where time slows down,\nand every object seems to have its own story to tell.\nThere is a front door and a back door.\nThere is a fire place here.",
-		"linkedCards":	[{
-				"cardType":	1,
-				"name":	"front"
-			}, {
-				"cardType":	22,
-				"name":	"back"
-			}],
-		"linkedItems":	[0, 5, 2, 3],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	1,
-		"isStore":	false,
-		"name":	"Your Frontdoor",
-		"description":	"You are standing just outside your front door.\nThere is a dirt road.\nYou can go left or right.",
-		"linkedCards":	[{
-				"cardType":	0,
-				"name":	"home"
-			}, {
-				"cardType":	2,
-				"name":	"left"
-			}, {
-				"cardType":	3,
-				"name":	"right"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	2,
-		"isStore":	false,
-		"name":	"Far down the Road",
-		"description":	"You move left down the road until you come to a large tree.\nThe tree is very big and very old.",
-		"linkedCards":	[{
-				"cardType":	1,
-				"name":	"front"
-			}, {
-				"cardType":	4,
-				"name":	"tree"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	3,
-		"isStore":	false,
-		"name":	"Up the Road",
-		"description":	"You move right down the road.\nLooks like trouble up ahead...",
-		"linkedCards":	[{
-				"cardType":	1,
-				"name":	"front"
-			}, {
-				"cardType":	5,
-				"name":	"trouble"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	4,
-		"isStore":	false,
-		"name":	"Up in the Tree",
-		"description":	"You climb the tree.\nYou can see everything from up here.",
-		"linkedCards":	[{
-				"cardType":	6,
-				"name":	"down"
-			}, {
-				"cardType":	2,
-				"name":	"back"
-			}],
-		"linkedItems":	[1, 4],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	5,
-		"isStore":	false,
-		"name":	"Clearing along the Road",
-		"description":	"You are in a clearing along the road.\nThere is a lot of open space.",
-		"linkedCards":	[{
-				"cardType":	3,
-				"name":	"back"
-			}, {
-				"cardType":	8,
-				"name":	"road"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[{
-				"enemyType":	0,
-				"health":	30,
-				"damage":	10
-			}, {
-				"enemyType":	1,
-				"health":	10,
-				"damage":	5
-			}]
-	}, {
-		"cardType":	6,
-		"isStore":	false,
-		"name":	"Dead End after the Tree",
-		"description":	"The road comes to a dead end after the tree.\nBut there is a path.\nYou could also follow the squirrel into the woods.",
-		"linkedCards":	[{
-				"cardType":	7,
-				"name":	"path"
-			}, {
-				"cardType":	4,
-				"name":	"tree"
-			}, {
-				"cardType":	38,
-				"name":	"wood"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	7,
-		"isStore":	false,
-		"name":	"Path in the Woods",
-		"description":	"You are on a small path in the woods\nIt looks like there is a small cottage up ahead.",
-		"linkedCards":	[{
-				"cardType":	6,
-				"name":	"dead"
-			}, {
-				"cardType":	8,
-				"name":	"road"
-			}, {
-				"cardType":	9,
-				"name":	"jeffers"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	8,
-		"isStore":	false,
-		"name":	"Long Stretch of Road near town",
-		"description":	"You are on a long stretch of road.\nYou are near town.\nThere is also a small path.",
-		"linkedCards":	[{
-				"cardType":	7,
-				"name":	"path"
-			}, {
-				"cardType":	5,
-				"name":	"trouble"
-			}, {
-				"cardType":	11,
-				"name":	"town"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	9,
-		"isStore":	false,
-		"name":	"Old Man Jeffers",
-		"description":	"You come across old man Jeffers residence.\nHe has a garden and a fireplace.",
-		"linkedCards":	[{
-				"cardType":	7,
-				"name":	"path"
-			}, {
-				"cardType":	10,
-				"name":	"garden"
-			}],
-		"linkedItems":	[3, 4],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	10,
-		"isStore":	false,
-		"name":	"Old Man Jeffers Garden",
-		"description":	"You are in old man Jeffers garden.\nThere is a tomatoe plant.",
-		"linkedCards":	[{
-				"cardType":	9,
-				"name":	"jeffers"
-			}],
-		"linkedItems":	[2, 2],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	11,
-		"isStore":	false,
-		"name":	"Town Square",
-		"description":	"You are in the town square.\nThere is a store here and a few paths.",
-		"linkedCards":	[{
-				"cardType":	8,
-				"name":	"road"
-			}, {
-				"cardType":	12,
-				"name":	"store"
-			}, {
-				"cardType":	13,
-				"name":	"wood"
-			}, {
-				"cardType":	14,
-				"name":	"cave"
-			}, {
-				"cardType":	21,
-				"name":	"house"
-			}],
-		"linkedItems":	[2, 3, 2, 3, 4, 4],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	12,
-		"isStore":	true,
-		"name":	"Mom and Pop Shop",
-		"description":	"You are in a small store.\nBuy items.",
-		"linkedCards":	[{
-				"cardType":	11,
-				"name":	"town"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	13,
-		"isStore":	false,
-		"name":	"Mirkwood Entrance",
-		"description":	"You take a small path to the entrance of Mirkwood forest.\nAll the trees seem to be dead.\nThe air is heavy with mist,\nand the silence is broken only by the occasional rustle of unseen creatures.\nA sense of unease lingers,\nas if the forest itself watches those who enter.",
-		"linkedCards":	[{
-				"cardType":	11,
-				"name":	"town"
-			}, {
-				"cardType":	17,
-				"name":	"wood"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	14,
-		"isStore":	false,
-		"name":	"Cave Entrance",
-		"description":	"You take a path to a cave.\nYou are standing at the entrance of the cave.",
-		"linkedCards":	[{
-				"cardType":	11,
-				"name":	"town"
-			}, {
-				"cardType":	15,
-				"name":	"cave"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	15,
-		"isStore":	false,
-		"name":	"Middle of the Cave",
-		"description":	"You are in a cave.",
-		"linkedCards":	[{
-				"cardType":	14,
-				"name":	"out"
-			}, {
-				"cardType":	16,
-				"name":	"cave"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	16,
-		"isStore":	false,
-		"name":	"Deep in the Cave",
-		"description":	"You are deep inside a cave.\nThere is a door here but it is locked.",
-		"linkedCards":	[{
-				"cardType":	15,
-				"name":	"out"
-			}],
-		"linkedItems":	[4, 4, 4, 4, 4, 4],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	17,
-		"isStore":	false,
-		"name":	"Mirkwood treeline",
-		"description":	"You are on a path through Mirkwood.\nThe path is long.",
-		"linkedCards":	[{
-				"cardType":	13,
-				"name":	"out"
-			}, {
-				"cardType":	18,
-				"name":	"wood"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[{
-				"enemyType":	3,
-				"health":	10,
-				"damage":	10
-			}]
-	}, {
-		"cardType":	18,
-		"isStore":	false,
-		"name":	"Mirkwood path",
-		"description":	"You are on a path through Mirkwood.\nThere is a clearing up ahead.",
-		"linkedCards":	[{
-				"cardType":	17,
-				"name":	"out"
-			}, {
-				"cardType":	19,
-				"name":	"wood"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[{
-				"enemyType":	3,
-				"health":	30,
-				"damage":	10
-			}, {
-				"enemyType":	3,
-				"health":	20,
-				"damage":	20
-			}, {
-				"enemyType":	3,
-				"health":	10,
-				"damage":	30
-			}]
-	}, {
-		"cardType":	19,
-		"isStore":	false,
-		"name":	"Mirkwood clearing",
-		"description":	"You are in a clearing in Mirkwood.\nThe exit is nearby.",
-		"linkedCards":	[{
-				"cardType":	18,
-				"name":	"out"
-			}, {
-				"cardType":	20,
-				"name":	"wood"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[{
-				"enemyType":	2,
-				"health":	40,
-				"damage":	20
-			}, {
-				"enemyType":	3,
-				"health":	20,
-				"damage":	20
-			}, {
-				"enemyType":	1,
-				"health":	10,
-				"damage":	10
-			}, {
-				"enemyType":	4,
-				"health":	100,
-				"damage":	40
-			}]
-	}, {
-		"cardType":	20,
-		"isStore":	false,
-		"name":	"Mirkwood exit",
-		"description":	"You are just outside Mirkwood.\nThere is a road sign with many directions.\nYou can take many paths here.",
-		"linkedCards":	[{
-				"cardType":	19,
-				"name":	"wood"
-			}, {
-				"cardType":	25,
-				"name":	"overlook"
-			}, {
-				"cardType":	26,
-				"name":	"clearing"
-			}, {
-				"cardType":	27,
-				"name":	"hollow"
-			}, {
-				"cardType":	28,
-				"name":	"spire"
-			}],
-		"linkedItems":	[2, 2, 2, 2],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	21,
-		"isStore":	false,
-		"name":	"Small Wooden House",
-		"description":	"You stand before a small wooden house,\nits weathered planks bearing the marks of time and countless storms.\nThe roof,\npatched with moss and stray shingles,\nslopes gently, giving the structure a quaint, inviting charm.\nThere is a woman here.",
-		"linkedCards":	[{
-				"cardType":	11,
-				"name":	"town"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	22,
-		"isStore":	false,
-		"name":	"Your Backyard",
-		"description":	"You are in your back yard.\nThere is a path into the woods.",
-		"linkedCards":	[{
-				"cardType":	0,
-				"name":	"home"
-			}, {
-				"cardType":	23,
-				"name":	"path"
-			}],
-		"linkedItems":	[3],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	23,
-		"isStore":	false,
-		"name":	"Path in the Woods",
-		"description":	"You take the path deep into the woods.\nThe path continues to a garden.\nThere is also a deep river nearby. Too deep to cross to the other side...",
-		"linkedCards":	[{
-				"cardType":	22,
-				"name":	"back"
-			}, {
-				"cardType":	24,
-				"name":	"garden"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	24,
-		"isStore":	false,
-		"name":	"Wild Garden",
-		"description":	"You are in a wild garden with lots of plants to choose from.\nThere is an apple tree here.\nThere is a shed nearby but the door is locked.",
-		"linkedCards":	[{
-				"cardType":	23,
-				"name":	"path"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	25,
-		"isStore":	false,
-		"name":	"Bramblethorn Overlook",
-		"description":	"The view is quite impressive.\nYou can see out over much of the forest and a river.\nThere is a bridge nearby.",
-		"linkedCards":	[{
-				"cardType":	20,
-				"name":	"wood"
-			}, {
-				"cardType":	41,
-				"name":	"bridge"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	26,
-		"isStore":	false,
-		"name":	"Ironwood Clearing",
-		"description":	"The road opens up into a rare, serene clearing.\nThere is a lot of space.\nThe air is heavy with a quiet power, a feeling that this place is not entirely of the natural world.\nThere is a small shed nearby, but the door is locked.",
-		"linkedCards":	[{
-				"cardType":	20,
-				"name":	"wood"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[{
-				"enemyType":	2,
-				"health":	40,
-				"damage":	20
-			}, {
-				"enemyType":	3,
-				"health":	20,
-				"damage":	20
-			}]
-	}, {
-		"cardType":	27,
-		"isStore":	false,
-		"name":	"Echoing Hollow",
-		"description":	"You are at Echoing Hollow.\nIts very windy here.\nBut if you shout, you can hear the echo...",
-		"linkedCards":	[{
-				"cardType":	20,
-				"name":	"wood"
-			}],
-		"linkedItems":	[3, 2],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	28,
-		"isStore":	false,
-		"name":	"Cinderspire",
-		"description":	"A jagged, smoke-streaked peak that towers over the charred landscape.\nThe air is thick with ash, and the remnants of ancient fires flicker faintly at the summit..\nThere is a fireplace built into the rock.",
-		"linkedCards":	[{
-				"cardType":	20,
-				"name":	"wood"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	29,
-		"isStore":	false,
-		"name":	"Gardening Shed",
-		"description":	"You are in a small gardening shed.\nThere are some tools and some soil.",
-		"linkedCards":	[{
-				"cardType":	24,
-				"name":	"garden"
-			}],
-		"linkedItems":	[3, 2, 4, 4],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	30,
-		"isStore":	false,
-		"name":	"Workman's Shed",
-		"description":	"You are in a small gardening shed.\nThere are some tools and some soil.",
-		"linkedCards":	[{
-				"cardType":	26,
-				"name":	"clearing"
-			}],
-		"linkedItems":	[3, 2, 4, 4],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	31,
-		"isStore":	false,
-		"name":	"Other Side of the River",
-		"description":	"You cross the river to the otherside.\nThere is a trail here.",
-		"linkedCards":	[{
-				"cardType":	23,
-				"name":	"tree"
-			}, {
-				"cardType":	34,
-				"name":	"trail"
-			}],
-		"linkedItems":	[4, 4],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	32,
-		"isStore":	false,
-		"name":	"Old Man McCann's",
-		"description":	"Old man McCann's residence.\nThere is a path to a small garden.\nThere is a fireplace here.",
-		"linkedCards":	[{
-				"cardType":	33,
-				"name":	"town"
-			}, {
-				"cardType":	36,
-				"name":	"garden"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	33,
-		"isStore":	false,
-		"name":	"Town of Wrenwood",
-		"description":	"You are in Wrenwood.\nThere is a store here.\nThere are a few houses nearby.",
-		"linkedCards":	[{
-				"cardType":	34,
-				"name":	"trail"
-			}, {
-				"cardType":	32,
-				"name":	"mccann"
-			}, {
-				"cardType":	35,
-				"name":	"store"
-			}, {
-				"cardType":	61,
-				"name":	"grey"
-			}, {
-				"cardType":	98,
-				"name":	"east"
-			}],
-		"linkedItems":	[4, 4],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	34,
-		"isStore":	false,
-		"name":	"Trail in the woods",
-		"description":	"You follow the trail into the woods.\nYou are near Wrenwood.",
-		"linkedCards":	[{
-				"cardType":	31,
-				"name":	"river"
-			}, {
-				"cardType":	33,
-				"name":	"town"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	35,
-		"isStore":	true,
-		"name":	"General Store",
-		"description":	"A small store where you can buy potions.",
-		"linkedCards":	[{
-				"cardType":	33,
-				"name":	"town"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	36,
-		"isStore":	false,
-		"name":	"Old man McCann's Garden",
-		"description":	"You are in old man McCann's nice garden.\nThere are lots of plants to choose from.\nThere is a tomatoe plant.\nThere is also a shed here but the door is locked.",
-		"linkedCards":	[{
-				"cardType":	32,
-				"name":	"house"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	37,
-		"isStore":	false,
-		"name":	"McCann's Shed",
-		"description":	"You are in a small gardening shed.\nThere are some tools and some soil.",
-		"linkedCards":	[{
-				"cardType":	36,
-				"name":	"garden"
-			}],
-		"linkedItems":	[3, 3, 4, 4],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	38,
-		"isStore":	false,
-		"name":	"Deep in the Woods",
-		"description":	"You are Lost in the woods.",
-		"linkedCards":	[{
-				"cardType":	39,
-				"name":	"lost"
-			}],
-		"linkedItems":	[3, 3],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	39,
-		"isStore":	false,
-		"name":	"Lost in the Woods",
-		"description":	"You are Lost in the woods.",
-		"linkedCards":	[{
-				"cardType":	40,
-				"name":	"lost"
-			}],
-		"linkedItems":	[3, 3],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	40,
-		"isStore":	false,
-		"name":	"Lost in the Deep Woods",
-		"description":	"You are Lost deep in the woods.\nAs you walk further, suddenly the brush subsides.\nThere seems to be a small garden up ahead.",
-		"linkedCards":	[{
-				"cardType":	10,
-				"name":	"garden"
-			}],
-		"linkedItems":	[3, 3],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	41,
-		"isStore":	false,
-		"name":	"Bridge near Bramblethorn Overlook",
-		"description":	"You make your way to the bridge.\nA scenic crossing point over serene waters,\nwhere the wooden slats creak with the\nwhispers of secrets shared between friends.",
-		"linkedCards":	[{
-				"cardType":	25,
-				"name":	"overlook"
-			}, {
-				"cardType":	42,
-				"name":	"town"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[{
-				"enemyType":	3,
-				"health":	100,
-				"damage":	50
-			}]
-	}, {
-		"cardType":	42,
-		"isStore":	false,
-		"name":	"Town of Williams",
-		"description":	"You are in the town of Williams.\nIts very nice here.\nThere is a small store here.\nTown hall is nearby but the door is locked.\nA small road leads north out of town.",
-		"linkedCards":	[{
-				"cardType":	41,
-				"name":	"bridge"
-			}, {
-				"cardType":	43,
-				"name":	"store"
-			}, {
-				"cardType":	45,
-				"name":	"road"
-			}],
-		"linkedItems":	[3, 2, 4, 4],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	43,
-		"isStore":	true,
-		"name":	"Williams General Store",
-		"description":	"You are in a small store.\nBuy items.",
-		"linkedCards":	[{
-				"cardType":	42,
-				"name":	"town"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	44,
-		"isStore":	false,
-		"name":	"Williams Town Hall",
-		"description":	"You are in Williams Town Hall.\nThere is a fire place here.",
-		"linkedCards":	[{
-				"cardType":	42,
-				"name":	"town"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	45,
-		"isStore":	false,
-		"name":	"Road north of Williams",
-		"description":	"You walk along the road north of Willams until you reach a split.\nYou can go north, east, west, or south back to Williams.",
-		"linkedCards":	[{
-				"cardType":	42,
-				"name":	"south"
-			}, {
-				"cardType":	46,
-				"name":	"west"
-			}, {
-				"cardType":	47,
-				"name":	"east"
-			}, {
-				"cardType":	48,
-				"name":	"north"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[{
-				"enemyType":	4,
-				"health":	100,
-				"damage":	100
-			}, {
-				"enemyType":	0,
-				"health":	100,
-				"damage":	80
-			}, {
-				"enemyType":	3,
-				"health":	20,
-				"damage":	10
-			}, {
-				"enemyType":	3,
-				"health":	30,
-				"damage":	20
-			}, {
-				"enemyType":	3,
-				"health":	40,
-				"damage":	30
-			}]
-	}, {
-		"cardType":	46,
-		"isStore":	false,
-		"name":	"Stack Homestead",
-		"description":	"You are at the Stack Homestead.\nThere is a mountain to the north.\nOn the farside of the homestead, there is a river.\nThe river is too deep to cross.\nThere is a pumpkin patch.\nThere is a fireplace here.",
-		"linkedCards":	[{
-				"cardType":	45,
-				"name":	"east"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	47,
-		"isStore":	false,
-		"name":	"Elderfern Forest Entrance",
-		"description":	"You walk until you reach the entrance to Elderfern Forest.\nThe winding paths through Elderfern are often shrouded in mist,\nmaking it easy to lose one's way and harder still to shake\nthe feeling of being watched by unseen eyes.",
-		"linkedCards":	[{
-				"cardType":	45,
-				"name":	"west"
-			}, {
-				"cardType":	49,
-				"name":	"wood"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	48,
-		"isStore":	false,
-		"name":	"Emberfell Castle Entrance",
-		"description":	"You are outside of Emberfell castle.\nIts blackened stone walls rising dramatically against the backdrop of a stormy sky.\nOnce a stronghold of ancient kings,\nit is now a haunting silhouette in the mist.\nThe door is locked.",
-		"linkedCards":	[{
-				"cardType":	45,
-				"name":	"south"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	49,
-		"isStore":	false,
-		"name":	"Elderfern Forest Clearing",
-		"description":	"You are lost in the forest.",
-		"linkedCards":	[{
-				"cardType":	50,
-				"name":	"wood"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[{
-				"enemyType":	1,
-				"health":	100,
-				"damage":	100
-			}, {
-				"enemyType":	1,
-				"health":	100,
-				"damage":	80
-			}]
-	}, {
-		"cardType":	50,
-		"isStore":	false,
-		"name":	"Elderfern Forest Path",
-		"description":	"You are lost in the forest.",
-		"linkedCards":	[{
-				"cardType":	51,
-				"name":	"wood"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	51,
-		"isStore":	false,
-		"name":	"Elderfern Forest Brush",
-		"description":	"You are lost in the forest.",
-		"linkedCards":	[{
-				"cardType":	52,
-				"name":	"wood"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[{
-				"enemyType":	1,
-				"health":	100,
-				"damage":	100
-			}, {
-				"enemyType":	1,
-				"health":	100,
-				"damage":	80
-			}]
-	}, {
-		"cardType":	52,
-		"isStore":	false,
-		"name":	"Elderfern Forest",
-		"description":	"You are lost in the forest.",
-		"linkedCards":	[{
-				"cardType":	47,
-				"name":	"wood"
-			}],
-		"linkedItems":	[3, 3, 3, 3, 3],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	53,
-		"isStore":	false,
-		"name":	"The Emberhall",
-		"description":	"You are in the grand entrance hall,\nwhere flickering torches cast long shadows on the stone walls.\nThe echoes of footsteps seem to linger long after someone has passed through.",
-		"linkedCards":	[{
-				"cardType":	48,
-				"name":	"out"
-			}, {
-				"cardType":	54,
-				"name":	"chamber"
-			}, {
-				"cardType":	55,
-				"name":	"books"
-			}, {
-				"cardType":	57,
-				"name":	"stairs"
-			}],
-		"linkedItems":	[3],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	54,
-		"isStore":	false,
-		"name":	"The Chamber of Ashes",
-		"description":	"A small, private room where the remains of past monarchs are kept in urns.\nA haunting silence fills the air,\nbroken only by the occasional gust of wind through the cracks in the walls.\nThe ashes are said to hold the spirits of the fallen,\ntheir whispers faint but ever present.",
-		"linkedCards":	[{
-				"cardType":	53,
-				"name":	"hall"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	55,
-		"isStore":	false,
-		"name":	"The Library of Forgotten Lore",
-		"description":	"An immense, dusty library,\nfilled with ancient tomes, scrolls, and forbidden texts.\nThe bookshelves are stacked high with knowledge lost to time,\nand some say the books themselves can whisper dark secrets if one listens closely enough.",
-		"linkedCards":	[{
-				"cardType":	53,
-				"name":	"hall"
-			}, {
-				"cardType":	56,
-				"name":	"garden"
-			}],
-		"linkedItems":	[5],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	56,
-		"isStore":	false,
-		"name":	"The Forgotten Garden",
-		"description":	"A once beautiful garden now overrun with tangled vines,\ntwisted trees,\nand flowers that bloom in strange, otherworldly colors.\nThere is a tomatoe plant here.",
-		"linkedCards":	[{
-				"cardType":	55,
-				"name":	"books"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	57,
-		"isStore":	false,
-		"name":	"Spiral Staircase",
-		"description":	"You are on a large spiral staricase. You can go up or down.",
-		"linkedCards":	[{
-				"cardType":	53,
-				"name":	"hall"
-			}, {
-				"cardType":	59,
-				"name":	"up"
-			}, {
-				"cardType":	58,
-				"name":	"down"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	58,
-		"isStore":	false,
-		"name":	"The Dungeon of Emberfell",
-		"description":	"You take the staircase down, beneath the castle.\nShackles and chains still hang from the walls,\nand the faint sound of water dripping echoes throughout.\nIt is said that those imprisoned here were never meant to leave.",
-		"linkedCards":	[{
-				"cardType":	57,
-				"name":	"up"
-			}, {
-				"cardType":	60,
-				"name":	"out"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[{
-				"enemyType":	4,
-				"health":	400,
-				"damage":	100
-			}]
-	}, {
-		"cardType":	59,
-		"isStore":	false,
-		"name":	"The Ashen Tower",
-		"description":	"You climb the spiral staircase all the way to the top of the castle.\nThere is a small room at the top.\nThe room contains a large treasure chest, but it is locked.",
-		"linkedCards":	[{
-				"cardType":	57,
-				"name":	"down"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	60,
-		"isStore":	false,
-		"name":	"Road outside Emberfell Dungeon",
-		"description":	"You are just outside Emberfell Castle.\nYou can enter through the dungeon.\nYou can also go north, east or west.",
-		"linkedCards":	[{
-				"cardType":	58,
-				"name":	"castle"
-			}, {
-				"cardType":	66,
-				"name":	"north"
-			}, {
-				"cardType":	65,
-				"name":	"west"
-			}, {
-				"cardType":	64,
-				"name":	"east"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	61,
-		"isStore":	false,
-		"name":	"Alistair Grey's House",
-		"description":	"You are at Alistair Grey's House.\nAlistair is here.\nHe looks at you and says 'I am looking for some good books,\nIf you find any and bring them to me,\nI will make it worth your while'.",
-		"linkedCards":	[{
-				"cardType":	33,
-				"name":	"town"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	62,
-		"isStore":	false,
-		"name":	"Across the river from the Stack Homestead",
-		"description":	"You are on the other side of the river from the Stack Homestead.\nThere is a path...",
-		"linkedCards":	[{
-				"cardType":	46,
-				"name":	"tree"
-			}, {
-				"cardType":	63,
-				"name":	"path"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	63,
-		"isStore":	false,
-		"name":	"The Celestial Observatory",
-		"description":	"You take the path to the Observatory.\nIts stone walls, adorned with celestial carvings,\nare weathered but sturdy, exuding an air of forgotten knowledge.\nInside, a grand telescope dominates the room,\nits crystal lenses glowing faintly as it seems to reach for the stars.\nThe observatory is filled with dusty tomes, celestial maps, and mysterious artifacts,\nall hinting at arcane studies of the heavens.",
-		"linkedCards":	[{
-				"cardType":	62,
-				"name":	"path"
-			}],
-		"linkedItems":	[5],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	64,
-		"isStore":	false,
-		"name":	"Crystal Caverns",
-		"description":	"A breathtaking underground realm of glittering beauty and eerie silence.\nThe walls of the cavern are lined with towering,\ntranslucent crystals that glow with an ethereal light,\ncasting prismatic reflections across the dark, winding tunnels.\nThere is a door here but it is locked.",
-		"linkedCards":	[{
-				"cardType":	68,
-				"name":	"north"
-			}, {
-				"cardType":	60,
-				"name":	"west"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	65,
-		"isStore":	false,
-		"name":	"Ancient Tombs",
-		"description":	"A dark, forgotten burial ground carved into the heart of a desolate hillside.\nThe air is heavy with the scent of dust and decay as stone doorways lead into shadowed chambers,\nwhere the remains of long-dead rulers and warriors lie undisturbed.\nFaded carvings and crumbling inscriptions line the walls,\ntelling tales of a lost civilization.",
-		"linkedCards":	[{
-				"cardType":	67,
-				"name":	"north"
-			}, {
-				"cardType":	60,
-				"name":	"east"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	66,
-		"isStore":	false,
-		"name":	"The Enchanted Village",
-		"description":	"A quaint, seemingly timeless settlement hidden deep within the forest.\nIts cobblestone streets are lined with charming cottages,\ntheir windows glowing warmly with light.\nThere is a fire place here.",
-		"linkedCards":	[{
-				"cardType":	69,
-				"name":	"north"
-			}, {
-				"cardType":	60,
-				"name":	"south"
-			}, {
-				"cardType":	68,
-				"name":	"east"
-			}, {
-				"cardType":	67,
-				"name":	"west"
-			}, {
-				"cardType":	71,
-				"name":	"store"
-			}],
-		"linkedItems":	[3, 2, 4],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	67,
-		"isStore":	false,
-		"name":	"Skyward Peaks",
-		"description":	"Towering, snow capped mountains that pierce the sky,\ntheir jagged summits lost in the clouds.\nThe air is thin and cold, and the winds howl through the rocky passes.\nOnly the most daring travelers attempt the climb.",
-		"linkedCards":	[{
-				"cardType":	66,
-				"name":	"east"
-			}, {
-				"cardType":	65,
-				"name":	"south"
-			}, {
-				"cardType":	73,
-				"name":	"climb"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	68,
-		"isStore":	false,
-		"name":	"Ancient Glyphs",
-		"description":	"Faded symbols etched into stone, their meanings long lost to time.\nThey pulse faintly with an otherworldly energy,\nhinting at forgotten knowledge and hidden power,\nwaiting for someone to decipher their secrets.",
-		"linkedCards":	[{
-				"cardType":	66,
-				"name":	"west"
-			}, {
-				"cardType":	64,
-				"name":	"south"
-			}],
-		"linkedItems":	[5],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	69,
-		"isStore":	false,
-		"name":	"Forsaken Road",
-		"description":	"A desolate, overgrown path,\nonce traveled but now abandoned.\nCracked stone and twisted roots litter the way,\nand an eerie silence hangs in the air,\nas if the road itself has been forgotten by time.\nThe road continues north but a large chasm blocks you from continuing.",
-		"linkedCards":	[{
-				"cardType":	66,
-				"name":	"south"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[{
-				"enemyType":	0,
-				"health":	300,
-				"damage":	80
-			}, {
-				"enemyType":	0,
-				"health":	200,
-				"damage":	80
-			}]
-	}, {
-		"cardType":	70,
-		"isStore":	false,
-		"name":	"Hidden Passage",
-		"description":	"A secret, very long, narrow tunnel beneath the earth,\nits entrance concealed by rubble and roots.\nThe air is damp and musty,\nand the faint echo of footsteps suggests forgotten travelers once walked this path.\nYou can go east or west.",
-		"linkedCards":	[{
-				"cardType":	64,
-				"name":	"west"
-			}, {
-				"cardType":	16,
-				"name":	"east"
-			}],
-		"linkedItems":	[5],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	71,
-		"isStore":	true,
-		"name":	"Enchanted Village Store",
-		"description":	"You are in a small store.\nBuy items.",
-		"linkedCards":	[{
-				"cardType":	66,
-				"name":	"town"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	72,
-		"isStore":	false,
-		"name":	"Forsaken Road North",
-		"description":	"You walk for miles along the northern end of the Forsaken Road.",
-		"linkedCards":	[{
-				"cardType":	69,
-				"name":	"south"
-			}, {
-				"cardType":	74,
-				"name":	"north"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	73,
-		"isStore":	false,
-		"name":	"Stoneheart Mountain",
-		"description":	"You climb Stoneheart Mountain to the top.\nThe towering peak's slopes are blanketed in thick, glistening white drifts.\nThe jagged cliffs rise sharply against the sky,\ntheir dark stone contrasted by the endless stretch of frost and ice.\nWinds whip through the mountain's high passes,\ncarrying with them the bite of the cold\nIts too steep to climb back down.\nBut the south is less steep,\nand there is a path that leads down the mountain.",
-		"linkedCards":	[{
-				"cardType":	46,
-				"name":	"path"
-			}],
-		"linkedItems":	[2, 2, 3, 3],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	74,
-		"isStore":	false,
-		"name":	"The Whispering Marsh Entrance",
-		"description":	"Entrance to The Whispering Marsh.\nIts rumored to be the home of ogres.\nEnter if you dare...",
-		"linkedCards":	[{
-				"cardType":	75,
-				"name":	"north"
-			}, {
-				"cardType":	69,
-				"name":	"south"
-			}, {
-				"cardType":	83,
-				"name":	"east"
-			}, {
-				"cardType":	77,
-				"name":	"west"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	75,
-		"isStore":	false,
-		"name":	"The Whispering Marsh",
-		"description":	"A vast,\nfog-covered swamp where the wind seems to carry faint whispers from all directions.\nThe ground is treacherous,\nand strange,\nglowing lights float above the muck.",
-		"linkedCards":	[{
-				"cardType":	76,
-				"name":	"north"
-			}, {
-				"cardType":	74,
-				"name":	"south"
-			}, {
-				"cardType":	84,
-				"name":	"east"
-			}, {
-				"cardType":	78,
-				"name":	"west"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[{
-				"enemyType":	0,
-				"health":	300,
-				"damage":	80
-			}, {
-				"enemyType":	0,
-				"health":	200,
-				"damage":	80
-			}, {
-				"enemyType":	0,
-				"health":	200,
-				"damage":	80
-			}, {
-				"enemyType":	0,
-				"health":	200,
-				"damage":	80
-			}]
-	}, {
-		"cardType":	76,
-		"isStore":	false,
-		"name":	"The Whispering Marsh",
-		"description":	"A vast,\nfog-covered swamp where the wind seems to carry faint whispers from all directions.\nThe ground is treacherous,\nand strange,\nglowing lights float above the muck.",
-		"linkedCards":	[{
-				"cardType":	75,
-				"name":	"south"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	77,
-		"isStore":	false,
-		"name":	"The Whispering Marsh",
-		"description":	"A vast,\nfog-covered swamp where the wind seems to carry faint whispers from all directions.\nThe ground is treacherous,\nand strange,\nglowing lights float above the muck.",
-		"linkedCards":	[{
-				"cardType":	78,
-				"name":	"north"
-			}, {
-				"cardType":	74,
-				"name":	"east"
-			}, {
-				"cardType":	80,
-				"name":	"west"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[{
-				"enemyType":	0,
-				"health":	300,
-				"damage":	80
-			}, {
-				"enemyType":	0,
-				"health":	200,
-				"damage":	80
-			}, {
-				"enemyType":	0,
-				"health":	200,
-				"damage":	80
-			}, {
-				"enemyType":	0,
-				"health":	200,
-				"damage":	80
-			}]
-	}, {
-		"cardType":	78,
-		"isStore":	false,
-		"name":	"The Whispering Marsh",
-		"description":	"A vast,\nfog-covered swamp where the wind seems to carry faint whispers from all directions.\nThe ground is treacherous,\nand strange,\nglowing lights float above the muck.",
-		"linkedCards":	[{
-				"cardType":	79,
-				"name":	"north"
-			}, {
-				"cardType":	77,
-				"name":	"south"
-			}, {
-				"cardType":	75,
-				"name":	"east"
-			}, {
-				"cardType":	81,
-				"name":	"west"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[{
-				"enemyType":	0,
-				"health":	300,
-				"damage":	80
-			}, {
-				"enemyType":	0,
-				"health":	200,
-				"damage":	80
-			}]
-	}, {
-		"cardType":	79,
-		"isStore":	false,
-		"name":	"The Whispering Marsh",
-		"description":	"A vast,\nfog-covered swamp where the wind seems to carry faint whispers from all directions.\nThe ground is treacherous,\nand strange,\nglowing lights float above the muck.",
-		"linkedCards":	[{
-				"cardType":	88,
-				"name":	"out"
-			}, {
-				"cardType":	78,
-				"name":	"south"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	80,
-		"isStore":	false,
-		"name":	"The Whispering Marsh",
-		"description":	"A vast,\nfog-covered swamp where the wind seems to carry faint whispers from all directions.\nThe ground is treacherous,\nand strange,\nglowing lights float above the muck.",
-		"linkedCards":	[{
-				"cardType":	81,
-				"name":	"north"
-			}, {
-				"cardType":	77,
-				"name":	"east"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[{
-				"enemyType":	0,
-				"health":	300,
-				"damage":	80
-			}, {
-				"enemyType":	0,
-				"health":	200,
-				"damage":	80
-			}]
-	}, {
-		"cardType":	81,
-		"isStore":	false,
-		"name":	"The Whispering Marsh",
-		"description":	"A vast,\nfog-covered swamp where the wind seems to carry faint whispers from all directions.\nThe ground is treacherous,\nand strange,\nglowing lights float above the muck.",
-		"linkedCards":	[{
-				"cardType":	80,
-				"name":	"south"
-			}, {
-				"cardType":	78,
-				"name":	"east"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[{
-				"enemyType":	0,
-				"health":	400,
-				"damage":	110
-			}]
-	}, {
-		"cardType":	82,
-		"isStore":	false,
-		"name":	"The Whispering Marsh",
-		"description":	"A vast,\nfog-covered swamp where the wind seems to carry faint whispers from all directions.\nThe ground is treacherous,\nand strange,\nglowing lights float above the muck.",
-		"linkedCards":	[{
-				"cardType":	83,
-				"name":	"north"
-			}, {
-				"cardType":	85,
-				"name":	"east"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	83,
-		"isStore":	false,
-		"name":	"The Whispering Marsh",
-		"description":	"A vast,\nfog-covered swamp where the wind seems to carry faint whispers from all directions.\nThe ground is treacherous,\nand strange,\nglowing lights float above the muck.",
-		"linkedCards":	[{
-				"cardType":	84,
-				"name":	"north"
-			}, {
-				"cardType":	82,
-				"name":	"south"
-			}, {
-				"cardType":	86,
-				"name":	"east"
-			}, {
-				"cardType":	74,
-				"name":	"west"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	84,
-		"isStore":	false,
-		"name":	"The Whispering Marsh",
-		"description":	"A vast,\nfog-covered swamp where the wind seems to carry faint whispers from all directions.\nThe ground is treacherous,\nand strange,\nglowing lights float above the muck.",
-		"linkedCards":	[{
-				"cardType":	83,
-				"name":	"south"
-			}, {
-				"cardType":	87,
-				"name":	"east"
-			}, {
-				"cardType":	75,
-				"name":	"west"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[{
-				"enemyType":	0,
-				"health":	300,
-				"damage":	80
-			}, {
-				"enemyType":	0,
-				"health":	200,
-				"damage":	80
-			}, {
-				"enemyType":	0,
-				"health":	300,
-				"damage":	80
-			}, {
-				"enemyType":	0,
-				"health":	200,
-				"damage":	80
-			}]
-	}, {
-		"cardType":	85,
-		"isStore":	false,
-		"name":	"The Whispering Marsh",
-		"description":	"A vast,\nfog-covered swamp where the wind seems to carry faint whispers from all directions.\nThe ground is treacherous,\nand strange,\nglowing lights float above the muck.",
-		"linkedCards":	[{
-				"cardType":	86,
-				"name":	"north"
-			}, {
-				"cardType":	82,
-				"name":	"west"
-			}],
-		"linkedItems":	[5],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	86,
-		"isStore":	false,
-		"name":	"The Whispering Marsh",
-		"description":	"A vast,\nfog-covered swamp where the wind seems to carry faint whispers from all directions.\nThe ground is treacherous,\nand strange,\nglowing lights float above the muck.",
-		"linkedCards":	[{
-				"cardType":	87,
-				"name":	"north"
-			}, {
-				"cardType":	85,
-				"name":	"south"
-			}, {
-				"cardType":	83,
-				"name":	"west"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[{
-				"enemyType":	0,
-				"health":	300,
-				"damage":	80
-			}, {
-				"enemyType":	0,
-				"health":	200,
-				"damage":	80
-			}, {
-				"enemyType":	0,
-				"health":	300,
-				"damage":	80
-			}, {
-				"enemyType":	0,
-				"health":	200,
-				"damage":	80
-			}]
-	}, {
-		"cardType":	87,
-		"isStore":	false,
-		"name":	"The Whispering Marsh",
-		"description":	"A vast,\nfog-covered swamp where the wind seems to carry faint whispers from all directions.\nThe ground is treacherous,\nand strange,\nglowing lights float above the muck.",
-		"linkedCards":	[{
-				"cardType":	86,
-				"name":	"south"
-			}, {
-				"cardType":	84,
-				"name":	"west"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[{
-				"enemyType":	0,
-				"health":	500,
-				"damage":	160
-			}]
-	}, {
-		"cardType":	88,
-		"isStore":	false,
-		"name":	"The Whispering Marsh Exit",
-		"description":	"You can head south back into the marsh, or north...",
-		"linkedCards":	[{
-				"cardType":	79,
-				"name":	"south"
-			}, {
-				"cardType":	89,
-				"name":	"north"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	89,
-		"isStore":	false,
-		"name":	"Town of Hearthstone",
-		"description":	"Hearthstone is a charming town nestled in a peaceful valley.\nWith its cozy cottages, lush farmlands, and scenic countryside, it exudes a warm, welcoming atmosphere.\nThe quiet streets are lined with flower-filled gardens,\nand the air is fresh with the scent of nearby forests and fields.",
-		"linkedCards":	[{
-				"cardType":	92,
-				"name":	"north"
-			}, {
-				"cardType":	88,
-				"name":	"south"
-			}, {
-				"cardType":	95,
-				"name":	"east"
-			}, {
-				"cardType":	91,
-				"name":	"west"
-			}, {
-				"cardType":	94,
-				"name":	"path"
-			}, {
-				"cardType":	90,
-				"name":	"store"
-			}],
-		"linkedItems":	[2, 2, 3, 3],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	90,
-		"isStore":	true,
-		"name":	"Willow and Wares",
-		"description":	"You are in a small store.\nBuy items.",
-		"linkedCards":	[{
-				"cardType":	89,
-				"name":	"town"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	91,
-		"isStore":	false,
-		"name":	"Thistlehill Cottage",
-		"description":	"Thistlehill Cottage is a charming little retreat perched on a hillside,\nsurrounded by wildflowers and the gentle rustle of the breeze.",
-		"linkedCards":	[{
-				"cardType":	93,
-				"name":	"north"
-			}, {
-				"cardType":	89,
-				"name":	"east"
-			}],
-		"linkedItems":	[2, 2],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	92,
-		"isStore":	false,
-		"name":	"Sunbeam Cottage",
-		"description":	"A bright, welcoming home bathed in natural light.\nWith its large windows that let the sun spill in,\nthe cottage feels warm and cheerful all year round.\nInside are soft wooden beams and colorful, hand-crafted decor",
-		"linkedCards":	[{
-				"cardType":	89,
-				"name":	"south"
-			}, {
-				"cardType":	93,
-				"name":	"west"
-			}],
-		"linkedItems":	[2, 2],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	93,
-		"isStore":	false,
-		"name":	"Baker Farm",
-		"description":	"The Baker Farm is a cozy,\npicturesque homestead nestled at the edge of Hearthstone,\nwhere the sweet scent of fresh bread and earthy fields mingle in the air.\nThe farmhouse,\nwith its red-brick chimney and whitewashed walls,\nstands proudly beside neat rows of crops and flourishing orchards.\nThere is a beet plant here.",
-		"linkedCards":	[{
-				"cardType":	91,
-				"name":	"south"
-			}, {
-				"cardType":	92,
-				"name":	"east"
-			}, {
-				"cardType":	96,
-				"name":	"west"
-			}],
-		"linkedItems":	[5],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	94,
-		"isStore":	false,
-		"name":	"Old Man Aj's",
-		"description":	"Old Man Aj's house is a weathered,\nyet sturdy cottage nestled at the edge of Hearthstone.\nIts timbered walls are worn with age, and the roof, patched in places, is thick with moss.\nThe front porch is cluttered with an assortment of tools, jars of dried herbs, and an odd collection of knick-knacks.\nThere is a fireplace here.",
-		"linkedCards":	[{
-				"cardType":	89,
-				"name":	"path"
-			}],
-		"linkedItems":	[3, 3, 3, 3],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	95,
-		"isStore":	false,
-		"name":	"Road near Hearthstone",
-		"description":	"The Road near Hearthstone winds gently through lush meadows and wooded glades,\noffering peaceful views of the surrounding countryside.\nPaved with cobblestones that have worn smooth over the years,\nit's flanked by wildflowers and tall grasses that sway in the breeze.",
-		"linkedCards":	[{
-				"cardType":	89,
-				"name":	"west"
-			}, {
-				"cardType":	97,
-				"name":	"pub"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	96,
-		"isStore":	false,
-		"name":	"Turney Farm",
-		"description":	"A nice, quiet, farm house in the country-side.\nLooks like a good place for a read.",
-		"linkedCards":	[{
-				"cardType":	93,
-				"name":	"east"
-			}],
-		"linkedItems":	[5],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	97,
-		"isStore":	false,
-		"name":	"The Stumbling Goat",
-		"description":	"A humorous, rustic tavern with a quirky feel, often the heart of village gossip.",
-		"linkedCards":	[{
-				"cardType":	95,
-				"name":	"road"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	98,
-		"isStore":	false,
-		"name":	"Road east of Wrenwood",
-		"description":	"You travel miles east of Wrenwood.\nIt looks like another town is nearby",
-		"linkedCards":	[{
-				"cardType":	99,
-				"name":	"east"
-			}, {
-				"cardType":	33,
-				"name":	"west"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[{
-				"enemyType":	4,
-				"health":	1000,
-				"damage":	100
-			}]
-	}, {
-		"cardType":	99,
-		"isStore":	false,
-		"name":	"Belleville",
-		"description":	"At the center of Belleville lies a modest square,\ndominated by an ancient oak tree whose gnarled branches stretch wide,\ncasting dappled shadows over the market stalls below.",
-		"linkedCards":	[{
-				"cardType":	101,
-				"name":	"books"
-			}, {
-				"cardType":	100,
-				"name":	"store"
-			}, {
-				"cardType":	98,
-				"name":	"west"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	100,
-		"isStore":	true,
-		"name":	"Ye Ol'e Dog House",
-		"description":	"A quaint small shop known for its ice cream.",
-		"linkedCards":	[{
-				"cardType":	99,
-				"name":	"town"
-			}],
-		"linkedItems":	[],
-		"linkedEnemies":	[]
-	}, {
-		"cardType":	101,
-		"isStore":	false,
-		"name":	"Belleville Public Library",
-		"description":	"A public library for old and young.\nA good place for a read.\nThere is a fireplace here.",
-		"linkedCards":	[{
-				"cardType":	99,
-				"name":	"town"
-			}],
-		"linkedItems":	[5],
-		"linkedEnemies":	[]
-	}]
+[
+  {
+    "cardType": 0,
+    "isStore": false,
+    "name": "home",
+    "description": "You are in your home.\nIts dimly lit but cozy.\nThe light from an old lamp beside a cozy armchair pools softly over a stack of books,\ninviting anyone to curl up with a cup of tea or coffee.\nEvery corner feels like a sanctuary, a quiet world where time slows down,\nand every object seems to have its own story to tell.\nThere is a front door and a back door.\nThere is a fire place here.",
+    "linkedCards": [
+      {
+        "cardType": 1,
+        "name": "front"
+      },
+      {
+        "cardType": 22,
+        "name": "back"
+      }
+    ],
+    "linkedItems": [
+      0,
+      5,
+      2,
+      3
+    ],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 20,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 1,
+    "isStore": false,
+    "name": "Your Frontdoor",
+    "description": "You are standing just outside your front door.\nThere is a dirt road.\nYou can go left or right.",
+    "linkedCards": [
+      {
+        "cardType": 0,
+        "name": "home"
+      },
+      {
+        "cardType": 2,
+        "name": "left"
+      },
+      {
+        "cardType": 3,
+        "name": "right"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 120,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 2,
+    "isStore": false,
+    "name": "Far down the Road",
+    "description": "You move left down the road until you come to a large tree.\nThe tree is very big and very old.",
+    "linkedCards": [
+      {
+        "cardType": 1,
+        "name": "front"
+      },
+      {
+        "cardType": 4,
+        "name": "tree"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 220,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 3,
+    "isStore": false,
+    "name": "Up the Road",
+    "description": "You move right down the road.\nLooks like trouble up ahead...",
+    "linkedCards": [
+      {
+        "cardType": 1,
+        "name": "front"
+      },
+      {
+        "cardType": 5,
+        "name": "trouble"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 320,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 4,
+    "isStore": false,
+    "name": "Up in the Tree",
+    "description": "You climb the tree.\nYou can see everything from up here.",
+    "linkedCards": [
+      {
+        "cardType": 6,
+        "name": "down"
+      },
+      {
+        "cardType": 2,
+        "name": "back"
+      }
+    ],
+    "linkedItems": [
+      1,
+      4
+    ],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 420,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 5,
+    "isStore": false,
+    "name": "Clearing along the Road",
+    "description": "You are in a clearing along the road.\nThere is a lot of open space.",
+    "linkedCards": [
+      {
+        "cardType": 3,
+        "name": "back"
+      },
+      {
+        "cardType": 8,
+        "name": "road"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [
+      {
+        "enemyType": 0,
+        "health": 30,
+        "damage": 10
+      },
+      {
+        "enemyType": 1,
+        "health": 10,
+        "damage": 5
+      }
+    ],
+    "_x": 20,
+    "_y": 520,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 6,
+    "isStore": false,
+    "name": "Dead End after the Tree",
+    "description": "The road comes to a dead end after the tree.\nBut there is a path.\nYou could also follow the squirrel into the woods.",
+    "linkedCards": [
+      {
+        "cardType": 7,
+        "name": "path"
+      },
+      {
+        "cardType": 4,
+        "name": "tree"
+      },
+      {
+        "cardType": 38,
+        "name": "wood"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 620,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 7,
+    "isStore": false,
+    "name": "Path in the Woods",
+    "description": "You are on a small path in the woods\nIt looks like there is a small cottage up ahead.",
+    "linkedCards": [
+      {
+        "cardType": 6,
+        "name": "dead"
+      },
+      {
+        "cardType": 8,
+        "name": "road"
+      },
+      {
+        "cardType": 9,
+        "name": "jeffers"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 720,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 8,
+    "isStore": false,
+    "name": "Long Stretch of Road near town",
+    "description": "You are on a long stretch of road.\nYou are near town.\nThere is also a small path.",
+    "linkedCards": [
+      {
+        "cardType": 7,
+        "name": "path"
+      },
+      {
+        "cardType": 5,
+        "name": "trouble"
+      },
+      {
+        "cardType": 11,
+        "name": "town"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 820,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 9,
+    "isStore": false,
+    "name": "Old Man Jeffers",
+    "description": "You come across old man Jeffers residence.\nHe has a garden and a fireplace.",
+    "linkedCards": [
+      {
+        "cardType": 7,
+        "name": "path"
+      },
+      {
+        "cardType": 10,
+        "name": "garden"
+      }
+    ],
+    "linkedItems": [
+      3,
+      4
+    ],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 920,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 10,
+    "isStore": false,
+    "name": "Old Man Jeffers Garden",
+    "description": "You are in old man Jeffers garden.\nThere is a tomatoe plant.",
+    "linkedCards": [
+      {
+        "cardType": 9,
+        "name": "jeffers"
+      }
+    ],
+    "linkedItems": [
+      2,
+      2
+    ],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 1020,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 11,
+    "isStore": false,
+    "name": "Town Square",
+    "description": "You are in the town square.\nThere is a store here and a few paths.",
+    "linkedCards": [
+      {
+        "cardType": 8,
+        "name": "road"
+      },
+      {
+        "cardType": 12,
+        "name": "store"
+      },
+      {
+        "cardType": 13,
+        "name": "wood"
+      },
+      {
+        "cardType": 14,
+        "name": "cave"
+      },
+      {
+        "cardType": 21,
+        "name": "house"
+      }
+    ],
+    "linkedItems": [
+      2,
+      3,
+      2,
+      3,
+      4,
+      4
+    ],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 1120,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 12,
+    "isStore": true,
+    "name": "Mom and Pop Shop",
+    "description": "You are in a small store.\nBuy items.",
+    "linkedCards": [
+      {
+        "cardType": 11,
+        "name": "town"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 1220,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 13,
+    "isStore": false,
+    "name": "Mirkwood Entrance",
+    "description": "You take a small path to the entrance of Mirkwood forest.\nAll the trees seem to be dead.\nThe air is heavy with mist,\nand the silence is broken only by the occasional rustle of unseen creatures.\nA sense of unease lingers,\nas if the forest itself watches those who enter.",
+    "linkedCards": [
+      {
+        "cardType": 11,
+        "name": "town"
+      },
+      {
+        "cardType": 17,
+        "name": "wood"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 1320,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 14,
+    "isStore": false,
+    "name": "Cave Entrance",
+    "description": "You take a path to a cave.\nYou are standing at the entrance of the cave.",
+    "linkedCards": [
+      {
+        "cardType": 11,
+        "name": "town"
+      },
+      {
+        "cardType": 15,
+        "name": "cave"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 1420,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 15,
+    "isStore": false,
+    "name": "Middle of the Cave",
+    "description": "You are in a cave.",
+    "linkedCards": [
+      {
+        "cardType": 14,
+        "name": "out"
+      },
+      {
+        "cardType": 16,
+        "name": "cave"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 1520,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 16,
+    "isStore": false,
+    "name": "Deep in the Cave",
+    "description": "You are deep inside a cave.\nThere is a door here but it is locked.",
+    "linkedCards": [
+      {
+        "cardType": 15,
+        "name": "out"
+      }
+    ],
+    "linkedItems": [
+      4,
+      4,
+      4,
+      4,
+      4,
+      4
+    ],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 1620,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 17,
+    "isStore": false,
+    "name": "Mirkwood treeline",
+    "description": "You are on a path through Mirkwood.\nThe path is long.",
+    "linkedCards": [
+      {
+        "cardType": 13,
+        "name": "out"
+      },
+      {
+        "cardType": 18,
+        "name": "wood"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [
+      {
+        "enemyType": 3,
+        "health": 10,
+        "damage": 10
+      }
+    ],
+    "_x": 20,
+    "_y": 1720,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 18,
+    "isStore": false,
+    "name": "Mirkwood path",
+    "description": "You are on a path through Mirkwood.\nThere is a clearing up ahead.",
+    "linkedCards": [
+      {
+        "cardType": 17,
+        "name": "out"
+      },
+      {
+        "cardType": 19,
+        "name": "wood"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [
+      {
+        "enemyType": 3,
+        "health": 30,
+        "damage": 10
+      },
+      {
+        "enemyType": 3,
+        "health": 20,
+        "damage": 20
+      },
+      {
+        "enemyType": 3,
+        "health": 10,
+        "damage": 30
+      }
+    ],
+    "_x": 20,
+    "_y": 1820,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 19,
+    "isStore": false,
+    "name": "Mirkwood clearing",
+    "description": "You are in a clearing in Mirkwood.\nThe exit is nearby.",
+    "linkedCards": [
+      {
+        "cardType": 18,
+        "name": "out"
+      },
+      {
+        "cardType": 20,
+        "name": "wood"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [
+      {
+        "enemyType": 2,
+        "health": 40,
+        "damage": 20
+      },
+      {
+        "enemyType": 3,
+        "health": 20,
+        "damage": 20
+      },
+      {
+        "enemyType": 1,
+        "health": 10,
+        "damage": 10
+      },
+      {
+        "enemyType": 4,
+        "health": 100,
+        "damage": 40
+      }
+    ],
+    "_x": 20,
+    "_y": 1920,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 20,
+    "isStore": false,
+    "name": "Mirkwood exit",
+    "description": "You are just outside Mirkwood.\nThere is a road sign with many directions.\nYou can take many paths here.",
+    "linkedCards": [
+      {
+        "cardType": 19,
+        "name": "wood"
+      },
+      {
+        "cardType": 25,
+        "name": "overlook"
+      },
+      {
+        "cardType": 26,
+        "name": "clearing"
+      },
+      {
+        "cardType": 27,
+        "name": "hollow"
+      },
+      {
+        "cardType": 28,
+        "name": "spire"
+      }
+    ],
+    "linkedItems": [
+      2,
+      2,
+      2,
+      2
+    ],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 2020,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 21,
+    "isStore": false,
+    "name": "Small Wooden House",
+    "description": "You stand before a small wooden house,\nits weathered planks bearing the marks of time and countless storms.\nThe roof,\npatched with moss and stray shingles,\nslopes gently, giving the structure a quaint, inviting charm.\nThere is a woman here.",
+    "linkedCards": [
+      {
+        "cardType": 11,
+        "name": "town"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 2120,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 22,
+    "isStore": false,
+    "name": "Your Backyard",
+    "description": "You are in your back yard.\nThere is a path into the woods.",
+    "linkedCards": [
+      {
+        "cardType": 0,
+        "name": "home"
+      },
+      {
+        "cardType": 23,
+        "name": "path"
+      }
+    ],
+    "linkedItems": [
+      3
+    ],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 2220,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 23,
+    "isStore": false,
+    "name": "Path in the Woods",
+    "description": "You take the path deep into the woods.\nThe path continues to a garden.\nThere is also a deep river nearby. Too deep to cross to the other side...",
+    "linkedCards": [
+      {
+        "cardType": 22,
+        "name": "back"
+      },
+      {
+        "cardType": 24,
+        "name": "garden"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 2320,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 24,
+    "isStore": false,
+    "name": "Wild Garden",
+    "description": "You are in a wild garden with lots of plants to choose from.\nThere is an apple tree here.\nThere is a shed nearby but the door is locked.",
+    "linkedCards": [
+      {
+        "cardType": 23,
+        "name": "path"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 2420,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 25,
+    "isStore": false,
+    "name": "Bramblethorn Overlook",
+    "description": "The view is quite impressive.\nYou can see out over much of the forest and a river.\nThere is a bridge nearby.",
+    "linkedCards": [
+      {
+        "cardType": 20,
+        "name": "wood"
+      },
+      {
+        "cardType": 41,
+        "name": "bridge"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 2520,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 26,
+    "isStore": false,
+    "name": "Ironwood Clearing",
+    "description": "The road opens up into a rare, serene clearing.\nThere is a lot of space.\nThe air is heavy with a quiet power, a feeling that this place is not entirely of the natural world.\nThere is a small shed nearby, but the door is locked.",
+    "linkedCards": [
+      {
+        "cardType": 20,
+        "name": "wood"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [
+      {
+        "enemyType": 2,
+        "health": 40,
+        "damage": 20
+      },
+      {
+        "enemyType": 3,
+        "health": 20,
+        "damage": 20
+      }
+    ],
+    "_x": 20,
+    "_y": 2620,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 27,
+    "isStore": false,
+    "name": "Echoing Hollow",
+    "description": "You are at Echoing Hollow.\nIts very windy here.\nBut if you shout, you can hear the echo...",
+    "linkedCards": [
+      {
+        "cardType": 20,
+        "name": "wood"
+      }
+    ],
+    "linkedItems": [
+      3,
+      2
+    ],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 2720,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 28,
+    "isStore": false,
+    "name": "Cinderspire",
+    "description": "A jagged, smoke-streaked peak that towers over the charred landscape.\nThe air is thick with ash, and the remnants of ancient fires flicker faintly at the summit..\nThere is a fireplace built into the rock.",
+    "linkedCards": [
+      {
+        "cardType": 20,
+        "name": "wood"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 2820,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 29,
+    "isStore": false,
+    "name": "Gardening Shed",
+    "description": "You are in a small gardening shed.\nThere are some tools and some soil.",
+    "linkedCards": [
+      {
+        "cardType": 24,
+        "name": "garden"
+      }
+    ],
+    "linkedItems": [
+      3,
+      2,
+      4,
+      4
+    ],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 2920,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 30,
+    "isStore": false,
+    "name": "Workman's Shed",
+    "description": "You are in a small gardening shed.\nThere are some tools and some soil.",
+    "linkedCards": [
+      {
+        "cardType": 26,
+        "name": "clearing"
+      }
+    ],
+    "linkedItems": [
+      3,
+      2,
+      4,
+      4
+    ],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 3020,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 31,
+    "isStore": false,
+    "name": "Other Side of the River",
+    "description": "You cross the river to the otherside.\nThere is a trail here.",
+    "linkedCards": [
+      {
+        "cardType": 23,
+        "name": "tree"
+      },
+      {
+        "cardType": 34,
+        "name": "trail"
+      }
+    ],
+    "linkedItems": [
+      4,
+      4
+    ],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 3120,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 32,
+    "isStore": false,
+    "name": "Old Man McCann's",
+    "description": "Old man McCann's residence.\nThere is a path to a small garden.\nThere is a fireplace here.",
+    "linkedCards": [
+      {
+        "cardType": 33,
+        "name": "town"
+      },
+      {
+        "cardType": 36,
+        "name": "garden"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 3220,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 33,
+    "isStore": false,
+    "name": "Town of Wrenwood",
+    "description": "You are in Wrenwood.\nThere is a store here.\nThere are a few houses nearby.",
+    "linkedCards": [
+      {
+        "cardType": 34,
+        "name": "trail"
+      },
+      {
+        "cardType": 32,
+        "name": "mccann"
+      },
+      {
+        "cardType": 35,
+        "name": "store"
+      },
+      {
+        "cardType": 61,
+        "name": "grey"
+      },
+      {
+        "cardType": 98,
+        "name": "east"
+      }
+    ],
+    "linkedItems": [
+      4,
+      4
+    ],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 3320,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 34,
+    "isStore": false,
+    "name": "Trail in the woods",
+    "description": "You follow the trail into the woods.\nYou are near Wrenwood.",
+    "linkedCards": [
+      {
+        "cardType": 31,
+        "name": "river"
+      },
+      {
+        "cardType": 33,
+        "name": "town"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 3420,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 35,
+    "isStore": true,
+    "name": "General Store",
+    "description": "A small store where you can buy potions.",
+    "linkedCards": [
+      {
+        "cardType": 33,
+        "name": "town"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 3520,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 36,
+    "isStore": false,
+    "name": "Old man McCann's Garden",
+    "description": "You are in old man McCann's nice garden.\nThere are lots of plants to choose from.\nThere is a tomatoe plant.\nThere is also a shed here but the door is locked.",
+    "linkedCards": [
+      {
+        "cardType": 32,
+        "name": "house"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 3620,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 37,
+    "isStore": false,
+    "name": "McCann's Shed",
+    "description": "You are in a small gardening shed.\nThere are some tools and some soil.",
+    "linkedCards": [
+      {
+        "cardType": 36,
+        "name": "garden"
+      }
+    ],
+    "linkedItems": [
+      3,
+      3,
+      4,
+      4
+    ],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 3720,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 38,
+    "isStore": false,
+    "name": "Deep in the Woods",
+    "description": "You are Lost in the woods.",
+    "linkedCards": [
+      {
+        "cardType": 39,
+        "name": "lost"
+      }
+    ],
+    "linkedItems": [
+      3,
+      3
+    ],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 3820,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 39,
+    "isStore": false,
+    "name": "Lost in the Woods",
+    "description": "You are Lost in the woods.",
+    "linkedCards": [
+      {
+        "cardType": 40,
+        "name": "lost"
+      }
+    ],
+    "linkedItems": [
+      3,
+      3
+    ],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 3920,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 40,
+    "isStore": false,
+    "name": "Lost in the Deep Woods",
+    "description": "You are Lost deep in the woods.\nAs you walk further, suddenly the brush subsides.\nThere seems to be a small garden up ahead.",
+    "linkedCards": [
+      {
+        "cardType": 10,
+        "name": "garden"
+      }
+    ],
+    "linkedItems": [
+      3,
+      3
+    ],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 4020,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 41,
+    "isStore": false,
+    "name": "Bridge near Bramblethorn Overlook",
+    "description": "You make your way to the bridge.\nA scenic crossing point over serene waters,\nwhere the wooden slats creak with the\nwhispers of secrets shared between friends.",
+    "linkedCards": [
+      {
+        "cardType": 25,
+        "name": "overlook"
+      },
+      {
+        "cardType": 42,
+        "name": "town"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [
+      {
+        "enemyType": 3,
+        "health": 100,
+        "damage": 50
+      }
+    ],
+    "_x": 20,
+    "_y": 4120,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 42,
+    "isStore": false,
+    "name": "Town of Williams",
+    "description": "You are in the town of Williams.\nIts very nice here.\nThere is a small store here.\nTown hall is nearby but the door is locked.\nA small road leads north out of town.",
+    "linkedCards": [
+      {
+        "cardType": 41,
+        "name": "bridge"
+      },
+      {
+        "cardType": 43,
+        "name": "store"
+      },
+      {
+        "cardType": 45,
+        "name": "road"
+      }
+    ],
+    "linkedItems": [
+      3,
+      2,
+      4,
+      4
+    ],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 4220,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 43,
+    "isStore": true,
+    "name": "Williams General Store",
+    "description": "You are in a small store.\nBuy items.",
+    "linkedCards": [
+      {
+        "cardType": 42,
+        "name": "town"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 4320,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 44,
+    "isStore": false,
+    "name": "Williams Town Hall",
+    "description": "You are in Williams Town Hall.\nThere is a fire place here.",
+    "linkedCards": [
+      {
+        "cardType": 42,
+        "name": "town"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 4420,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 45,
+    "isStore": false,
+    "name": "Road north of Williams",
+    "description": "You walk along the road north of Willams until you reach a split.\nYou can go north, east, west, or south back to Williams.",
+    "linkedCards": [
+      {
+        "cardType": 42,
+        "name": "south"
+      },
+      {
+        "cardType": 46,
+        "name": "west"
+      },
+      {
+        "cardType": 47,
+        "name": "east"
+      },
+      {
+        "cardType": 48,
+        "name": "north"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [
+      {
+        "enemyType": 4,
+        "health": 100,
+        "damage": 100
+      },
+      {
+        "enemyType": 0,
+        "health": 100,
+        "damage": 80
+      },
+      {
+        "enemyType": 3,
+        "health": 20,
+        "damage": 10
+      },
+      {
+        "enemyType": 3,
+        "health": 30,
+        "damage": 20
+      },
+      {
+        "enemyType": 3,
+        "health": 40,
+        "damage": 30
+      }
+    ],
+    "_x": 20,
+    "_y": 4520,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 46,
+    "isStore": false,
+    "name": "Stack Homestead",
+    "description": "You are at the Stack Homestead.\nThere is a mountain to the north.\nOn the farside of the homestead, there is a river.\nThe river is too deep to cross.\nThere is a pumpkin patch.\nThere is a fireplace here.",
+    "linkedCards": [
+      {
+        "cardType": 45,
+        "name": "east"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 4620,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 47,
+    "isStore": false,
+    "name": "Elderfern Forest Entrance",
+    "description": "You walk until you reach the entrance to Elderfern Forest.\nThe winding paths through Elderfern are often shrouded in mist,\nmaking it easy to lose one's way and harder still to shake\nthe feeling of being watched by unseen eyes.",
+    "linkedCards": [
+      {
+        "cardType": 45,
+        "name": "west"
+      },
+      {
+        "cardType": 49,
+        "name": "wood"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 4720,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 48,
+    "isStore": false,
+    "name": "Emberfell Castle Entrance",
+    "description": "You are outside of Emberfell castle.\nIts blackened stone walls rising dramatically against the backdrop of a stormy sky.\nOnce a stronghold of ancient kings,\nit is now a haunting silhouette in the mist.\nThe door is locked.",
+    "linkedCards": [
+      {
+        "cardType": 45,
+        "name": "south"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 4820,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 49,
+    "isStore": false,
+    "name": "Elderfern Forest Clearing",
+    "description": "You are lost in the forest.",
+    "linkedCards": [
+      {
+        "cardType": 50,
+        "name": "wood"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [
+      {
+        "enemyType": 1,
+        "health": 100,
+        "damage": 100
+      },
+      {
+        "enemyType": 1,
+        "health": 100,
+        "damage": 80
+      }
+    ],
+    "_x": 20,
+    "_y": 4920,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 50,
+    "isStore": false,
+    "name": "Elderfern Forest Path",
+    "description": "You are lost in the forest.",
+    "linkedCards": [
+      {
+        "cardType": 51,
+        "name": "wood"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 5020,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 51,
+    "isStore": false,
+    "name": "Elderfern Forest Brush",
+    "description": "You are lost in the forest.",
+    "linkedCards": [
+      {
+        "cardType": 52,
+        "name": "wood"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [
+      {
+        "enemyType": 1,
+        "health": 100,
+        "damage": 100
+      },
+      {
+        "enemyType": 1,
+        "health": 100,
+        "damage": 80
+      }
+    ],
+    "_x": 20,
+    "_y": 5120,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 52,
+    "isStore": false,
+    "name": "Elderfern Forest",
+    "description": "You are lost in the forest.",
+    "linkedCards": [
+      {
+        "cardType": 47,
+        "name": "wood"
+      }
+    ],
+    "linkedItems": [
+      3,
+      3,
+      3,
+      3,
+      3
+    ],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 5220,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 53,
+    "isStore": false,
+    "name": "The Emberhall",
+    "description": "You are in the grand entrance hall,\nwhere flickering torches cast long shadows on the stone walls.\nThe echoes of footsteps seem to linger long after someone has passed through.",
+    "linkedCards": [
+      {
+        "cardType": 48,
+        "name": "out"
+      },
+      {
+        "cardType": 54,
+        "name": "chamber"
+      },
+      {
+        "cardType": 55,
+        "name": "books"
+      },
+      {
+        "cardType": 57,
+        "name": "stairs"
+      }
+    ],
+    "linkedItems": [
+      3
+    ],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 5320,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 54,
+    "isStore": false,
+    "name": "The Chamber of Ashes",
+    "description": "A small, private room where the remains of past monarchs are kept in urns.\nA haunting silence fills the air,\nbroken only by the occasional gust of wind through the cracks in the walls.\nThe ashes are said to hold the spirits of the fallen,\ntheir whispers faint but ever present.",
+    "linkedCards": [
+      {
+        "cardType": 53,
+        "name": "hall"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 5420,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 55,
+    "isStore": false,
+    "name": "The Library of Forgotten Lore",
+    "description": "An immense, dusty library,\nfilled with ancient tomes, scrolls, and forbidden texts.\nThe bookshelves are stacked high with knowledge lost to time,\nand some say the books themselves can whisper dark secrets if one listens closely enough.",
+    "linkedCards": [
+      {
+        "cardType": 53,
+        "name": "hall"
+      },
+      {
+        "cardType": 56,
+        "name": "garden"
+      }
+    ],
+    "linkedItems": [
+      5
+    ],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 5520,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 56,
+    "isStore": false,
+    "name": "The Forgotten Garden",
+    "description": "A once beautiful garden now overrun with tangled vines,\ntwisted trees,\nand flowers that bloom in strange, otherworldly colors.\nThere is a tomatoe plant here.",
+    "linkedCards": [
+      {
+        "cardType": 55,
+        "name": "books"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 5620,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 57,
+    "isStore": false,
+    "name": "Spiral Staircase",
+    "description": "You are on a large spiral staricase. You can go up or down.",
+    "linkedCards": [
+      {
+        "cardType": 53,
+        "name": "hall"
+      },
+      {
+        "cardType": 59,
+        "name": "up"
+      },
+      {
+        "cardType": 58,
+        "name": "down"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 5720,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 58,
+    "isStore": false,
+    "name": "The Dungeon of Emberfell",
+    "description": "You take the staircase down, beneath the castle.\nShackles and chains still hang from the walls,\nand the faint sound of water dripping echoes throughout.\nIt is said that those imprisoned here were never meant to leave.",
+    "linkedCards": [
+      {
+        "cardType": 57,
+        "name": "up"
+      },
+      {
+        "cardType": 60,
+        "name": "out"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [
+      {
+        "enemyType": 4,
+        "health": 400,
+        "damage": 100
+      }
+    ],
+    "_x": 20,
+    "_y": 5820,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 59,
+    "isStore": false,
+    "name": "The Ashen Tower",
+    "description": "You climb the spiral staircase all the way to the top of the castle.\nThere is a small room at the top.\nThe room contains a large treasure chest, but it is locked.",
+    "linkedCards": [
+      {
+        "cardType": 57,
+        "name": "down"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 5920,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 60,
+    "isStore": false,
+    "name": "Road outside Emberfell Dungeon",
+    "description": "You are just outside Emberfell Castle.\nYou can enter through the dungeon.\nYou can also go north, east or west.",
+    "linkedCards": [
+      {
+        "cardType": 58,
+        "name": "castle"
+      },
+      {
+        "cardType": 66,
+        "name": "north"
+      },
+      {
+        "cardType": 65,
+        "name": "west"
+      },
+      {
+        "cardType": 64,
+        "name": "east"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 6020,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 61,
+    "isStore": false,
+    "name": "Alistair Grey's House",
+    "description": "You are at Alistair Grey's House.\nAlistair is here.\nHe looks at you and says 'I am looking for some good books,\nIf you find any and bring them to me,\nI will make it worth your while'.",
+    "linkedCards": [
+      {
+        "cardType": 33,
+        "name": "town"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 6120,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 62,
+    "isStore": false,
+    "name": "Across the river from the Stack Homestead",
+    "description": "You are on the other side of the river from the Stack Homestead.\nThere is a path...",
+    "linkedCards": [
+      {
+        "cardType": 46,
+        "name": "tree"
+      },
+      {
+        "cardType": 63,
+        "name": "path"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 6220,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 63,
+    "isStore": false,
+    "name": "The Celestial Observatory",
+    "description": "You take the path to the Observatory.\nIts stone walls, adorned with celestial carvings,\nare weathered but sturdy, exuding an air of forgotten knowledge.\nInside, a grand telescope dominates the room,\nits crystal lenses glowing faintly as it seems to reach for the stars.\nThe observatory is filled with dusty tomes, celestial maps, and mysterious artifacts,\nall hinting at arcane studies of the heavens.",
+    "linkedCards": [
+      {
+        "cardType": 62,
+        "name": "path"
+      }
+    ],
+    "linkedItems": [
+      5
+    ],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 6320,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 64,
+    "isStore": false,
+    "name": "Crystal Caverns",
+    "description": "A breathtaking underground realm of glittering beauty and eerie silence.\nThe walls of the cavern are lined with towering,\ntranslucent crystals that glow with an ethereal light,\ncasting prismatic reflections across the dark, winding tunnels.\nThere is a door here but it is locked.",
+    "linkedCards": [
+      {
+        "cardType": 68,
+        "name": "north"
+      },
+      {
+        "cardType": 60,
+        "name": "west"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 6420,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 65,
+    "isStore": false,
+    "name": "Ancient Tombs",
+    "description": "A dark, forgotten burial ground carved into the heart of a desolate hillside.\nThe air is heavy with the scent of dust and decay as stone doorways lead into shadowed chambers,\nwhere the remains of long-dead rulers and warriors lie undisturbed.\nFaded carvings and crumbling inscriptions line the walls,\ntelling tales of a lost civilization.",
+    "linkedCards": [
+      {
+        "cardType": 67,
+        "name": "north"
+      },
+      {
+        "cardType": 60,
+        "name": "east"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 6520,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 66,
+    "isStore": false,
+    "name": "The Enchanted Village",
+    "description": "A quaint, seemingly timeless settlement hidden deep within the forest.\nIts cobblestone streets are lined with charming cottages,\ntheir windows glowing warmly with light.\nThere is a fire place here.",
+    "linkedCards": [
+      {
+        "cardType": 69,
+        "name": "north"
+      },
+      {
+        "cardType": 60,
+        "name": "south"
+      },
+      {
+        "cardType": 68,
+        "name": "east"
+      },
+      {
+        "cardType": 67,
+        "name": "west"
+      },
+      {
+        "cardType": 71,
+        "name": "store"
+      }
+    ],
+    "linkedItems": [
+      3,
+      2,
+      4
+    ],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 6620,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 67,
+    "isStore": false,
+    "name": "Skyward Peaks",
+    "description": "Towering, snow capped mountains that pierce the sky,\ntheir jagged summits lost in the clouds.\nThe air is thin and cold, and the winds howl through the rocky passes.\nOnly the most daring travelers attempt the climb.",
+    "linkedCards": [
+      {
+        "cardType": 66,
+        "name": "east"
+      },
+      {
+        "cardType": 65,
+        "name": "south"
+      },
+      {
+        "cardType": 73,
+        "name": "climb"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 6720,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 68,
+    "isStore": false,
+    "name": "Ancient Glyphs",
+    "description": "Faded symbols etched into stone, their meanings long lost to time.\nThey pulse faintly with an otherworldly energy,\nhinting at forgotten knowledge and hidden power,\nwaiting for someone to decipher their secrets.",
+    "linkedCards": [
+      {
+        "cardType": 66,
+        "name": "west"
+      },
+      {
+        "cardType": 64,
+        "name": "south"
+      }
+    ],
+    "linkedItems": [
+      5
+    ],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 6820,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 69,
+    "isStore": false,
+    "name": "Forsaken Road",
+    "description": "A desolate, overgrown path,\nonce traveled but now abandoned.\nCracked stone and twisted roots litter the way,\nand an eerie silence hangs in the air,\nas if the road itself has been forgotten by time.\nThe road continues north but a large chasm blocks you from continuing.",
+    "linkedCards": [
+      {
+        "cardType": 66,
+        "name": "south"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [
+      {
+        "enemyType": 0,
+        "health": 300,
+        "damage": 80
+      },
+      {
+        "enemyType": 0,
+        "health": 200,
+        "damage": 80
+      }
+    ],
+    "_x": 20,
+    "_y": 6920,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 70,
+    "isStore": false,
+    "name": "Hidden Passage",
+    "description": "A secret, very long, narrow tunnel beneath the earth,\nits entrance concealed by rubble and roots.\nThe air is damp and musty,\nand the faint echo of footsteps suggests forgotten travelers once walked this path.\nYou can go east or west.",
+    "linkedCards": [
+      {
+        "cardType": 64,
+        "name": "west"
+      },
+      {
+        "cardType": 16,
+        "name": "east"
+      }
+    ],
+    "linkedItems": [
+      5
+    ],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 7020,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 71,
+    "isStore": true,
+    "name": "Enchanted Village Store",
+    "description": "You are in a small store.\nBuy items.",
+    "linkedCards": [
+      {
+        "cardType": 66,
+        "name": "town"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 7120,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 72,
+    "isStore": false,
+    "name": "Forsaken Road North",
+    "description": "You walk for miles along the northern end of the Forsaken Road.",
+    "linkedCards": [
+      {
+        "cardType": 69,
+        "name": "south"
+      },
+      {
+        "cardType": 74,
+        "name": "north"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 7220,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 73,
+    "isStore": false,
+    "name": "Stoneheart Mountain",
+    "description": "You climb Stoneheart Mountain to the top.\nThe towering peak's slopes are blanketed in thick, glistening white drifts.\nThe jagged cliffs rise sharply against the sky,\ntheir dark stone contrasted by the endless stretch of frost and ice.\nWinds whip through the mountain's high passes,\ncarrying with them the bite of the cold\nIts too steep to climb back down.\nBut the south is less steep,\nand there is a path that leads down the mountain.",
+    "linkedCards": [
+      {
+        "cardType": 46,
+        "name": "path"
+      }
+    ],
+    "linkedItems": [
+      2,
+      2,
+      3,
+      3
+    ],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 7320,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 74,
+    "isStore": false,
+    "name": "The Whispering Marsh Entrance",
+    "description": "Entrance to The Whispering Marsh.\nIts rumored to be the home of ogres.\nEnter if you dare...",
+    "linkedCards": [
+      {
+        "cardType": 75,
+        "name": "north"
+      },
+      {
+        "cardType": 69,
+        "name": "south"
+      },
+      {
+        "cardType": 83,
+        "name": "east"
+      },
+      {
+        "cardType": 77,
+        "name": "west"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 7420,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 75,
+    "isStore": false,
+    "name": "The Whispering Marsh",
+    "description": "A vast,\nfog-covered swamp where the wind seems to carry faint whispers from all directions.\nThe ground is treacherous,\nand strange,\nglowing lights float above the muck.",
+    "linkedCards": [
+      {
+        "cardType": 76,
+        "name": "north"
+      },
+      {
+        "cardType": 74,
+        "name": "south"
+      },
+      {
+        "cardType": 84,
+        "name": "east"
+      },
+      {
+        "cardType": 78,
+        "name": "west"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [
+      {
+        "enemyType": 0,
+        "health": 300,
+        "damage": 80
+      },
+      {
+        "enemyType": 0,
+        "health": 200,
+        "damage": 80
+      },
+      {
+        "enemyType": 0,
+        "health": 200,
+        "damage": 80
+      },
+      {
+        "enemyType": 0,
+        "health": 200,
+        "damage": 80
+      }
+    ],
+    "_x": 20,
+    "_y": 7520,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 76,
+    "isStore": false,
+    "name": "The Whispering Marsh",
+    "description": "A vast,\nfog-covered swamp where the wind seems to carry faint whispers from all directions.\nThe ground is treacherous,\nand strange,\nglowing lights float above the muck.",
+    "linkedCards": [
+      {
+        "cardType": 75,
+        "name": "south"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 7620,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 77,
+    "isStore": false,
+    "name": "The Whispering Marsh",
+    "description": "A vast,\nfog-covered swamp where the wind seems to carry faint whispers from all directions.\nThe ground is treacherous,\nand strange,\nglowing lights float above the muck.",
+    "linkedCards": [
+      {
+        "cardType": 78,
+        "name": "north"
+      },
+      {
+        "cardType": 74,
+        "name": "east"
+      },
+      {
+        "cardType": 80,
+        "name": "west"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [
+      {
+        "enemyType": 0,
+        "health": 300,
+        "damage": 80
+      },
+      {
+        "enemyType": 0,
+        "health": 200,
+        "damage": 80
+      },
+      {
+        "enemyType": 0,
+        "health": 200,
+        "damage": 80
+      },
+      {
+        "enemyType": 0,
+        "health": 200,
+        "damage": 80
+      }
+    ],
+    "_x": 20,
+    "_y": 7720,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 78,
+    "isStore": false,
+    "name": "The Whispering Marsh",
+    "description": "A vast,\nfog-covered swamp where the wind seems to carry faint whispers from all directions.\nThe ground is treacherous,\nand strange,\nglowing lights float above the muck.",
+    "linkedCards": [
+      {
+        "cardType": 79,
+        "name": "north"
+      },
+      {
+        "cardType": 77,
+        "name": "south"
+      },
+      {
+        "cardType": 75,
+        "name": "east"
+      },
+      {
+        "cardType": 81,
+        "name": "west"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [
+      {
+        "enemyType": 0,
+        "health": 300,
+        "damage": 80
+      },
+      {
+        "enemyType": 0,
+        "health": 200,
+        "damage": 80
+      }
+    ],
+    "_x": 20,
+    "_y": 7820,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 79,
+    "isStore": false,
+    "name": "The Whispering Marsh",
+    "description": "A vast,\nfog-covered swamp where the wind seems to carry faint whispers from all directions.\nThe ground is treacherous,\nand strange,\nglowing lights float above the muck.",
+    "linkedCards": [
+      {
+        "cardType": 88,
+        "name": "out"
+      },
+      {
+        "cardType": 78,
+        "name": "south"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 7920,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 80,
+    "isStore": false,
+    "name": "The Whispering Marsh",
+    "description": "A vast,\nfog-covered swamp where the wind seems to carry faint whispers from all directions.\nThe ground is treacherous,\nand strange,\nglowing lights float above the muck.",
+    "linkedCards": [
+      {
+        "cardType": 81,
+        "name": "north"
+      },
+      {
+        "cardType": 77,
+        "name": "east"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [
+      {
+        "enemyType": 0,
+        "health": 300,
+        "damage": 80
+      },
+      {
+        "enemyType": 0,
+        "health": 200,
+        "damage": 80
+      }
+    ],
+    "_x": 20,
+    "_y": 8020,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 81,
+    "isStore": false,
+    "name": "The Whispering Marsh",
+    "description": "A vast,\nfog-covered swamp where the wind seems to carry faint whispers from all directions.\nThe ground is treacherous,\nand strange,\nglowing lights float above the muck.",
+    "linkedCards": [
+      {
+        "cardType": 80,
+        "name": "south"
+      },
+      {
+        "cardType": 78,
+        "name": "east"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [
+      {
+        "enemyType": 0,
+        "health": 400,
+        "damage": 110
+      }
+    ],
+    "_x": 20,
+    "_y": 8120,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 82,
+    "isStore": false,
+    "name": "The Whispering Marsh",
+    "description": "A vast,\nfog-covered swamp where the wind seems to carry faint whispers from all directions.\nThe ground is treacherous,\nand strange,\nglowing lights float above the muck.",
+    "linkedCards": [
+      {
+        "cardType": 83,
+        "name": "north"
+      },
+      {
+        "cardType": 85,
+        "name": "east"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 8220,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 83,
+    "isStore": false,
+    "name": "The Whispering Marsh",
+    "description": "A vast,\nfog-covered swamp where the wind seems to carry faint whispers from all directions.\nThe ground is treacherous,\nand strange,\nglowing lights float above the muck.",
+    "linkedCards": [
+      {
+        "cardType": 84,
+        "name": "north"
+      },
+      {
+        "cardType": 82,
+        "name": "south"
+      },
+      {
+        "cardType": 86,
+        "name": "east"
+      },
+      {
+        "cardType": 74,
+        "name": "west"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 8320,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 84,
+    "isStore": false,
+    "name": "The Whispering Marsh",
+    "description": "A vast,\nfog-covered swamp where the wind seems to carry faint whispers from all directions.\nThe ground is treacherous,\nand strange,\nglowing lights float above the muck.",
+    "linkedCards": [
+      {
+        "cardType": 83,
+        "name": "south"
+      },
+      {
+        "cardType": 87,
+        "name": "east"
+      },
+      {
+        "cardType": 75,
+        "name": "west"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [
+      {
+        "enemyType": 0,
+        "health": 300,
+        "damage": 80
+      },
+      {
+        "enemyType": 0,
+        "health": 200,
+        "damage": 80
+      },
+      {
+        "enemyType": 0,
+        "health": 300,
+        "damage": 80
+      },
+      {
+        "enemyType": 0,
+        "health": 200,
+        "damage": 80
+      }
+    ],
+    "_x": 20,
+    "_y": 8420,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 85,
+    "isStore": false,
+    "name": "The Whispering Marsh",
+    "description": "A vast,\nfog-covered swamp where the wind seems to carry faint whispers from all directions.\nThe ground is treacherous,\nand strange,\nglowing lights float above the muck.",
+    "linkedCards": [
+      {
+        "cardType": 86,
+        "name": "north"
+      },
+      {
+        "cardType": 82,
+        "name": "west"
+      }
+    ],
+    "linkedItems": [
+      5
+    ],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 8520,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 86,
+    "isStore": false,
+    "name": "The Whispering Marsh",
+    "description": "A vast,\nfog-covered swamp where the wind seems to carry faint whispers from all directions.\nThe ground is treacherous,\nand strange,\nglowing lights float above the muck.",
+    "linkedCards": [
+      {
+        "cardType": 87,
+        "name": "north"
+      },
+      {
+        "cardType": 85,
+        "name": "south"
+      },
+      {
+        "cardType": 83,
+        "name": "west"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [
+      {
+        "enemyType": 0,
+        "health": 300,
+        "damage": 80
+      },
+      {
+        "enemyType": 0,
+        "health": 200,
+        "damage": 80
+      },
+      {
+        "enemyType": 0,
+        "health": 300,
+        "damage": 80
+      },
+      {
+        "enemyType": 0,
+        "health": 200,
+        "damage": 80
+      }
+    ],
+    "_x": 20,
+    "_y": 8620,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 87,
+    "isStore": false,
+    "name": "The Whispering Marsh",
+    "description": "A vast,\nfog-covered swamp where the wind seems to carry faint whispers from all directions.\nThe ground is treacherous,\nand strange,\nglowing lights float above the muck.",
+    "linkedCards": [
+      {
+        "cardType": 86,
+        "name": "south"
+      },
+      {
+        "cardType": 84,
+        "name": "west"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [
+      {
+        "enemyType": 0,
+        "health": 500,
+        "damage": 160
+      }
+    ],
+    "_x": 20,
+    "_y": 8720,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 88,
+    "isStore": false,
+    "name": "The Whispering Marsh Exit",
+    "description": "You can head south back into the marsh, or north...",
+    "linkedCards": [
+      {
+        "cardType": 79,
+        "name": "south"
+      },
+      {
+        "cardType": 89,
+        "name": "north"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 8820,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 89,
+    "isStore": false,
+    "name": "Town of Hearthstone",
+    "description": "Hearthstone is a charming town nestled in a peaceful valley.\nWith its cozy cottages, lush farmlands, and scenic countryside, it exudes a warm, welcoming atmosphere.\nThe quiet streets are lined with flower-filled gardens,\nand the air is fresh with the scent of nearby forests and fields.",
+    "linkedCards": [
+      {
+        "cardType": 92,
+        "name": "north"
+      },
+      {
+        "cardType": 88,
+        "name": "south"
+      },
+      {
+        "cardType": 95,
+        "name": "east"
+      },
+      {
+        "cardType": 91,
+        "name": "west"
+      },
+      {
+        "cardType": 94,
+        "name": "path"
+      },
+      {
+        "cardType": 90,
+        "name": "store"
+      }
+    ],
+    "linkedItems": [
+      2,
+      2,
+      3,
+      3
+    ],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 8920,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 90,
+    "isStore": true,
+    "name": "Willow and Wares",
+    "description": "You are in a small store.\nBuy items.",
+    "linkedCards": [
+      {
+        "cardType": 89,
+        "name": "town"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 9020,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 91,
+    "isStore": false,
+    "name": "Thistlehill Cottage",
+    "description": "Thistlehill Cottage is a charming little retreat perched on a hillside,\nsurrounded by wildflowers and the gentle rustle of the breeze.",
+    "linkedCards": [
+      {
+        "cardType": 93,
+        "name": "north"
+      },
+      {
+        "cardType": 89,
+        "name": "east"
+      }
+    ],
+    "linkedItems": [
+      2,
+      2
+    ],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 9120,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 92,
+    "isStore": false,
+    "name": "Sunbeam Cottage",
+    "description": "A bright, welcoming home bathed in natural light.\nWith its large windows that let the sun spill in,\nthe cottage feels warm and cheerful all year round.\nInside are soft wooden beams and colorful, hand-crafted decor",
+    "linkedCards": [
+      {
+        "cardType": 89,
+        "name": "south"
+      },
+      {
+        "cardType": 93,
+        "name": "west"
+      }
+    ],
+    "linkedItems": [
+      2,
+      2
+    ],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 9220,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 93,
+    "isStore": false,
+    "name": "Baker Farm",
+    "description": "The Baker Farm is a cozy,\npicturesque homestead nestled at the edge of Hearthstone,\nwhere the sweet scent of fresh bread and earthy fields mingle in the air.\nThe farmhouse,\nwith its red-brick chimney and whitewashed walls,\nstands proudly beside neat rows of crops and flourishing orchards.\nThere is a beet plant here.",
+    "linkedCards": [
+      {
+        "cardType": 91,
+        "name": "south"
+      },
+      {
+        "cardType": 92,
+        "name": "east"
+      },
+      {
+        "cardType": 96,
+        "name": "west"
+      }
+    ],
+    "linkedItems": [
+      5
+    ],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 9320,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 94,
+    "isStore": false,
+    "name": "Old Man Aj's",
+    "description": "Old Man Aj's house is a weathered,\nyet sturdy cottage nestled at the edge of Hearthstone.\nIts timbered walls are worn with age, and the roof, patched in places, is thick with moss.\nThe front porch is cluttered with an assortment of tools, jars of dried herbs, and an odd collection of knick-knacks.\nThere is a fireplace here.",
+    "linkedCards": [
+      {
+        "cardType": 89,
+        "name": "path"
+      }
+    ],
+    "linkedItems": [
+      3,
+      3,
+      3,
+      3
+    ],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 9420,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 95,
+    "isStore": false,
+    "name": "Road near Hearthstone",
+    "description": "The Road near Hearthstone winds gently through lush meadows and wooded glades,\noffering peaceful views of the surrounding countryside.\nPaved with cobblestones that have worn smooth over the years,\nit's flanked by wildflowers and tall grasses that sway in the breeze.",
+    "linkedCards": [
+      {
+        "cardType": 89,
+        "name": "west"
+      },
+      {
+        "cardType": 97,
+        "name": "pub"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 9520,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 96,
+    "isStore": false,
+    "name": "Turney Farm",
+    "description": "A nice, quiet, farm house in the country-side.\nLooks like a good place for a read.",
+    "linkedCards": [
+      {
+        "cardType": 93,
+        "name": "east"
+      }
+    ],
+    "linkedItems": [
+      5
+    ],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 9620,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 97,
+    "isStore": false,
+    "name": "The Stumbling Goat",
+    "description": "A humorous, rustic tavern with a quirky feel, often the heart of village gossip.",
+    "linkedCards": [
+      {
+        "cardType": 95,
+        "name": "road"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 9720,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 98,
+    "isStore": false,
+    "name": "Road east of Wrenwood",
+    "description": "You travel miles east of Wrenwood.\nIt looks like another town is nearby",
+    "linkedCards": [
+      {
+        "cardType": 99,
+        "name": "east"
+      },
+      {
+        "cardType": 33,
+        "name": "west"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [
+      {
+        "enemyType": 4,
+        "health": 1000,
+        "damage": 100
+      }
+    ],
+    "_x": 20,
+    "_y": 9820,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 99,
+    "isStore": false,
+    "name": "Belleville",
+    "description": "At the center of Belleville lies a modest square,\ndominated by an ancient oak tree whose gnarled branches stretch wide,\ncasting dappled shadows over the market stalls below.",
+    "linkedCards": [
+      {
+        "cardType": 101,
+        "name": "books"
+      },
+      {
+        "cardType": 100,
+        "name": "store"
+      },
+      {
+        "cardType": 98,
+        "name": "west"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 9920,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 100,
+    "isStore": true,
+    "name": "Ye Ol'e Dog House",
+    "description": "A quaint small shop known for its ice cream.",
+    "linkedCards": [
+      {
+        "cardType": 99,
+        "name": "town"
+      }
+    ],
+    "linkedItems": [],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 10020,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 101,
+    "isStore": false,
+    "name": "Belleville Public Library",
+    "description": "A public library for old and young.\nA good place for a read.\nThere is a fireplace here.",
+    "linkedCards": [
+      {
+        "cardType": 99,
+        "name": "town"
+      }
+    ],
+    "linkedItems": [
+      5
+    ],
+    "linkedEnemies": [],
+    "_x": 20,
+    "_y": 10120,
+    "_w": 300,
+    "_h": 80
+  },
+  {
+    "cardType": 102,
+    "isStore": false,
+    "name": "Belleville Church",
+    "description": "A beautiful local church.",
+    "linkedItems": [],
+    "linkedCards": [],
+    "linkedEnemies": [],
+    "numLinkedCards": 0,
+    "numLinkedItems": 0,
+    "numLinkedEnemies": 0,
+    "_x": 20,
+    "_y": 10220,
+    "_w": 300,
+    "_h": 80
+  }
+]
