@@ -155,6 +155,19 @@ async function loadTypes() {
   }
 }
 
+function createDeleteButton() {
+  const btn = document.createElement('button');
+  btn.textContent = '❌';
+  btn.style.width = 'auto';
+  btn.style.marginLeft = '10px';
+  btn.onclick = (e) => {
+    const parent = e.target.parentElement;
+    parent.remove();
+  };
+  return btn;
+}
+
+
 function createDropdown(options, selectedValue, className = '') {
   const select = document.createElement('select');
   if (className) select.className = className;
@@ -171,9 +184,19 @@ function createDropdown(options, selectedValue, className = '') {
 
 function addLinkedItem(selected = null) {
   const container = document.getElementById('linkedItems');
+  const wrapper = document.createElement('div');
+  wrapper.style.display = 'flex';
+  wrapper.style.alignItems = 'center';
+  wrapper.style.marginBottom = '5px';
+
   const dropdown = createDropdown(types.items, selected);
-  container.appendChild(dropdown);
+  dropdown.style.flexGrow = '1';
+
+  wrapper.appendChild(dropdown);
+  wrapper.appendChild(createDeleteButton());
+  container.appendChild(wrapper);
 }
+
 
 function addLinkedEnemy(selected = null) {
   const container = document.getElementById('linkedEnemies');
@@ -204,6 +227,7 @@ function addLinkedEnemy(selected = null) {
   wrapper.appendChild(dropdown);
   wrapper.appendChild(healthInput);
   wrapper.appendChild(damageInput);
+  wrapper.appendChild(createDeleteButton());
   container.appendChild(wrapper);
 }
 
@@ -212,9 +236,10 @@ function addLinkedCard(selected = null) {
 
   const wrapper = document.createElement('div');
   wrapper.className = 'linkedCardEntry';
+  wrapper.style.display = 'flex';
+  wrapper.style.alignItems = 'center';
   wrapper.style.marginBottom = '10px';
 
-  // Dropdown
   const select = document.createElement('select');
   deck.forEach(card => {
     const option = document.createElement('option');
@@ -226,20 +251,22 @@ function addLinkedCard(selected = null) {
     }
     select.appendChild(option);
   });
-  select.style.width = '60%';
-  select.style.marginRight = '10px';
+  select.style.flex = '1';
 
-  // Name (transition) input
   const nameInput = document.createElement('input');
   nameInput.type = 'text';
   nameInput.placeholder = 'Transition name';
   nameInput.value = selected?.name ?? '';
-  nameInput.style.width = '35%';
+  nameInput.style.width = '40%';
+  nameInput.style.marginLeft = '10px';
 
   wrapper.appendChild(select);
   wrapper.appendChild(nameInput);
+  wrapper.appendChild(createDeleteButton());
+
   container.appendChild(wrapper);
 }
+
 
 
 function drawDeck() {
@@ -308,6 +335,44 @@ canvas.addEventListener('click', (e) => {
     drawDeck();
   }
 });
+
+canvas.addEventListener('contextmenu', (e) => {
+  e.preventDefault(); // prevent browser menu
+
+  const rect = canvas.getBoundingClientRect();
+  const mx = e.clientX - rect.left;
+  const my = e.clientY - rect.top;
+
+  const clickedCard = deck.find(card =>
+    mx >= card._x && mx <= card._x + card._w &&
+    my >= card._y && my <= card._y + card._h
+  );
+
+  if (!clickedCard) return;
+
+  if (selectedCardIndex === null) {
+    alert("Please select or create a card first before linking.");
+    return;
+  }
+
+  const selectedCard = deck[selectedCardIndex];
+  if (!selectedCard.linkedCards) {
+    selectedCard.linkedCards = [];
+  }
+
+  // Avoid duplicate links
+  const alreadyLinked = selectedCard.linkedCards.some(link =>
+    (typeof link === 'object' ? link.cardType : link) === clickedCard.cardType
+  );
+  if (alreadyLinked) return;
+
+  // Add link with default name
+  selectedCard.linkedCards.push({ cardType: clickedCard.cardType, name: "" });
+
+  populateEditor(selectedCard); // update editor UI
+  drawDeck(); // update canvas highlights
+});
+
 
 function clearEditor() {
   document.getElementById('cardName').value = '';
