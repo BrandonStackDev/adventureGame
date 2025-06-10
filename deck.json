@@ -2578,6 +2578,8 @@
     "isStore": false,
     "name": "Belleville",
     "description": "At the center of Belleville lies a modest square,\ndominated by an ancient oak tree whose gnarled branches stretch wide,\ncasting dappled shadows over the market stalls below.",
+    "linkedItems": [],
+    "linkedEnemies": [],
     "linkedCards": [
       {
         "cardType": 101,
@@ -2590,10 +2592,15 @@
       {
         "cardType": 98,
         "name": "west"
+      },
+      {
+        "cardType": 102,
+        "name": "church"
       }
     ],
-    "linkedItems": [],
-    "linkedEnemies": [],
+    "numLinkedCards": 4,
+    "numLinkedItems": 0,
+    "numLinkedEnemies": 0,
     "_x": 20,
     "_y": 9920,
     "_w": 300,
@@ -2643,9 +2650,14 @@
     "name": "Belleville Church",
     "description": "A beautiful local church.",
     "linkedItems": [],
-    "linkedCards": [],
     "linkedEnemies": [],
-    "numLinkedCards": 0,
+    "linkedCards": [
+      {
+        "cardType": 99,
+        "name": "town"
+      }
+    ],
+    "numLinkedCards": 1,
     "numLinkedItems": 0,
     "numLinkedEnemies": 0,
     "_x": 20,

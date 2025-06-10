@@ -135,7 +135,6 @@ async function loadDeck() {
   try {
     const res = await fetch('deck.json');
     deck = await res.json();
-    canvas.height = deck.length * 100 + 20;
     drawDeck();
     clearEditor();
   } catch (err) {
@@ -208,20 +207,79 @@ function addLinkedEnemy(selected = null) {
   container.appendChild(wrapper);
 }
 
+function addLinkedCard(selected = null) {
+  const container = document.getElementById('linkedCards');
+
+  const wrapper = document.createElement('div');
+  wrapper.className = 'linkedCardEntry';
+  wrapper.style.marginBottom = '10px';
+
+  // Dropdown
+  const select = document.createElement('select');
+  deck.forEach(card => {
+    const option = document.createElement('option');
+    option.value = card.cardType;
+    const label = card.name?.trim() || 'Unnamed';
+    option.textContent = `${card.cardType}: ${label}`;
+    if (card.cardType === (selected?.cardType ?? selected)) {
+      option.selected = true;
+    }
+    select.appendChild(option);
+  });
+  select.style.width = '60%';
+  select.style.marginRight = '10px';
+
+  // Name (transition) input
+  const nameInput = document.createElement('input');
+  nameInput.type = 'text';
+  nameInput.placeholder = 'Transition name';
+  nameInput.value = selected?.name ?? '';
+  nameInput.style.width = '35%';
+
+  wrapper.appendChild(select);
+  wrapper.appendChild(nameInput);
+  container.appendChild(wrapper);
+}
 
 
 function drawDeck() {
+  canvas.height = deck.length * 100 + 20;
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Grab set of linked cardTypes from the selected card
+  let linkedCardTypes = new Set();
+  if (selectedCardIndex !== null) {
+    const current = deck[selectedCardIndex];
+    (current.linkedCards || []).forEach(link => {
+      if (typeof link === 'object' && link.cardType !== undefined) {
+        linkedCardTypes.add(link.cardType);
+      } else {
+        linkedCardTypes.add(link); // fallback for legacy data
+      }
+    });
+  }
+
   deck.forEach((card, index) => {
     const x = 20;
     const y = index * 100 + 20;
     const w = 300;
     const h = 80;
-    ctx.fillStyle = '#fff';
+
+    // Color logic
+    if (index === selectedCardIndex) {
+      ctx.fillStyle = '#add8e6'; // light blue
+    } else if (linkedCardTypes.has(card.cardType)) {
+      ctx.fillStyle = '#ffff99'; // light yellow
+    } else {
+      ctx.fillStyle = '#fff'; // default
+    }
+
+    // Draw card
     ctx.strokeStyle = '#333';
     ctx.lineWidth = 2;
     ctx.fillRect(x, y, w, h);
     ctx.strokeRect(x, y, w, h);
+
     ctx.fillStyle = '#000';
     ctx.font = '16px sans-serif';
     ctx.fillText(card.name || 'Unnamed Card', x + 10, y + 30);
@@ -247,6 +305,7 @@ canvas.addEventListener('click', (e) => {
   if (clicked !== -1) {
     selectedCardIndex = clicked;
     populateEditor(deck[clicked]);
+    drawDeck();
   }
 });
 
@@ -255,7 +314,13 @@ function clearEditor() {
   document.getElementById('cardDescription').value = '';
   document.getElementById('isStore').checked = false;
   document.getElementById('cardType').innerText = 0;
+
+  // Clear linked sections
+  document.getElementById('linkedItems').innerHTML = '';
+  document.getElementById('linkedEnemies').innerHTML = '';
+  document.getElementById('linkedCards').innerHTML = '';
 }
+
 
 function populateEditor(card) {
   document.getElementById('cardName').value = card.name || '';
@@ -278,17 +343,17 @@ function populateEditor(card) {
     }
   });
 
+  const cardContainer = document.getElementById('linkedCards');
+  cardContainer.innerHTML = '';
+  (card.linkedCards || []).forEach(card => addLinkedCard(card));
 }
 
 
 function newCard() {
   selectedCardIndex = null;
-  document.getElementById('cardName').value = '';
-  document.getElementById('cardDescription').value = '';
-  document.getElementById('isStore').checked = false;
-  document.getElementById('cardType').innerText = 0;
-  document.getElementById('linkedItems').value = '';
+  clearEditor();
 }
+
 
 function saveCard() {
   const linkedItems = Array.from(document.querySelectorAll('#linkedItems select'))
@@ -305,6 +370,14 @@ function saveCard() {
       };
   });
 
+  const linkedCards = Array.from(document.querySelectorAll('#linkedCards .linkedCardEntry')).map(entry => {
+    const select = entry.querySelector('select');
+    const input = entry.querySelector('input');
+    return {
+      cardType: parseInt(select.value),
+      name: input.value.trim()
+    };
+  });
 
   const card = {
     cardType: parseInt(document.getElementById('cardType').innerText),
@@ -313,8 +386,8 @@ function saveCard() {
     description: document.getElementById('cardDescription').value,
     linkedItems,
     linkedEnemies,
-    linkedCards: [],
-    numLinkedCards: 0,
+    linkedCards,
+    numLinkedCards: linkedCards.length,
     numLinkedItems: linkedItems.length,
     numLinkedEnemies: linkedEnemies.length
   };
@@ -328,8 +401,6 @@ function saveCard() {
   } else {
     deck.push(card);
   }
-
-  canvas.height = deck.length * 100 + 20;
   drawDeck();
 }
 
