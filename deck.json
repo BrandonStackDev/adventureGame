@@ -2704,7 +2704,7 @@
     "cardType": 104,
     "isStore": false,
     "name": "Clearing Deep in the Woods",
-    "description": "a large clearing in the middle of the forest.\nThere is a fireplace here.",
+    "description": "a large clearing in the middle of the forest.\nIt looks like someone was camping here.\nThere is a fireplace here.",
     "linkedItems": [
       2,
       3,
