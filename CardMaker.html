@@ -101,6 +101,11 @@
     <label for="isStore">Is Store?</label>
   </div>
 
+  <div class="checkboxRow">
+    <input type="checkbox" id="hasFireplace" />
+    <label for="hasFireplace">Has Fireplace?</label>
+  </div>
+
   <div class="section">
     <h2>Linked Items</h2>
     <div id="linkedItems"></div>
@@ -447,6 +452,7 @@ function saveCard() {
   const card = {
     cardType: parseInt(document.getElementById('cardType').innerText),
     isStore: document.getElementById('isStore').checked,
+    hasFireplace: document.getElementById('hasFireplace').checked,
     name: document.getElementById('cardName').value,
     description: document.getElementById('cardDescription').value,
     linkedItems,

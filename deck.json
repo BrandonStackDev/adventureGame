@@ -1,9 +1,17 @@
 [
   {
-    "cardType": 0,
+    "cardType": 105,
     "isStore": false,
+    "hasFireplace": true,
     "name": "home",
     "description": "You are in your home.\nIts dimly lit but cozy.\nThe light from an old lamp beside a cozy armchair pools softly over a stack of books,\ninviting anyone to curl up with a cup of tea or coffee.\nEvery corner feels like a sanctuary, a quiet world where time slows down,\nand every object seems to have its own story to tell.\nThere is a front door and a back door.\nThere is a fire place here.",
+    "linkedItems": [
+      0,
+      5,
+      2,
+      3
+    ],
+    "linkedEnemies": [],
     "linkedCards": [
       {
         "cardType": 1,
@@ -14,13 +22,9 @@
         "name": "back"
       }
     ],
-    "linkedItems": [
-      0,
-      5,
-      2,
-      3
-    ],
-    "linkedEnemies": [],
+    "numLinkedCards": 2,
+    "numLinkedItems": 4,
+    "numLinkedEnemies": 0,
     "_x": 20,
     "_y": 20,
     "_w": 300,
@@ -2703,6 +2707,7 @@
   {
     "cardType": 104,
     "isStore": false,
+    "hasFireplace": true,
     "name": "Clearing Deep in the Woods",
     "description": "a large clearing in the middle of the forest.\nIt looks like someone was camping here.\nThere is a fireplace here.",
     "linkedItems": [
