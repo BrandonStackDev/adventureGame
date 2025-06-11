@@ -737,20 +737,16 @@
   {
     "cardType": 28,
     "isStore": false,
-    "hasFireplace": true,
     "name": "Cinderspire",
     "description": "A jagged, smoke-streaked peak that towers over the charred landscape.\nThe air is thick with ash, and the remnants of ancient fires flicker faintly at the summit..\nThere is a fireplace built into the rock.",
-    "linkedItems": [],
-    "linkedEnemies": [],
     "linkedCards": [
       {
         "cardType": 20,
         "name": "wood"
       }
     ],
-    "numLinkedCards": 1,
-    "numLinkedItems": 0,
-    "numLinkedEnemies": 0,
+    "linkedItems": [],
+    "linkedEnemies": [],
     "_x": 20,
     "_y": 2820,
     "_w": 300,
@@ -830,11 +826,8 @@
   {
     "cardType": 32,
     "isStore": false,
-    "hasFireplace": true,
     "name": "Old Man McCann's",
     "description": "Old man McCann's residence.\nThere is a path to a small garden.\nThere is a fireplace here.",
-    "linkedItems": [],
-    "linkedEnemies": [],
     "linkedCards": [
       {
         "cardType": 33,
@@ -845,9 +838,8 @@
         "name": "garden"
       }
     ],
-    "numLinkedCards": 2,
-    "numLinkedItems": 0,
-    "numLinkedEnemies": 0,
+    "linkedItems": [],
+    "linkedEnemies": [],
     "_x": 20,
     "_y": 3220,
     "_w": 300,
@@ -1114,20 +1106,16 @@
   {
     "cardType": 44,
     "isStore": false,
-    "hasFireplace": true,
     "name": "Williams Town Hall",
     "description": "You are in Williams Town Hall.\nThere is a fire place here.",
-    "linkedItems": [],
-    "linkedEnemies": [],
     "linkedCards": [
       {
         "cardType": 42,
         "name": "town"
       }
     ],
-    "numLinkedCards": 1,
-    "numLinkedItems": 0,
-    "numLinkedEnemies": 0,
+    "linkedItems": [],
+    "linkedEnemies": [],
     "_x": 20,
     "_y": 4420,
     "_w": 300,
@@ -2643,9 +2631,9 @@
   {
     "cardType": 101,
     "isStore": false,
-    "hasFireplace": true,
+    "hasFireplace": false,
     "name": "Belleville Public Library",
-    "description": "A public library for old and young.\nA good place for a read.\nThere is a fireplace here.",
+    "description": "A public library for old and young.\nA good place for a read.",
     "linkedItems": [
       5
     ],
