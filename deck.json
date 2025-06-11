@@ -2631,18 +2631,22 @@
   {
     "cardType": 101,
     "isStore": false,
+    "hasFireplace": true,
     "name": "Belleville Public Library",
     "description": "A public library for old and young.\nA good place for a read.\nThere is a fireplace here.",
+    "linkedItems": [
+      5
+    ],
+    "linkedEnemies": [],
     "linkedCards": [
       {
         "cardType": 99,
         "name": "town"
       }
     ],
-    "linkedItems": [
-      5
-    ],
-    "linkedEnemies": [],
+    "numLinkedCards": 1,
+    "numLinkedItems": 1,
+    "numLinkedEnemies": 0,
     "_x": 20,
     "_y": 10120,
     "_w": 300,
