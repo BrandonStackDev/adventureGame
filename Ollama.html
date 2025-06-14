@@ -2,17 +2,20 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Character Sheet Builder</title>
+  <title>Character Sheet Builder + Ollama</title>
   <style>
     body {
       font-family: sans-serif;
       margin: 20px;
+    }
+    .container {
       display: flex;
+      flex-wrap: wrap;
       gap: 40px;
     }
-    #left, #right {
-      flex: 1;
-      max-width: 400px;
+    .panel {
+      flex: 1 1 400px;
+      max-width: 500px;
     }
     label {
       display: block;
@@ -22,6 +25,7 @@
     input, textarea, select {
       width: 100%;
       margin-top: 4px;
+      box-sizing: border-box;
     }
     button {
       margin-top: 10px;
@@ -33,61 +37,72 @@
       font-size: 0.9em;
       color: #555;
     }
+    textarea {
+      resize: vertical;
+      overflow: auto;
+      white-space: pre-wrap; /* ensures line wrap inside textarea */
+    }
   </style>
 </head>
 <body>
-  <div id="left">
-    <h2>Ollama Prompt Tester</h2>
-    <label>Ollama API URL</label>
-    <input type="text" id="apiUrl" value="http://localhost:11434">
+  <div class="container">
+    <div class="panel" id="left">
+      <h2>Ollama Prompt Tester</h2>
 
-    <label>Model Name</label>
-    <input type="text" id="modelName" value="llama3">
+      <label>Ollama API URL</label>
+      <input type="text" id="apiUrl" value="http://localhost:11434">
 
-    <label>Prompt</label>
-    <textarea id="prompt" rows="6">What is the capital of France?</textarea>
+      <label>Model Name</label>
+      <input type="text" id="modelName" value="llama3">
 
-    <button onclick="callOllama()">Send Prompt</button>
+      <label>Prompt (Your Player Message)</label>
+      <textarea id="prompt" rows="4" placeholder="What do you say?"></textarea>
 
-    <label>Response</label>
-    <pre id="responseOutputShort"></pre>
+      <label>Full Message Sent to LLM</label>
+      <textarea id="fullPrompt" rows="10" readonly></textarea>
 
-    <label>Full JSON Response</label>
-    <pre id="responseOutput">{}</pre>
-  </div>
+      <button onclick="callOllama()">Send Prompt</button>
 
-  <div id="right">
-    <h2>Character Sheet</h2>
+      <label>Response</label>
+      <textarea id="responseOutputShort" rows="6" readonly></textarea>
 
-    <label>Character</label>
-    <select id="characterSelect"></select>
+      <label>Full JSON Response</label>
+      <textarea id="responseOutput" rows="10" readonly></textarea>
+    </div>
 
-    <label>Type (read-only)</label>
-    <input type="number" id="charType" readonly>
+    <div class="panel" id="right">
+      <h2>Character Sheet</h2>
 
-    <label>Name</label>
-    <input type="text" id="charName">
+      <label>Character</label>
+      <select id="characterSelect"></select>
 
-    <label>Full Name</label>
-    <input type="text" id="charFullName">
+      <label>Type (read-only)</label>
+      <input type="number" id="charType" readonly>
 
-    <label>Description</label>
-    <textarea id="charDescription" rows="4"></textarea>
-    <small id="descLength">Length: 0</small>
+      <label>Name</label>
+      <input type="text" id="charName">
 
-    <label>Default</label>
-    <textarea id="charDefault" rows="4"></textarea>
+      <label>Full Name</label>
+      <input type="text" id="charFullName">
 
-    <button onclick="newCharacter()">New Character</button>
-    <button onclick="saveCharacter()">Save Character</button>
-    <button onclick="saveSheet()">Save Sheet</button>
+      <label>Description</label>
+      <textarea id="charDescription" rows="4"></textarea>
+      <small id="descLength">Length: 0</small>
+
+      <label>Default</label>
+      <textarea id="charDefault" rows="4"></textarea>
+
+      <button onclick="newCharacter()">New Character</button>
+      <button onclick="saveCharacter()">Save Character</button>
+      <button onclick="saveSheet()">Save Sheet</button>
+    </div>
   </div>
 
   <script>
     let characters = [];
     let selectedIndex = -1;
+    let conversations = {}; // type -> [strings]
 
-    // Load characters.json on startup
     window.onload = async () => {
       try {
         const res = await fetch('character.json');
@@ -95,6 +110,7 @@
       } catch {
         characters = [];
       }
+      characters.forEach(c => conversations[c.type] = []);
       populateDropdown();
       updateFields();
     };
@@ -118,6 +134,9 @@
     document.getElementById('characterSelect').addEventListener('change', (e) => {
       selectedIndex = parseInt(e.target.value);
       updateFields();
+      if (selectedIndex >= 0 && !(selectedIndex in conversations)) {
+        conversations[selectedIndex] = [];
+      }
     });
 
     function updateFields() {
@@ -160,6 +179,7 @@
         default: ''
       };
       characters.push(newChar);
+      conversations[newChar.type] = [];
       selectedIndex = newChar.type;
       populateDropdown();
       document.getElementById('characterSelect').value = selectedIndex;
@@ -188,11 +208,34 @@
     }
 
     async function callOllama() {
+      if (selectedIndex < 0) {
+        alert("Select a character first!");
+        return;
+      }
+
+      const c = characters[selectedIndex];
+      const playerInput = document.getElementById('prompt').value.trim();
+      if (!conversations[selectedIndex]) {
+        conversations[selectedIndex] = [];
+      }
+      conversations[selectedIndex].push(`[player] ${playerInput}`);
+
+      let convoBlock = `[Conversation]\n`;
+      conversations[selectedIndex].forEach(line => {
+        convoBlock += `${line}\n`;
+      });
+
+      const fullPrompt =
+        `You are ${c.name} (${c.fullName}).\n` +
+        `${c.description}\n\n` +
+        convoBlock;
+
+      document.getElementById('fullPrompt').value = fullPrompt;
+
       const apiUrl = document.getElementById('apiUrl').value;
       const modelName = document.getElementById('modelName').value;
-      const prompt = document.getElementById('prompt').value;
 
-      const requestBody = { model: modelName, prompt: prompt, stream: false };
+      const requestBody = { model: modelName, prompt: fullPrompt, stream: false };
 
       try {
         const res = await fetch(`${apiUrl}/api/generate`, {
@@ -201,11 +244,19 @@
           body: JSON.stringify(requestBody),
         });
 
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
         const json = await res.json();
+        conversations[selectedIndex].push(`[${c.name}] ${json.response}`);
+
         document.getElementById('responseOutputShort').textContent = json.response;
         document.getElementById('responseOutput').textContent = JSON.stringify(json, null, 2);
       } catch (err) {
-        document.getElementById('responseOutput').textContent = "Error: " + err;
+        // Fallback: use default text
+        const fallback = c.default || "(No response available)";
+        conversations[selectedIndex].push(`[${c.name}] ${fallback}`);
+        document.getElementById('responseOutputShort').textContent = fallback;
+        document.getElementById('responseOutput').textContent = `Error: ${err}`;
       }
     }
   </script>

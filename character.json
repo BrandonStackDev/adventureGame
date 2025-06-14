@@ -3,7 +3,7 @@
     "type": 0,
     "name": "Jovi",
     "fullName": "Jovi the Talking Dog",
-    "description": "Jovi is a talking dog. She likes biscuits alot.",
+    "description": "Jovi is a talking dog. She likes biscuits alot.\nJovi knows the map is in a tree, because maps are made of wood and so is a tree.",
     "default": "Woof Woof!"
   }
 ]
