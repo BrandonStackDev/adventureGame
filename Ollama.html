@@ -1,51 +1,198 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Ollama Prompt Tester</title>
+  <meta charset="UTF-8" />
+  <title>Character Sheet Builder</title>
   <style>
-    body { font-family: sans-serif; margin: 20px; max-width: 800px; }
-    textarea, input, pre {
-      width: 100%;
-      margin-top: 10px;
-      font-family: monospace;
+    body {
+      font-family: sans-serif;
+      margin: 20px;
+      display: flex;
+      gap: 40px;
     }
-    button { padding: 10px 20px; margin-top: 10px; }
-    label { font-weight: bold; margin-top: 15px; display: block; }
-    pre { background: #f0f0f0; padding: 10px; overflow: auto; max-height: 400px; }
+    #left, #right {
+      flex: 1;
+      max-width: 400px;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    input, textarea, select {
+      width: 100%;
+      margin-top: 4px;
+    }
+    button {
+      margin-top: 10px;
+      padding: 8px 20px;
+    }
+    small {
+      display: block;
+      margin-top: 4px;
+      font-size: 0.9em;
+      color: #555;
+    }
   </style>
 </head>
 <body>
-  <h2>Ollama API Prompt Tester</h2>
+  <div id="left">
+    <h2>Ollama Prompt Tester</h2>
+    <label>Ollama API URL</label>
+    <input type="text" id="apiUrl" value="http://localhost:11434">
 
-  <label>Ollama API URL (e.g., http://localhost:11434)</label>
-  <input type="text" id="apiUrl" value="http://localhost:11434">
+    <label>Model Name</label>
+    <input type="text" id="modelName" value="llama3">
 
-  <label>Model Name</label>
-  <input type="text" id="modelName" value="llama3">
+    <label>Prompt</label>
+    <textarea id="prompt" rows="6">What is the capital of France?</textarea>
 
-  <label>Prompt</label>
-  <textarea id="prompt" rows="6">What is the capital of France?</textarea>
+    <button onclick="callOllama()">Send Prompt</button>
 
-  <button onclick="callOllama()">Send Prompt</button>
+    <label>Response</label>
+    <pre id="responseOutputShort"></pre>
 
-  <label>Response Message</label>
-  <pre id="responseOutputShort"></pre>
+    <label>Full JSON Response</label>
+    <pre id="responseOutput">{}</pre>
+  </div>
 
-  <label>Full JSON Response</label>
-  <pre id="responseOutput">{}</pre>
+  <div id="right">
+    <h2>Character Sheet</h2>
+
+    <label>Character</label>
+    <select id="characterSelect"></select>
+
+    <label>Type (read-only)</label>
+    <input type="number" id="charType" readonly>
+
+    <label>Name</label>
+    <input type="text" id="charName">
+
+    <label>Full Name</label>
+    <input type="text" id="charFullName">
+
+    <label>Description</label>
+    <textarea id="charDescription" rows="4"></textarea>
+    <small id="descLength">Length: 0</small>
+
+    <label>Default</label>
+    <textarea id="charDefault" rows="4"></textarea>
+
+    <button onclick="newCharacter()">New Character</button>
+    <button onclick="saveCharacter()">Save Character</button>
+    <button onclick="saveSheet()">Save Sheet</button>
+  </div>
 
   <script>
+    let characters = [];
+    let selectedIndex = -1;
+
+    // Load characters.json on startup
+    window.onload = async () => {
+      try {
+        const res = await fetch('character.json');
+        characters = await res.json();
+      } catch {
+        characters = [];
+      }
+      populateDropdown();
+      updateFields();
+    };
+
+    function populateDropdown() {
+      const sel = document.getElementById('characterSelect');
+      sel.innerHTML = '';
+      const noneOpt = document.createElement('option');
+      noneOpt.value = -1;
+      noneOpt.textContent = '(none)';
+      sel.appendChild(noneOpt);
+      characters.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c.type;
+        opt.textContent = c.name;
+        sel.appendChild(opt);
+      });
+      sel.value = -1;
+    }
+
+    document.getElementById('characterSelect').addEventListener('change', (e) => {
+      selectedIndex = parseInt(e.target.value);
+      updateFields();
+    });
+
+    function updateFields() {
+      const type = document.getElementById('charType');
+      const name = document.getElementById('charName');
+      const fullName = document.getElementById('charFullName');
+      const desc = document.getElementById('charDescription');
+      const def = document.getElementById('charDefault');
+      const len = document.getElementById('descLength');
+
+      if (selectedIndex >= 0 && selectedIndex < characters.length) {
+        const c = characters[selectedIndex];
+        type.value = c.type;
+        name.value = c.name;
+        fullName.value = c.fullName;
+        desc.value = c.description;
+        def.value = c.default;
+        len.textContent = `Length: ${c.description.length}`;
+      } else {
+        type.value = '';
+        name.value = '';
+        fullName.value = '';
+        desc.value = '';
+        def.value = '';
+        len.textContent = 'Length: 0';
+      }
+    }
+
+    document.getElementById('charDescription').addEventListener('input', () => {
+      const desc = document.getElementById('charDescription');
+      document.getElementById('descLength').textContent = `Length: ${desc.value.length}`;
+    });
+
+    function newCharacter() {
+      const newChar = {
+        type: characters.length,
+        name: '',
+        fullName: '',
+        description: '',
+        default: ''
+      };
+      characters.push(newChar);
+      selectedIndex = newChar.type;
+      populateDropdown();
+      document.getElementById('characterSelect').value = selectedIndex;
+      updateFields();
+    }
+
+    function saveCharacter() {
+      if (selectedIndex < 0) return;
+      const c = characters[selectedIndex];
+      c.name = document.getElementById('charName').value;
+      c.fullName = document.getElementById('charFullName').value;
+      c.description = document.getElementById('charDescription').value;
+      c.default = document.getElementById('charDefault').value;
+      populateDropdown();
+      document.getElementById('characterSelect').value = selectedIndex;
+    }
+
+    function saveSheet() {
+      const blob = new Blob([JSON.stringify(characters, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'character.json';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
     async function callOllama() {
       const apiUrl = document.getElementById('apiUrl').value;
       const modelName = document.getElementById('modelName').value;
       const prompt = document.getElementById('prompt').value;
 
-      const requestBody = {
-        model: modelName,
-        prompt: prompt,
-        stream: false
-      };
+      const requestBody = { model: modelName, prompt: prompt, stream: false };
 
       try {
         const res = await fetch(`${apiUrl}/api/generate`, {
@@ -53,12 +200,6 @@
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(requestBody),
         });
-
-        if (!res.ok)
-        {
-            console.log(res.stringify());
-            throw new Error(`HTTP ${res.status}`);
-        }
 
         const json = await res.json();
         document.getElementById('responseOutputShort').textContent = json.response;

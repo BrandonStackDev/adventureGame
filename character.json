@@ -1,0 +1,9 @@
+[
+  {
+    "type": 0,
+    "name": "Jovi",
+    "fullName": "Jovi the Talking Dog",
+    "description": "Jovi is a talking dog. She likes biscuits alot.",
+    "default": "Woof Woof!"
+  }
+]
