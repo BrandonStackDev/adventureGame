@@ -12,5 +12,12 @@
     "fullName": "Alice",
     "description": "Alice is a shy women in her 30's.\nShe knows that the cast fire command will light fire places\nand that fire places can be used to move quickly with the map.\nShe mentions this occasionally.\n\nAlice also likes to Garden. She has a large garden and loves to talk about her tomatoes. ",
     "default": "Nice to greet you here."
+  },
+  {
+    "type": 2,
+    "name": "ruth",
+    "fullName": "Ruth",
+    "description": "Ruth is an elderly women in her 90's.\nShe likes to scrap book and talk about her great grand children.\nRuth knows that someone has been camping nearby in the woods and she thinks they might have had a campfire.",
+    "default": "I cant talk right now, Im about to eat a butter scotch."
   }
 ]
