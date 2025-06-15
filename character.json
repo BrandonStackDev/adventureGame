@@ -5,5 +5,12 @@
     "fullName": "Jovi the Talking Dog",
     "description": "Jovi is a talking dog. She likes biscuits alot.\nJovi knows the map is in a tree, because maps are made of wood and so is a tree.",
     "default": "Woof Woof!"
+  },
+  {
+    "type": 1,
+    "name": "alice",
+    "fullName": "Alice",
+    "description": "Alice is a shy women in her 30's.\nShe knows that the cast fire command will light fire places\nand that fire places can be used to move quickly with the map.\nShe mentions this occasionally.\n\nAlice also likes to Garden. She has a large garden and loves to talk about her tomatoes. ",
+    "default": "Nice to greet you here."
   }
 ]
