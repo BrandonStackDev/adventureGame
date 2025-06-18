@@ -737,16 +737,20 @@
   {
     "cardType": 28,
     "isStore": false,
+    "hasFireplace": true,
     "name": "Cinderspire",
     "description": "A jagged, smoke-streaked peak that towers over the charred landscape.\nThe air is thick with ash, and the remnants of ancient fires flicker faintly at the summit..\nThere is a fireplace built into the rock.",
+    "linkedItems": [],
+    "linkedEnemies": [],
     "linkedCards": [
       {
         "cardType": 20,
         "name": "wood"
       }
     ],
-    "linkedItems": [],
-    "linkedEnemies": [],
+    "numLinkedCards": 1,
+    "numLinkedItems": 0,
+    "numLinkedEnemies": 0,
     "_x": 20,
     "_y": 2820,
     "_w": 300,
@@ -826,8 +830,11 @@
   {
     "cardType": 32,
     "isStore": false,
+    "hasFireplace": true,
     "name": "Old Man McCann's",
     "description": "Old man McCann's residence.\nThere is a path to a small garden.\nThere is a fireplace here.",
+    "linkedItems": [],
+    "linkedEnemies": [],
     "linkedCards": [
       {
         "cardType": 33,
@@ -838,8 +845,9 @@
         "name": "garden"
       }
     ],
-    "linkedItems": [],
-    "linkedEnemies": [],
+    "numLinkedCards": 2,
+    "numLinkedItems": 0,
+    "numLinkedEnemies": 0,
     "_x": 20,
     "_y": 3220,
     "_w": 300,
@@ -1106,16 +1114,20 @@
   {
     "cardType": 44,
     "isStore": false,
+    "hasFireplace": true,
     "name": "Williams Town Hall",
     "description": "You are in Williams Town Hall.\nThere is a fire place here.",
+    "linkedItems": [],
+    "linkedEnemies": [],
     "linkedCards": [
       {
         "cardType": 42,
         "name": "town"
       }
     ],
-    "linkedItems": [],
-    "linkedEnemies": [],
+    "numLinkedCards": 1,
+    "numLinkedItems": 0,
+    "numLinkedEnemies": 0,
     "_x": 20,
     "_y": 4420,
     "_w": 300,
@@ -1636,8 +1648,15 @@
   {
     "cardType": 66,
     "isStore": false,
+    "hasFireplace": true,
     "name": "The Enchanted Village",
     "description": "A quaint, seemingly timeless settlement hidden deep within the forest.\nIts cobblestone streets are lined with charming cottages,\ntheir windows glowing warmly with light.\nThere is a fire place here.",
+    "linkedItems": [
+      3,
+      2,
+      4
+    ],
+    "linkedEnemies": [],
     "linkedCards": [
       {
         "cardType": 69,
@@ -1660,12 +1679,9 @@
         "name": "store"
       }
     ],
-    "linkedItems": [
-      3,
-      2,
-      4
-    ],
-    "linkedEnemies": [],
+    "numLinkedCards": 5,
+    "numLinkedItems": 3,
+    "numLinkedEnemies": 0,
     "_x": 20,
     "_y": 6620,
     "_w": 300,
@@ -2469,14 +2485,9 @@
   {
     "cardType": 94,
     "isStore": false,
+    "hasFireplace": true,
     "name": "Old Man Aj's",
     "description": "Old Man Aj's house is a weathered,\nyet sturdy cottage nestled at the edge of Hearthstone.\nIts timbered walls are worn with age, and the roof, patched in places, is thick with moss.\nThe front porch is cluttered with an assortment of tools, jars of dried herbs, and an odd collection of knick-knacks.\nThere is a fireplace here.",
-    "linkedCards": [
-      {
-        "cardType": 89,
-        "name": "path"
-      }
-    ],
     "linkedItems": [
       3,
       3,
@@ -2484,6 +2495,15 @@
       3
     ],
     "linkedEnemies": [],
+    "linkedCards": [
+      {
+        "cardType": 89,
+        "name": "path"
+      }
+    ],
+    "numLinkedCards": 1,
+    "numLinkedItems": 4,
+    "numLinkedEnemies": 0,
     "_x": 20,
     "_y": 9420,
     "_w": 300,
