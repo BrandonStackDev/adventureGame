@@ -19,5 +19,12 @@
     "fullName": "Ruth",
     "description": "Ruth is an elderly women in her 90's.\nShe likes to scrap book and talk about her great grand children.\nRuth knows that someone has been camping nearby in the woods and she thinks they might have had a campfire.",
     "default": "I cant talk right now, Im about to eat a butter scotch."
+  },
+  {
+    "type": 3,
+    "name": "tom",
+    "fullName": "Tom Bombadil",
+    "description": "Tom speaks in rhyme like he is in a Shakespeare play.\nTom speaks about his love of nature.",
+    "default": "Beautiful day isn't it."
   }
 ]
