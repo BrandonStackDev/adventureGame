@@ -26,5 +26,26 @@
     "fullName": "Tom Bombadil",
     "description": "Tom speaks in rhyme like he is in a Shakespeare play.\nTom speaks about his love of nature.",
     "default": "Beautiful day isn't it."
+  },
+  {
+    "type": 4,
+    "name": "alistair",
+    "fullName": "Alistair Grey",
+    "description": "Alistair Grey collects books. When the player brings him books Alistair will pay the player. But secretly, Alistair is gathering the books for his own nefarious purposes.",
+    "default": "Bring me books, I will pay you well."
+  },
+  {
+    "type": 5,
+    "name": "aj",
+    "fullName": "Anthony",
+    "description": "Anthony has two jobs. He works all the time.\nHe also has type 1 Diabetes.\nHe likes aliens.\nBecause he is usually in a hurry, He keeps his responses brief.",
+    "default": "Hey Im busy right now, I need to go to work soon."
+  },
+  {
+    "type": 6,
+    "name": "shea",
+    "fullName": "Shea",
+    "description": "Shea is a handy man.\nShea is always eating something and his mouth is full.\nAs a result of his mouth fullness, he doesn't say much.",
+    "default": "mmm, mmm, hold on, Im eating ..."
   }
 ]
