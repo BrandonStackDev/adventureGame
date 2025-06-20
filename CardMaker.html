@@ -107,6 +107,11 @@
   </div>
 
   <div class="section">
+    <label>Character</label>
+    <select id="cardCharacter"></select>
+  </div>
+
+  <div class="section">
     <h2>Linked Items</h2>
     <div id="linkedItems"></div>
     <button onclick="addLinkedItem()">Add Linked Item</button>
@@ -130,6 +135,7 @@
 
 <script>
 let deck = [];
+let characters = [];
 let types = {};
 let selectedCardIndex = null;
 const canvas = document.getElementById('deckCanvas');
@@ -159,6 +165,18 @@ async function loadTypes() {
     types = { items:[], enemies:[]};
   }
 }
+
+async function loadCharacters() {
+  try {
+    const res = await fetch('character.json');
+    characters = await res.json();
+    console.log(characters);
+  } catch (err) {
+    console.error('Could not load character.json:', err);
+    characters = [];
+  }
+}
+
 
 function createDeleteButton() {
   const btn = document.createElement('button');
@@ -337,6 +355,9 @@ canvas.addEventListener('click', (e) => {
   if (clicked !== -1) {
     selectedCardIndex = clicked;
     populateEditor(deck[clicked]);
+    populateCharacterDropdown(
+      typeof deck[clicked].character === 'number' ? deck[clicked].character : -1
+    );
     drawDeck();
   }
 });
@@ -375,6 +396,9 @@ canvas.addEventListener('contextmenu', (e) => {
   selectedCard.linkedCards.push({ cardType: clickedCard.cardType, name: "" });
 
   populateEditor(selectedCard); // update editor UI
+  populateCharacterDropdown(
+    typeof card.character === 'number' ? card.character : -1
+  );
   drawDeck(); // update canvas highlights
 });
 
@@ -420,6 +444,26 @@ function populateEditor(card) {
   (card.linkedCards || []).forEach(card => addLinkedCard(card));
 }
 
+function populateCharacterDropdown(selectedValue = -1) {
+  const select = document.getElementById('cardCharacter');
+  select.innerHTML = '';
+
+  const noneOption = document.createElement('option');
+  noneOption.value = -1;
+  noneOption.textContent = '(none)';
+  select.appendChild(noneOption);
+
+  characters.forEach(char => {
+    const option = document.createElement('option');
+    option.value = char.type; // int
+    option.textContent = `${char.name} (${char.fullName})`;
+    if (char.type === selectedValue) {
+      option.selected = true;
+    }
+    select.appendChild(option);
+  });
+}
+
 
 function newCard() {
   selectedCardIndex = null;
@@ -450,13 +494,14 @@ function saveCard() {
       name: input.value.trim()
     };
   });
-
+  const characterType = parseInt(document.getElementById('cardCharacter').value);
   const card = {
     cardType: parseInt(document.getElementById('cardType').innerText),
     isStore: document.getElementById('isStore').checked,
     hasFireplace: document.getElementById('hasFireplace').checked,
     name: document.getElementById('cardName').value,
     description: document.getElementById('cardDescription').value,
+    character: characterType,
     linkedItems,
     linkedEnemies,
     linkedCards,
@@ -491,6 +536,9 @@ function saveDeck() {
 
 loadTypes();
 loadDeck();
+loadCharacters();
+populateCharacterDropdown();
+
 </script>
 </body>
 </html>

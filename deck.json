@@ -933,16 +933,21 @@
   {
     "cardType": 36,
     "isStore": false,
+    "hasFireplace": false,
     "name": "Old man McCann's Garden",
     "description": "You are in old man McCann's nice garden.\nThere are lots of plants to choose from.\nThere is a tomatoe plant.\nThere is also a shed here but the door is locked.",
+    "character": 6,
+    "linkedItems": [],
+    "linkedEnemies": [],
     "linkedCards": [
       {
         "cardType": 32,
         "name": "house"
       }
     ],
-    "linkedItems": [],
-    "linkedEnemies": [],
+    "numLinkedCards": 1,
+    "numLinkedItems": 0,
+    "numLinkedEnemies": 0,
     "_x": 20,
     "_y": 3620,
     "_w": 300,
