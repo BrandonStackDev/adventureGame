@@ -1,0 +1,3313 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Adventure - Canvas Terminal Edition</title>
+    <style>
+        :root {
+            color-scheme: dark;
+        }
+
+        html, body {
+            margin: 0;
+            height: 100%;
+            background: #060a08;
+            overflow: hidden;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+        }
+
+        #terminal {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+            outline: none;
+            cursor: text;
+            background: radial-gradient(circle at 50% 0%, #172018 0%, #060a08 55%, #010201 100%);
+        }
+
+        #noscript {
+            position: fixed;
+            left: 1rem;
+            top: 1rem;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <noscript><div id="noscript">This game needs JavaScript enabled.</div></noscript>
+    <canvas id="terminal" tabindex="0" aria-label="Adventure canvas terminal"></canvas>
+    <script>'use strict';
+
+const BASE_CARDS = [
+  {
+    "id": "CARD_HOME",
+    "index": 0,
+    "name": "home",
+    "description": "You are in your home.\nIts dimly lit but cozy.\nThe light from an old lamp beside a cozy armchair pools softly over a stack of books,\ninviting anyone to curl up with a cup of tea or coffee.\nEvery corner feels like a sanctuary, a quiet world where time slows down,\nand every object seems to have its own story to tell.\nThere is a front door and a back door.\nThere is a fire place here.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "front",
+        "to": "CARD_FRONTDOOR"
+      },
+      {
+        "cmd": "back",
+        "to": "CARD_BACKDOOR"
+      }
+    ],
+    "items": [
+      "ITEM_SWORD",
+      "ITEM_BOOK",
+      "ITEM_HEALTH_POTION",
+      "ITEM_MANA_POTION"
+    ],
+    "enemies": []
+  },
+  {
+    "id": "CARD_FRONTDOOR",
+    "index": 1,
+    "name": "Your Frontdoor",
+    "description": "You are standing just outside your front door.\nThere is a dirt road.\nYou can go left or right.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "home",
+        "to": "CARD_HOME"
+      },
+      {
+        "cmd": "left",
+        "to": "CARD_FIRST_ROAD_LEFT"
+      },
+      {
+        "cmd": "right",
+        "to": "CARD_FIRST_ROAD_RIGHT"
+      }
+    ],
+    "items": [],
+    "enemies": []
+  },
+  {
+    "id": "CARD_FIRST_ROAD_LEFT",
+    "index": 2,
+    "name": "Far down the Road",
+    "description": "You move left down the road until you come to a large tree.\nThe tree is very big and very old.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "front",
+        "to": "CARD_FRONTDOOR"
+      },
+      {
+        "cmd": "tree",
+        "to": "CARD_FIRST_CLIMB_TREE"
+      }
+    ],
+    "items": [],
+    "enemies": []
+  },
+  {
+    "id": "CARD_FIRST_ROAD_RIGHT",
+    "index": 3,
+    "name": "Up the Road",
+    "description": "You move right down the road.\nLooks like trouble up ahead...",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "front",
+        "to": "CARD_FRONTDOOR"
+      },
+      {
+        "cmd": "trouble",
+        "to": "CARD_FIRST_TROUBLE"
+      }
+    ],
+    "items": [],
+    "enemies": []
+  },
+  {
+    "id": "CARD_FIRST_CLIMB_TREE",
+    "index": 4,
+    "name": "Up in the Tree",
+    "description": "You climb the tree.\nYou can see everything from up here.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "down",
+        "to": "CARD_DEAD_END"
+      },
+      {
+        "cmd": "back",
+        "to": "CARD_FIRST_ROAD_LEFT"
+      }
+    ],
+    "items": [
+      "ITEM_MAP",
+      "ITEM_COINS"
+    ],
+    "enemies": []
+  },
+  {
+    "id": "CARD_FIRST_TROUBLE",
+    "index": 5,
+    "name": "Clearing along the Road",
+    "description": "You are in a clearing along the road.\nThere is a lot of open space.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "back",
+        "to": "CARD_FIRST_ROAD_RIGHT"
+      },
+      {
+        "cmd": "road",
+        "to": "CARD_ROAD_AFTER_TROUBLE"
+      }
+    ],
+    "items": [],
+    "enemies": [
+      {
+        "type": "ENEMY_OGRE",
+        "health": 30,
+        "damage": 10
+      },
+      {
+        "type": "ENEMY_WOLF",
+        "health": 10,
+        "damage": 5
+      }
+    ]
+  },
+  {
+    "id": "CARD_DEAD_END",
+    "index": 6,
+    "name": "Dead End after the Tree",
+    "description": "The road comes to a dead end after the tree.\nBut there is a path.\nYou could also follow the squirrel into the woods.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "path",
+        "to": "CARD_FIRST_PATH"
+      },
+      {
+        "cmd": "tree",
+        "to": "CARD_FIRST_CLIMB_TREE"
+      },
+      {
+        "cmd": "wood",
+        "to": "CARD_LOST_WOODS1"
+      }
+    ],
+    "items": [],
+    "enemies": []
+  },
+  {
+    "id": "CARD_FIRST_PATH",
+    "index": 7,
+    "name": "Path in the Woods",
+    "description": "You are on a small path in the woods\nIt looks like there is a small cottage up ahead.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "dead",
+        "to": "CARD_DEAD_END"
+      },
+      {
+        "cmd": "road",
+        "to": "CARD_ROAD_AFTER_TROUBLE"
+      },
+      {
+        "cmd": "jeffers",
+        "to": "CARD_OLD_MAN_JEFFERS"
+      }
+    ],
+    "items": [],
+    "enemies": []
+  },
+  {
+    "id": "CARD_ROAD_AFTER_TROUBLE",
+    "index": 8,
+    "name": "Long Stretch of Road near town",
+    "description": "You are on a long stretch of road.\nYou are near town.\nThere is also a small path.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "path",
+        "to": "CARD_FIRST_PATH"
+      },
+      {
+        "cmd": "trouble",
+        "to": "CARD_FIRST_TROUBLE"
+      },
+      {
+        "cmd": "town",
+        "to": "CARD_TOWN_SQUARE"
+      }
+    ],
+    "items": [],
+    "enemies": []
+  },
+  {
+    "id": "CARD_OLD_MAN_JEFFERS",
+    "index": 9,
+    "name": "Old Man Jeffers",
+    "description": "You come across old man Jeffers residence.\nHe has a garden and a fireplace.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "path",
+        "to": "CARD_FIRST_PATH"
+      },
+      {
+        "cmd": "garden",
+        "to": "CARD_JEFFERS_GARDEN"
+      }
+    ],
+    "items": [
+      "ITEM_MANA_POTION",
+      "ITEM_COINS"
+    ],
+    "enemies": []
+  },
+  {
+    "id": "CARD_JEFFERS_GARDEN",
+    "index": 10,
+    "name": "Old Man Jeffers Garden",
+    "description": "You are in old man Jeffers garden.\nThere is a tomatoe plant.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "jeffers",
+        "to": "CARD_OLD_MAN_JEFFERS"
+      }
+    ],
+    "items": [
+      "ITEM_HEALTH_POTION",
+      "ITEM_HEALTH_POTION"
+    ],
+    "enemies": []
+  },
+  {
+    "id": "CARD_TOWN_SQUARE",
+    "index": 11,
+    "name": "Town Square",
+    "description": "You are in the town square.\nThere is a store here and a few paths.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "road",
+        "to": "CARD_ROAD_AFTER_TROUBLE"
+      },
+      {
+        "cmd": "store",
+        "to": "CARD_FIRST_STORE"
+      },
+      {
+        "cmd": "wood",
+        "to": "CARD_MIRKWOOD_ENTER"
+      },
+      {
+        "cmd": "cave",
+        "to": "CARD_CAVE_ENTER"
+      },
+      {
+        "cmd": "house",
+        "to": "CARD_TOWN_HOUSE"
+      }
+    ],
+    "items": [
+      "ITEM_HEALTH_POTION",
+      "ITEM_MANA_POTION",
+      "ITEM_HEALTH_POTION",
+      "ITEM_MANA_POTION",
+      "ITEM_COINS",
+      "ITEM_COINS"
+    ],
+    "enemies": []
+  },
+  {
+    "id": "CARD_FIRST_STORE",
+    "index": 12,
+    "name": "Mom and Pop Shop",
+    "description": "You are in a small store.\nBuy items.",
+    "isStore": true,
+    "links": [
+      {
+        "cmd": "town",
+        "to": "CARD_TOWN_SQUARE"
+      }
+    ],
+    "items": [],
+    "enemies": []
+  },
+  {
+    "id": "CARD_MIRKWOOD_ENTER",
+    "index": 13,
+    "name": "Mirkwood Entrance",
+    "description": "You take a small path to the entrance of Mirkwood forest.\nAll the trees seem to be dead.\nThe air is heavy with mist,\nand the silence is broken only by the occasional rustle of unseen creatures.\nA sense of unease lingers,\nas if the forest itself watches those who enter.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "town",
+        "to": "CARD_TOWN_SQUARE"
+      },
+      {
+        "cmd": "wood",
+        "to": "CARD_MIRKWOOD_1"
+      }
+    ],
+    "items": [],
+    "enemies": []
+  },
+  {
+    "id": "CARD_CAVE_ENTER",
+    "index": 14,
+    "name": "Cave Entrance",
+    "description": "You take a path to a cave.\nYou are standing at the entrance of the cave.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "town",
+        "to": "CARD_TOWN_SQUARE"
+      },
+      {
+        "cmd": "cave",
+        "to": "CARD_CAVE_MIDDLE"
+      }
+    ],
+    "items": [],
+    "enemies": []
+  },
+  {
+    "id": "CARD_CAVE_MIDDLE",
+    "index": 15,
+    "name": "Middle of the Cave",
+    "description": "You are in a cave.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "out",
+        "to": "CARD_CAVE_ENTER"
+      },
+      {
+        "cmd": "cave",
+        "to": "CARD_CAVE_DEEP"
+      }
+    ],
+    "items": [],
+    "enemies": []
+  },
+  {
+    "id": "CARD_CAVE_DEEP",
+    "index": 16,
+    "name": "Deep in the Cave",
+    "description": "You are deep inside a cave.\nThere is a door here but it is locked.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "out",
+        "to": "CARD_CAVE_MIDDLE"
+      }
+    ],
+    "items": [
+      "ITEM_COINS",
+      "ITEM_COINS",
+      "ITEM_COINS",
+      "ITEM_COINS",
+      "ITEM_COINS",
+      "ITEM_COINS"
+    ],
+    "enemies": []
+  },
+  {
+    "id": "CARD_MIRKWOOD_1",
+    "index": 17,
+    "name": "Mirkwood treeline",
+    "description": "You are on a path through Mirkwood.\nThe path is long.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "out",
+        "to": "CARD_MIRKWOOD_ENTER"
+      },
+      {
+        "cmd": "wood",
+        "to": "CARD_MIRKWOOD_2"
+      }
+    ],
+    "items": [],
+    "enemies": [
+      {
+        "type": "ENEMY_GOBLIN",
+        "health": 10,
+        "damage": 10
+      }
+    ]
+  },
+  {
+    "id": "CARD_MIRKWOOD_2",
+    "index": 18,
+    "name": "Mirkwood path",
+    "description": "You are on a path through Mirkwood.\nThere is a clearing up ahead.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "out",
+        "to": "CARD_MIRKWOOD_1"
+      },
+      {
+        "cmd": "wood",
+        "to": "CARD_MIRKWOOD_3"
+      }
+    ],
+    "items": [],
+    "enemies": [
+      {
+        "type": "ENEMY_GOBLIN",
+        "health": 30,
+        "damage": 10
+      },
+      {
+        "type": "ENEMY_GOBLIN",
+        "health": 20,
+        "damage": 20
+      },
+      {
+        "type": "ENEMY_GOBLIN",
+        "health": 10,
+        "damage": 30
+      }
+    ]
+  },
+  {
+    "id": "CARD_MIRKWOOD_3",
+    "index": 19,
+    "name": "Mirkwood clearing",
+    "description": "You are in a clearing in Mirkwood.\nThe exit is nearby.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "out",
+        "to": "CARD_MIRKWOOD_2"
+      },
+      {
+        "cmd": "wood",
+        "to": "CARD_MIRKWOOD_EXIT"
+      }
+    ],
+    "items": [],
+    "enemies": [
+      {
+        "type": "ENEMY_BEAR",
+        "health": 40,
+        "damage": 20
+      },
+      {
+        "type": "ENEMY_GOBLIN",
+        "health": 20,
+        "damage": 20
+      },
+      {
+        "type": "ENEMY_WOLF",
+        "health": 10,
+        "damage": 10
+      },
+      {
+        "type": "ENEMY_ORC",
+        "health": 100,
+        "damage": 40
+      }
+    ]
+  },
+  {
+    "id": "CARD_MIRKWOOD_EXIT",
+    "index": 20,
+    "name": "Mirkwood exit",
+    "description": "You are just outside Mirkwood.\nThere is a road sign with many directions.\nYou can take many paths here.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "wood",
+        "to": "CARD_MIRKWOOD_3"
+      },
+      {
+        "cmd": "overlook",
+        "to": "CARD_BRAMBLETHORN_OVERLOOK"
+      },
+      {
+        "cmd": "clearing",
+        "to": "CARD_IRONWOOD_CLEARING"
+      },
+      {
+        "cmd": "hollow",
+        "to": "CARD_ECHOING_HOLLOW"
+      },
+      {
+        "cmd": "spire",
+        "to": "CARD_CINDERSPIRE"
+      }
+    ],
+    "items": [
+      "ITEM_HEALTH_POTION",
+      "ITEM_HEALTH_POTION",
+      "ITEM_HEALTH_POTION",
+      "ITEM_HEALTH_POTION"
+    ],
+    "enemies": []
+  },
+  {
+    "id": "CARD_TOWN_HOUSE",
+    "index": 21,
+    "name": "Small Wooden House",
+    "description": "You stand before a small wooden house,\nits weathered planks bearing the marks of time and countless storms.\nThe roof,\npatched with moss and stray shingles,\nslopes gently, giving the structure a quaint, inviting charm.\nThere is a woman here.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "town",
+        "to": "CARD_TOWN_SQUARE"
+      }
+    ],
+    "items": [],
+    "enemies": []
+  },
+  {
+    "id": "CARD_BACKDOOR",
+    "index": 22,
+    "name": "Your Backyard",
+    "description": "You are in your back yard.\nThere is a path into the woods.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "home",
+        "to": "CARD_HOME"
+      },
+      {
+        "cmd": "path",
+        "to": "CARD_SECOND_PATH"
+      }
+    ],
+    "items": [
+      "ITEM_MANA_POTION"
+    ],
+    "enemies": []
+  },
+  {
+    "id": "CARD_SECOND_PATH",
+    "index": 23,
+    "name": "Path in the Woods",
+    "description": "You take the path deep into the woods.\nThe path continues to a garden.\nThere is also a deep river nearby. Too deep to cross to the other side...",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "back",
+        "to": "CARD_BACKDOOR"
+      },
+      {
+        "cmd": "garden",
+        "to": "CARD_WILD_GARDEN"
+      }
+    ],
+    "items": [],
+    "enemies": []
+  },
+  {
+    "id": "CARD_WILD_GARDEN",
+    "index": 24,
+    "name": "Wild Garden",
+    "description": "You are in a wild garden with lots of plants to choose from.\nThere is an apple tree here.\nThere is a shed nearby but the door is locked.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "path",
+        "to": "CARD_SECOND_PATH"
+      }
+    ],
+    "items": [],
+    "enemies": []
+  },
+  {
+    "id": "CARD_BRAMBLETHORN_OVERLOOK",
+    "index": 25,
+    "name": "Bramblethorn Overlook",
+    "description": "The view is quite impressive.\nYou can see out over much of the forest and a river.\nThere is a bridge nearby.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "wood",
+        "to": "CARD_MIRKWOOD_EXIT"
+      },
+      {
+        "cmd": "bridge",
+        "to": "CARD_FIRST_BRIDGE"
+      }
+    ],
+    "items": [],
+    "enemies": []
+  },
+  {
+    "id": "CARD_IRONWOOD_CLEARING",
+    "index": 26,
+    "name": "Ironwood Clearing",
+    "description": "The road opens up into a rare, serene clearing.\nThere is a lot of space.\nThe air is heavy with a quiet power, a feeling that this place is not entirely of the natural world.\nThere is a small shed nearby, but the door is locked.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "wood",
+        "to": "CARD_MIRKWOOD_EXIT"
+      }
+    ],
+    "items": [],
+    "enemies": [
+      {
+        "type": "ENEMY_BEAR",
+        "health": 40,
+        "damage": 20
+      },
+      {
+        "type": "ENEMY_GOBLIN",
+        "health": 20,
+        "damage": 20
+      }
+    ]
+  },
+  {
+    "id": "CARD_ECHOING_HOLLOW",
+    "index": 27,
+    "name": "Echoing Hollow",
+    "description": "You are at Echoing Hollow.\nIts very windy here.\nBut if you shout, you can hear the echo...",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "wood",
+        "to": "CARD_MIRKWOOD_EXIT"
+      }
+    ],
+    "items": [
+      "ITEM_MANA_POTION",
+      "ITEM_HEALTH_POTION"
+    ],
+    "enemies": []
+  },
+  {
+    "id": "CARD_CINDERSPIRE",
+    "index": 28,
+    "name": "Cinderspire",
+    "description": "A jagged, smoke-streaked peak that towers over the charred landscape.\nThe air is thick with ash, and the remnants of ancient fires flicker faintly at the summit..\nThere is a fireplace built into the rock.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "wood",
+        "to": "CARD_MIRKWOOD_EXIT"
+      }
+    ],
+    "items": [],
+    "enemies": []
+  },
+  {
+    "id": "CARD_FIRST_SHED",
+    "index": 29,
+    "name": "Gardening Shed",
+    "description": "You are in a small gardening shed.\nThere are some tools and some soil.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "garden",
+        "to": "CARD_WILD_GARDEN"
+      }
+    ],
+    "items": [
+      "ITEM_MANA_POTION",
+      "ITEM_HEALTH_POTION",
+      "ITEM_COINS",
+      "ITEM_COINS"
+    ],
+    "enemies": []
+  },
+  {
+    "id": "CARD_SECOND_SHED",
+    "index": 30,
+    "name": "Workman's Shed",
+    "description": "You are in a small gardening shed.\nThere are some tools and some soil.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "clearing",
+        "to": "CARD_IRONWOOD_CLEARING"
+      }
+    ],
+    "items": [
+      "ITEM_MANA_POTION",
+      "ITEM_HEALTH_POTION",
+      "ITEM_COINS",
+      "ITEM_COINS"
+    ],
+    "enemies": []
+  },
+  {
+    "id": "CARD_OTHER_SIDE_RIVER",
+    "index": 31,
+    "name": "Other Side of the River",
+    "description": "You cross the river to the otherside.\nThere is a trail here.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "tree",
+        "to": "CARD_SECOND_PATH"
+      },
+      {
+        "cmd": "trail",
+        "to": "CARD_FIRST_TRAIL"
+      }
+    ],
+    "items": [
+      "ITEM_COINS",
+      "ITEM_COINS"
+    ],
+    "enemies": []
+  },
+  {
+    "id": "CARD_OLD_MAN_MCCANN",
+    "index": 32,
+    "name": "Old Man McCann's",
+    "description": "Old man McCann's residence.\nThere is a path to a small garden.\nThere is a fireplace here.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "town",
+        "to": "CARD_WRENWOOD"
+      },
+      {
+        "cmd": "garden",
+        "to": "CARD_MCCANN_GARDEN"
+      }
+    ],
+    "items": [],
+    "enemies": []
+  },
+  {
+    "id": "CARD_WRENWOOD",
+    "index": 33,
+    "name": "Town of Wrenwood",
+    "description": "You are in Wrenwood.\nThere is a store here.\nThere are a few houses nearby.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "trail",
+        "to": "CARD_FIRST_TRAIL"
+      },
+      {
+        "cmd": "mccann",
+        "to": "CARD_OLD_MAN_MCCANN"
+      },
+      {
+        "cmd": "store",
+        "to": "CARD_SECOND_STORE"
+      },
+      {
+        "cmd": "grey",
+        "to": "CARD_GREY"
+      },
+      {
+        "cmd": "east",
+        "to": "CARD_WRENWOOD_ROAD"
+      }
+    ],
+    "items": [
+      "ITEM_COINS",
+      "ITEM_COINS"
+    ],
+    "enemies": []
+  },
+  {
+    "id": "CARD_FIRST_TRAIL",
+    "index": 34,
+    "name": "Trail in the woods",
+    "description": "You follow the trail into the woods.\nYou are near Wrenwood.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "river",
+        "to": "CARD_OTHER_SIDE_RIVER"
+      },
+      {
+        "cmd": "town",
+        "to": "CARD_WRENWOOD"
+      }
+    ],
+    "items": [],
+    "enemies": []
+  },
+  {
+    "id": "CARD_SECOND_STORE",
+    "index": 35,
+    "name": "General Store",
+    "description": "A small store where you can buy potions.",
+    "isStore": true,
+    "links": [
+      {
+        "cmd": "town",
+        "to": "CARD_WRENWOOD"
+      }
+    ],
+    "items": [],
+    "enemies": []
+  },
+  {
+    "id": "CARD_MCCANN_GARDEN",
+    "index": 36,
+    "name": "Old man McCann's Garden",
+    "description": "You are in old man McCann's nice garden.\nThere are lots of plants to choose from.\nThere is a tomatoe plant.\nThere is also a shed here but the door is locked.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "house",
+        "to": "CARD_OLD_MAN_MCCANN"
+      }
+    ],
+    "items": [],
+    "enemies": []
+  },
+  {
+    "id": "CARD_THIRD_SHED",
+    "index": 37,
+    "name": "McCann's Shed",
+    "description": "You are in a small gardening shed.\nThere are some tools and some soil.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "garden",
+        "to": "CARD_MCCANN_GARDEN"
+      }
+    ],
+    "items": [
+      "ITEM_MANA_POTION",
+      "ITEM_MANA_POTION",
+      "ITEM_COINS",
+      "ITEM_COINS"
+    ],
+    "enemies": []
+  },
+  {
+    "id": "CARD_LOST_WOODS1",
+    "index": 38,
+    "name": "Deep in the Woods",
+    "description": "You are Lost in the woods.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "lost",
+        "to": "CARD_LOST_WOODS2"
+      }
+    ],
+    "items": [
+      "ITEM_MANA_POTION",
+      "ITEM_MANA_POTION"
+    ],
+    "enemies": []
+  },
+  {
+    "id": "CARD_LOST_WOODS2",
+    "index": 39,
+    "name": "Lost in the Woods",
+    "description": "You are Lost in the woods.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "lost",
+        "to": "CARD_LOST_WOODS3"
+      }
+    ],
+    "items": [
+      "ITEM_MANA_POTION",
+      "ITEM_MANA_POTION"
+    ],
+    "enemies": []
+  },
+  {
+    "id": "CARD_LOST_WOODS3",
+    "index": 40,
+    "name": "Lost in the Deep Woods",
+    "description": "You are Lost deep in the woods.\nAs you walk further, suddenly the brush subsides.\nThere seems to be a small garden up ahead.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "garden",
+        "to": "CARD_JEFFERS_GARDEN"
+      }
+    ],
+    "items": [
+      "ITEM_MANA_POTION",
+      "ITEM_MANA_POTION"
+    ],
+    "enemies": []
+  },
+  {
+    "id": "CARD_FIRST_BRIDGE",
+    "index": 41,
+    "name": "Bridge near Bramblethorn Overlook",
+    "description": "You make your way to the bridge.\nA scenic crossing point over serene waters,\nwhere the wooden slats creak with the\nwhispers of secrets shared between friends.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "overlook",
+        "to": "CARD_BRAMBLETHORN_OVERLOOK"
+      },
+      {
+        "cmd": "town",
+        "to": "CARD_WILLIAMS"
+      }
+    ],
+    "items": [],
+    "enemies": [
+      {
+        "type": "ENEMY_GOBLIN",
+        "health": 100,
+        "damage": 50
+      }
+    ]
+  },
+  {
+    "id": "CARD_WILLIAMS",
+    "index": 42,
+    "name": "Town of Williams",
+    "description": "You are in the town of Williams.\nIts very nice here.\nThere is a small store here.\nTown hall is nearby but the door is locked.\nA small road leads north out of town.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "bridge",
+        "to": "CARD_FIRST_BRIDGE"
+      },
+      {
+        "cmd": "store",
+        "to": "CARD_WILLIAMS_STORE"
+      },
+      {
+        "cmd": "road",
+        "to": "CARD_WILLIAMS_ROAD"
+      }
+    ],
+    "items": [
+      "ITEM_MANA_POTION",
+      "ITEM_HEALTH_POTION",
+      "ITEM_COINS",
+      "ITEM_COINS"
+    ],
+    "enemies": []
+  },
+  {
+    "id": "CARD_WILLIAMS_STORE",
+    "index": 43,
+    "name": "Williams General Store",
+    "description": "You are in a small store.\nBuy items.",
+    "isStore": true,
+    "links": [
+      {
+        "cmd": "town",
+        "to": "CARD_WILLIAMS"
+      }
+    ],
+    "items": [],
+    "enemies": []
+  },
+  {
+    "id": "CARD_WILLIAMS_TOWN_HALL",
+    "index": 44,
+    "name": "Williams Town Hall",
+    "description": "You are in Williams Town Hall.\nThere is a fire place here.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "town",
+        "to": "CARD_WILLIAMS"
+      }
+    ],
+    "items": [],
+    "enemies": []
+  },
+  {
+    "id": "CARD_WILLIAMS_ROAD",
+    "index": 45,
+    "name": "Road north of Williams",
+    "description": "You walk along the road north of Willams until you reach a split.\nYou can go north, east, west, or south back to Williams.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "south",
+        "to": "CARD_WILLIAMS"
+      },
+      {
+        "cmd": "west",
+        "to": "CARD_STACK_HOMESTEAD"
+      },
+      {
+        "cmd": "east",
+        "to": "CARD_ELDERFERN_FOREST_ENTER"
+      },
+      {
+        "cmd": "north",
+        "to": "CARD_EMBERFELL_CASTLE_ENTER"
+      }
+    ],
+    "items": [],
+    "enemies": [
+      {
+        "type": "ENEMY_ORC",
+        "health": 100,
+        "damage": 100
+      },
+      {
+        "type": "ENEMY_OGRE",
+        "health": 100,
+        "damage": 80
+      },
+      {
+        "type": "ENEMY_GOBLIN",
+        "health": 20,
+        "damage": 10
+      },
+      {
+        "type": "ENEMY_GOBLIN",
+        "health": 30,
+        "damage": 20
+      },
+      {
+        "type": "ENEMY_GOBLIN",
+        "health": 40,
+        "damage": 30
+      }
+    ]
+  },
+  {
+    "id": "CARD_STACK_HOMESTEAD",
+    "index": 46,
+    "name": "Stack Homestead",
+    "description": "You are at the Stack Homestead.\nThere is a mountain to the north.\nOn the farside of the homestead, there is a river.\nThe river is too deep to cross.\nThere is a pumpkin patch.\nThere is a fireplace here.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "east",
+        "to": "CARD_WILLIAMS_ROAD"
+      },
+      {
+        "cmd": "path",
+        "to": "CARD_MOUNTAIN"
+      }
+    ],
+    "items": [],
+    "enemies": []
+  },
+  {
+    "id": "CARD_ELDERFERN_FOREST_ENTER",
+    "index": 47,
+    "name": "Elderfern Forest Entrance",
+    "description": "You walk until you reach the entrance to Elderfern Forest.\nThe winding paths through Elderfern are often shrouded in mist,\nmaking it easy to lose one's way and harder still to shake\nthe feeling of being watched by unseen eyes.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "west",
+        "to": "CARD_WILLIAMS_ROAD"
+      },
+      {
+        "cmd": "wood",
+        "to": "CARD_ELDERFERN_1"
+      }
+    ],
+    "items": [],
+    "enemies": []
+  },
+  {
+    "id": "CARD_EMBERFELL_CASTLE_ENTER",
+    "index": 48,
+    "name": "Emberfell Castle Entrance",
+    "description": "You are outside of Emberfell castle.\nIts blackened stone walls rising dramatically against the backdrop of a stormy sky.\nOnce a stronghold of ancient kings,\nit is now a haunting silhouette in the mist.\nThe door is locked.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "south",
+        "to": "CARD_WILLIAMS_ROAD"
+      }
+    ],
+    "items": [],
+    "enemies": []
+  },
+  {
+    "id": "CARD_ELDERFERN_1",
+    "index": 49,
+    "name": "Elderfern Forest Clearing",
+    "description": "You are lost in the forest.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "wood",
+        "to": "CARD_ELDERFERN_2"
+      }
+    ],
+    "items": [],
+    "enemies": [
+      {
+        "type": "ENEMY_WOLF",
+        "health": 100,
+        "damage": 100
+      },
+      {
+        "type": "ENEMY_WOLF",
+        "health": 100,
+        "damage": 80
+      }
+    ]
+  },
+  {
+    "id": "CARD_ELDERFERN_2",
+    "index": 50,
+    "name": "Elderfern Forest Path",
+    "description": "You are lost in the forest.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "wood",
+        "to": "CARD_ELDERFERN_3"
+      }
+    ],
+    "items": [],
+    "enemies": []
+  },
+  {
+    "id": "CARD_ELDERFERN_3",
+    "index": 51,
+    "name": "Elderfern Forest Brush",
+    "description": "You are lost in the forest.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "wood",
+        "to": "CARD_ELDERFERN_4"
+      }
+    ],
+    "items": [],
+    "enemies": [
+      {
+        "type": "ENEMY_WOLF",
+        "health": 100,
+        "damage": 100
+      },
+      {
+        "type": "ENEMY_WOLF",
+        "health": 100,
+        "damage": 80
+      }
+    ]
+  },
+  {
+    "id": "CARD_ELDERFERN_4",
+    "index": 52,
+    "name": "Elderfern Forest",
+    "description": "You are lost in the forest.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "wood",
+        "to": "CARD_ELDERFERN_FOREST_ENTER"
+      }
+    ],
+    "items": [
+      "ITEM_MANA_POTION",
+      "ITEM_MANA_POTION",
+      "ITEM_MANA_POTION",
+      "ITEM_MANA_POTION",
+      "ITEM_MANA_POTION"
+    ],
+    "enemies": []
+  },
+  {
+    "id": "CARD_EMBERFELL_HALL",
+    "index": 53,
+    "name": "The Emberhall",
+    "description": "You are in the grand entrance hall,\nwhere flickering torches cast long shadows on the stone walls.\nThe echoes of footsteps seem to linger long after someone has passed through.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "out",
+        "to": "CARD_EMBERFELL_CASTLE_ENTER"
+      },
+      {
+        "cmd": "chamber",
+        "to": "CARD_EMBERFELL_CHAMBER"
+      },
+      {
+        "cmd": "books",
+        "to": "CARD_EMBERFELL_LIBRARY"
+      },
+      {
+        "cmd": "stairs",
+        "to": "CARD_EMBERFELL_STAIRS"
+      }
+    ],
+    "items": [
+      "ITEM_MANA_POTION"
+    ],
+    "enemies": []
+  },
+  {
+    "id": "CARD_EMBERFELL_CHAMBER",
+    "index": 54,
+    "name": "The Chamber of Ashes",
+    "description": "A small, private room where the remains of past monarchs are kept in urns.\nA haunting silence fills the air,\nbroken only by the occasional gust of wind through the cracks in the walls.\nThe ashes are said to hold the spirits of the fallen,\ntheir whispers faint but ever present.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "hall",
+        "to": "CARD_EMBERFELL_HALL"
+      }
+    ],
+    "items": [],
+    "enemies": []
+  },
+  {
+    "id": "CARD_EMBERFELL_LIBRARY",
+    "index": 55,
+    "name": "The Library of Forgotten Lore",
+    "description": "An immense, dusty library,\nfilled with ancient tomes, scrolls, and forbidden texts.\nThe bookshelves are stacked high with knowledge lost to time,\nand some say the books themselves can whisper dark secrets if one listens closely enough.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "hall",
+        "to": "CARD_EMBERFELL_HALL"
+      },
+      {
+        "cmd": "garden",
+        "to": "CARD_EMBERFELL_GARDEN"
+      }
+    ],
+    "items": [
+      "ITEM_BOOK"
+    ],
+    "enemies": []
+  },
+  {
+    "id": "CARD_EMBERFELL_GARDEN",
+    "index": 56,
+    "name": "The Forgotten Garden",
+    "description": "A once beautiful garden now overrun with tangled vines,\ntwisted trees,\nand flowers that bloom in strange, otherworldly colors.\nThere is a tomatoe plant here.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "books",
+        "to": "CARD_EMBERFELL_LIBRARY"
+      }
+    ],
+    "items": [],
+    "enemies": []
+  },
+  {
+    "id": "CARD_EMBERFELL_STAIRS",
+    "index": 57,
+    "name": "Spiral Staircase",
+    "description": "You are on a large spiral staricase. You can go up or down.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "hall",
+        "to": "CARD_EMBERFELL_HALL"
+      },
+      {
+        "cmd": "up",
+        "to": "CARD_EMBERFELL_TOWER"
+      },
+      {
+        "cmd": "down",
+        "to": "CARD_EMBERFELL_DUNGEON"
+      }
+    ],
+    "items": [],
+    "enemies": []
+  },
+  {
+    "id": "CARD_EMBERFELL_DUNGEON",
+    "index": 58,
+    "name": "The Dungeon of Emberfell",
+    "description": "You take the staircase down, beneath the castle.\nShackles and chains still hang from the walls,\nand the faint sound of water dripping echoes throughout.\nIt is said that those imprisoned here were never meant to leave.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "up",
+        "to": "CARD_EMBERFELL_STAIRS"
+      },
+      {
+        "cmd": "out",
+        "to": "CARD_EMBERFELL_ROAD"
+      }
+    ],
+    "items": [],
+    "enemies": [
+      {
+        "type": "ENEMY_ORC",
+        "health": 400,
+        "damage": 100
+      }
+    ]
+  },
+  {
+    "id": "CARD_EMBERFELL_TOWER",
+    "index": 59,
+    "name": "The Ashen Tower",
+    "description": "You climb the spiral staircase all the way to the top of the castle.\nThere is a small room at the top.\nThe room contains a large treasure chest, but it is locked.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "down",
+        "to": "CARD_EMBERFELL_STAIRS"
+      }
+    ],
+    "items": [],
+    "enemies": []
+  },
+  {
+    "id": "CARD_EMBERFELL_ROAD",
+    "index": 60,
+    "name": "Road outside Emberfell Dungeon",
+    "description": "You are just outside Emberfell Castle.\nYou can enter through the dungeon.\nYou can also go north, east or west.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "castle",
+        "to": "CARD_EMBERFELL_DUNGEON"
+      },
+      {
+        "cmd": "north",
+        "to": "CARD_VILLAGE"
+      },
+      {
+        "cmd": "west",
+        "to": "CARD_TOMBS"
+      },
+      {
+        "cmd": "east",
+        "to": "CARD_CAVERNS"
+      }
+    ],
+    "items": [],
+    "enemies": []
+  },
+  {
+    "id": "CARD_GREY",
+    "index": 61,
+    "name": "Alistair Grey's House",
+    "description": "You are at Alistair Grey's House.\nAlistair is here.\nHe looks at you and says 'I am looking for some good books,\nIf you find any and bring them to me,\nI will make it worth your while'.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "town",
+        "to": "CARD_WRENWOOD"
+      }
+    ],
+    "items": [],
+    "enemies": []
+  },
+  {
+    "id": "CARD_STACK_RIVER",
+    "index": 62,
+    "name": "Across the river from the Stack Homestead",
+    "description": "You are on the other side of the river from the Stack Homestead.\nThere is a path...",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "tree",
+        "to": "CARD_STACK_HOMESTEAD"
+      },
+      {
+        "cmd": "path",
+        "to": "CARD_OBSERVATORY"
+      }
+    ],
+    "items": [],
+    "enemies": []
+  },
+  {
+    "id": "CARD_OBSERVATORY",
+    "index": 63,
+    "name": "The Celestial Observatory",
+    "description": "You take the path to the Observatory.\nIts stone walls, adorned with celestial carvings,\nare weathered but sturdy, exuding an air of forgotten knowledge.\nInside, a grand telescope dominates the room,\nits crystal lenses glowing faintly as it seems to reach for the stars.\nThe observatory is filled with dusty tomes, celestial maps, and mysterious artifacts,\nall hinting at arcane studies of the heavens.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "path",
+        "to": "CARD_STACK_RIVER"
+      }
+    ],
+    "items": [
+      "ITEM_BOOK"
+    ],
+    "enemies": []
+  },
+  {
+    "id": "CARD_CAVERNS",
+    "index": 64,
+    "name": "Crystal Caverns",
+    "description": "A breathtaking underground realm of glittering beauty and eerie silence.\nThe walls of the cavern are lined with towering,\ntranslucent crystals that glow with an ethereal light,\ncasting prismatic reflections across the dark, winding tunnels.\nThere is a door here but it is locked.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "north",
+        "to": "CARD_GLYPHS"
+      },
+      {
+        "cmd": "west",
+        "to": "CARD_EMBERFELL_ROAD"
+      }
+    ],
+    "items": [],
+    "enemies": []
+  },
+  {
+    "id": "CARD_TOMBS",
+    "index": 65,
+    "name": "Ancient Tombs",
+    "description": "A dark, forgotten burial ground carved into the heart of a desolate hillside.\nThe air is heavy with the scent of dust and decay as stone doorways lead into shadowed chambers,\nwhere the remains of long-dead rulers and warriors lie undisturbed.\nFaded carvings and crumbling inscriptions line the walls,\ntelling tales of a lost civilization.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "north",
+        "to": "CARD_PEAKS"
+      },
+      {
+        "cmd": "east",
+        "to": "CARD_EMBERFELL_ROAD"
+      }
+    ],
+    "items": [],
+    "enemies": []
+  },
+  {
+    "id": "CARD_VILLAGE",
+    "index": 66,
+    "name": "The Enchanted Village",
+    "description": "A quaint, seemingly timeless settlement hidden deep within the forest.\nIts cobblestone streets are lined with charming cottages,\ntheir windows glowing warmly with light.\nThere is a fire place here.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "north",
+        "to": "CARD_FORSAKEN_ROAD"
+      },
+      {
+        "cmd": "south",
+        "to": "CARD_EMBERFELL_ROAD"
+      },
+      {
+        "cmd": "east",
+        "to": "CARD_GLYPHS"
+      },
+      {
+        "cmd": "west",
+        "to": "CARD_PEAKS"
+      },
+      {
+        "cmd": "store",
+        "to": "CARD_VILLAGE_STORE"
+      }
+    ],
+    "items": [
+      "ITEM_MANA_POTION",
+      "ITEM_HEALTH_POTION",
+      "ITEM_COINS"
+    ],
+    "enemies": []
+  },
+  {
+    "id": "CARD_PEAKS",
+    "index": 67,
+    "name": "Skyward Peaks",
+    "description": "Towering, snow capped mountains that pierce the sky,\ntheir jagged summits lost in the clouds.\nThe air is thin and cold, and the winds howl through the rocky passes.\nOnly the most daring travelers attempt the climb.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "east",
+        "to": "CARD_VILLAGE"
+      },
+      {
+        "cmd": "south",
+        "to": "CARD_TOMBS"
+      },
+      {
+        "cmd": "climb",
+        "to": "CARD_MOUNTAIN"
+      }
+    ],
+    "items": [],
+    "enemies": []
+  },
+  {
+    "id": "CARD_GLYPHS",
+    "index": 68,
+    "name": "Ancient Glyphs",
+    "description": "Faded symbols etched into stone, their meanings long lost to time.\nThey pulse faintly with an otherworldly energy,\nhinting at forgotten knowledge and hidden power,\nwaiting for someone to decipher their secrets.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "west",
+        "to": "CARD_VILLAGE"
+      },
+      {
+        "cmd": "south",
+        "to": "CARD_CAVERNS"
+      }
+    ],
+    "items": [
+      "ITEM_BOOK"
+    ],
+    "enemies": []
+  },
+  {
+    "id": "CARD_FORSAKEN_ROAD",
+    "index": 69,
+    "name": "Forsaken Road",
+    "description": "A desolate, overgrown path,\nonce traveled but now abandoned.\nCracked stone and twisted roots litter the way,\nand an eerie silence hangs in the air,\nas if the road itself has been forgotten by time.\nThe road continues north but a large chasm blocks you from continuing.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "south",
+        "to": "CARD_VILLAGE"
+      }
+    ],
+    "items": [],
+    "enemies": [
+      {
+        "type": "ENEMY_OGRE",
+        "health": 300,
+        "damage": 80
+      },
+      {
+        "type": "ENEMY_OGRE",
+        "health": 200,
+        "damage": 80
+      }
+    ]
+  },
+  {
+    "id": "CARD_HIDDEN_PASSAGE",
+    "index": 70,
+    "name": "Hidden Passage",
+    "description": "A secret, very long, narrow tunnel beneath the earth,\nits entrance concealed by rubble and roots.\nThe air is damp and musty,\nand the faint echo of footsteps suggests forgotten travelers once walked this path.\nYou can go east or west.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "west",
+        "to": "CARD_CAVERNS"
+      },
+      {
+        "cmd": "east",
+        "to": "CARD_CAVE_DEEP"
+      }
+    ],
+    "items": [
+      "ITEM_BOOK"
+    ],
+    "enemies": []
+  },
+  {
+    "id": "CARD_VILLAGE_STORE",
+    "index": 71,
+    "name": "Enchanted Village Store",
+    "description": "You are in a small store.\nBuy items.",
+    "isStore": true,
+    "links": [
+      {
+        "cmd": "town",
+        "to": "CARD_VILLAGE"
+      }
+    ],
+    "items": [],
+    "enemies": []
+  },
+  {
+    "id": "CARD_FORSAKEN_ROAD_2",
+    "index": 72,
+    "name": "Forsaken Road North",
+    "description": "You walk for miles along the northern end of the Forsaken Road.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "south",
+        "to": "CARD_FORSAKEN_ROAD"
+      },
+      {
+        "cmd": "north",
+        "to": "CARD_MARSH_ENTER"
+      }
+    ],
+    "items": [],
+    "enemies": []
+  },
+  {
+    "id": "CARD_MOUNTAIN",
+    "index": 73,
+    "name": "Stoneheart Mountain",
+    "description": "You climb Stoneheart Mountain to the top.\nThe towering peak's slopes are blanketed in thick, glistening white drifts.\nThe jagged cliffs rise sharply against the sky,\ntheir dark stone contrasted by the endless stretch of frost and ice.\nWinds whip through the mountain's high passes,\ncarrying with them the bite of the cold\nIts too steep to climb back down.\nBut the south is less steep,\nand there is a path that leads down the mountain.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "path",
+        "to": "CARD_STACK_HOMESTEAD"
+      }
+    ],
+    "items": [
+      "ITEM_HEALTH_POTION",
+      "ITEM_HEALTH_POTION",
+      "ITEM_MANA_POTION",
+      "ITEM_MANA_POTION"
+    ],
+    "enemies": []
+  },
+  {
+    "id": "CARD_MARSH_ENTER",
+    "index": 74,
+    "name": "The Whispering Marsh Entrance",
+    "description": "Entrance to The Whispering Marsh.\nIts rumored to be the home of ogres.\nEnter if you dare...",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "north",
+        "to": "CARD_MARSH_1"
+      },
+      {
+        "cmd": "south",
+        "to": "CARD_FORSAKEN_ROAD"
+      },
+      {
+        "cmd": "east",
+        "to": "CARD_MARSH_9"
+      },
+      {
+        "cmd": "west",
+        "to": "CARD_MARSH_3"
+      }
+    ],
+    "items": [],
+    "enemies": []
+  },
+  {
+    "id": "CARD_MARSH_1",
+    "index": 75,
+    "name": "The Whispering Marsh",
+    "description": "A vast,\nfog-covered swamp where the wind seems to carry faint whispers from all directions.\nThe ground is treacherous,\nand strange,\nglowing lights float above the muck.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "north",
+        "to": "CARD_MARSH_2"
+      },
+      {
+        "cmd": "south",
+        "to": "CARD_MARSH_ENTER"
+      },
+      {
+        "cmd": "east",
+        "to": "CARD_MARSH_10"
+      },
+      {
+        "cmd": "west",
+        "to": "CARD_MARSH_4"
+      }
+    ],
+    "items": [],
+    "enemies": [
+      {
+        "type": "ENEMY_OGRE",
+        "health": 300,
+        "damage": 80
+      },
+      {
+        "type": "ENEMY_OGRE",
+        "health": 200,
+        "damage": 80
+      },
+      {
+        "type": "ENEMY_OGRE",
+        "health": 200,
+        "damage": 80
+      },
+      {
+        "type": "ENEMY_OGRE",
+        "health": 200,
+        "damage": 80
+      }
+    ]
+  },
+  {
+    "id": "CARD_MARSH_2",
+    "index": 76,
+    "name": "The Whispering Marsh",
+    "description": "A vast,\nfog-covered swamp where the wind seems to carry faint whispers from all directions.\nThe ground is treacherous,\nand strange,\nglowing lights float above the muck.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "south",
+        "to": "CARD_MARSH_1"
+      }
+    ],
+    "items": [],
+    "enemies": []
+  },
+  {
+    "id": "CARD_MARSH_3",
+    "index": 77,
+    "name": "The Whispering Marsh",
+    "description": "A vast,\nfog-covered swamp where the wind seems to carry faint whispers from all directions.\nThe ground is treacherous,\nand strange,\nglowing lights float above the muck.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "north",
+        "to": "CARD_MARSH_4"
+      },
+      {
+        "cmd": "east",
+        "to": "CARD_MARSH_ENTER"
+      },
+      {
+        "cmd": "west",
+        "to": "CARD_MARSH_6"
+      }
+    ],
+    "items": [],
+    "enemies": [
+      {
+        "type": "ENEMY_OGRE",
+        "health": 300,
+        "damage": 80
+      },
+      {
+        "type": "ENEMY_OGRE",
+        "health": 200,
+        "damage": 80
+      },
+      {
+        "type": "ENEMY_OGRE",
+        "health": 200,
+        "damage": 80
+      },
+      {
+        "type": "ENEMY_OGRE",
+        "health": 200,
+        "damage": 80
+      }
+    ]
+  },
+  {
+    "id": "CARD_MARSH_4",
+    "index": 78,
+    "name": "The Whispering Marsh",
+    "description": "A vast,\nfog-covered swamp where the wind seems to carry faint whispers from all directions.\nThe ground is treacherous,\nand strange,\nglowing lights float above the muck.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "north",
+        "to": "CARD_MARSH_5"
+      },
+      {
+        "cmd": "south",
+        "to": "CARD_MARSH_3"
+      },
+      {
+        "cmd": "east",
+        "to": "CARD_MARSH_1"
+      },
+      {
+        "cmd": "west",
+        "to": "CARD_MARSH_7"
+      }
+    ],
+    "items": [],
+    "enemies": [
+      {
+        "type": "ENEMY_OGRE",
+        "health": 300,
+        "damage": 80
+      },
+      {
+        "type": "ENEMY_OGRE",
+        "health": 200,
+        "damage": 80
+      }
+    ]
+  },
+  {
+    "id": "CARD_MARSH_5",
+    "index": 79,
+    "name": "The Whispering Marsh",
+    "description": "A vast,\nfog-covered swamp where the wind seems to carry faint whispers from all directions.\nThe ground is treacherous,\nand strange,\nglowing lights float above the muck.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "out",
+        "to": "CARD_MARSH_EXIT"
+      },
+      {
+        "cmd": "south",
+        "to": "CARD_MARSH_4"
+      }
+    ],
+    "items": [],
+    "enemies": []
+  },
+  {
+    "id": "CARD_MARSH_6",
+    "index": 80,
+    "name": "The Whispering Marsh",
+    "description": "A vast,\nfog-covered swamp where the wind seems to carry faint whispers from all directions.\nThe ground is treacherous,\nand strange,\nglowing lights float above the muck.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "north",
+        "to": "CARD_MARSH_7"
+      },
+      {
+        "cmd": "east",
+        "to": "CARD_MARSH_3"
+      }
+    ],
+    "items": [],
+    "enemies": [
+      {
+        "type": "ENEMY_OGRE",
+        "health": 300,
+        "damage": 80
+      },
+      {
+        "type": "ENEMY_OGRE",
+        "health": 200,
+        "damage": 80
+      }
+    ]
+  },
+  {
+    "id": "CARD_MARSH_7",
+    "index": 81,
+    "name": "The Whispering Marsh",
+    "description": "A vast,\nfog-covered swamp where the wind seems to carry faint whispers from all directions.\nThe ground is treacherous,\nand strange,\nglowing lights float above the muck.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "south",
+        "to": "CARD_MARSH_6"
+      },
+      {
+        "cmd": "east",
+        "to": "CARD_MARSH_4"
+      }
+    ],
+    "items": [],
+    "enemies": [
+      {
+        "type": "ENEMY_OGRE",
+        "health": 400,
+        "damage": 110
+      }
+    ]
+  },
+  {
+    "id": "CARD_MARSH_8",
+    "index": 82,
+    "name": "The Whispering Marsh",
+    "description": "A vast,\nfog-covered swamp where the wind seems to carry faint whispers from all directions.\nThe ground is treacherous,\nand strange,\nglowing lights float above the muck.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "north",
+        "to": "CARD_MARSH_9"
+      },
+      {
+        "cmd": "east",
+        "to": "CARD_MARSH_11"
+      }
+    ],
+    "items": [],
+    "enemies": []
+  },
+  {
+    "id": "CARD_MARSH_9",
+    "index": 83,
+    "name": "The Whispering Marsh",
+    "description": "A vast,\nfog-covered swamp where the wind seems to carry faint whispers from all directions.\nThe ground is treacherous,\nand strange,\nglowing lights float above the muck.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "north",
+        "to": "CARD_MARSH_10"
+      },
+      {
+        "cmd": "south",
+        "to": "CARD_MARSH_8"
+      },
+      {
+        "cmd": "east",
+        "to": "CARD_MARSH_12"
+      },
+      {
+        "cmd": "west",
+        "to": "CARD_MARSH_ENTER"
+      }
+    ],
+    "items": [],
+    "enemies": []
+  },
+  {
+    "id": "CARD_MARSH_10",
+    "index": 84,
+    "name": "The Whispering Marsh",
+    "description": "A vast,\nfog-covered swamp where the wind seems to carry faint whispers from all directions.\nThe ground is treacherous,\nand strange,\nglowing lights float above the muck.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "south",
+        "to": "CARD_MARSH_9"
+      },
+      {
+        "cmd": "east",
+        "to": "CARD_MARSH_13"
+      },
+      {
+        "cmd": "west",
+        "to": "CARD_MARSH_1"
+      }
+    ],
+    "items": [],
+    "enemies": [
+      {
+        "type": "ENEMY_OGRE",
+        "health": 300,
+        "damage": 80
+      },
+      {
+        "type": "ENEMY_OGRE",
+        "health": 200,
+        "damage": 80
+      },
+      {
+        "type": "ENEMY_OGRE",
+        "health": 300,
+        "damage": 80
+      },
+      {
+        "type": "ENEMY_OGRE",
+        "health": 200,
+        "damage": 80
+      }
+    ]
+  },
+  {
+    "id": "CARD_MARSH_11",
+    "index": 85,
+    "name": "The Whispering Marsh",
+    "description": "A vast,\nfog-covered swamp where the wind seems to carry faint whispers from all directions.\nThe ground is treacherous,\nand strange,\nglowing lights float above the muck.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "north",
+        "to": "CARD_MARSH_12"
+      },
+      {
+        "cmd": "west",
+        "to": "CARD_MARSH_8"
+      }
+    ],
+    "items": [
+      "ITEM_BOOK"
+    ],
+    "enemies": []
+  },
+  {
+    "id": "CARD_MARSH_12",
+    "index": 86,
+    "name": "The Whispering Marsh",
+    "description": "A vast,\nfog-covered swamp where the wind seems to carry faint whispers from all directions.\nThe ground is treacherous,\nand strange,\nglowing lights float above the muck.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "north",
+        "to": "CARD_MARSH_13"
+      },
+      {
+        "cmd": "south",
+        "to": "CARD_MARSH_11"
+      },
+      {
+        "cmd": "west",
+        "to": "CARD_MARSH_9"
+      }
+    ],
+    "items": [],
+    "enemies": [
+      {
+        "type": "ENEMY_OGRE",
+        "health": 300,
+        "damage": 80
+      },
+      {
+        "type": "ENEMY_OGRE",
+        "health": 200,
+        "damage": 80
+      },
+      {
+        "type": "ENEMY_OGRE",
+        "health": 300,
+        "damage": 80
+      },
+      {
+        "type": "ENEMY_OGRE",
+        "health": 200,
+        "damage": 80
+      }
+    ]
+  },
+  {
+    "id": "CARD_MARSH_13",
+    "index": 87,
+    "name": "The Whispering Marsh",
+    "description": "A vast,\nfog-covered swamp where the wind seems to carry faint whispers from all directions.\nThe ground is treacherous,\nand strange,\nglowing lights float above the muck.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "south",
+        "to": "CARD_MARSH_12"
+      },
+      {
+        "cmd": "west",
+        "to": "CARD_MARSH_10"
+      }
+    ],
+    "items": [],
+    "enemies": [
+      {
+        "type": "ENEMY_OGRE",
+        "health": 500,
+        "damage": 160
+      }
+    ]
+  },
+  {
+    "id": "CARD_MARSH_EXIT",
+    "index": 88,
+    "name": "The Whispering Marsh Exit",
+    "description": "You can head south back into the marsh, or north...",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "south",
+        "to": "CARD_MARSH_5"
+      },
+      {
+        "cmd": "north",
+        "to": "CARD_HEARTHSTONE"
+      }
+    ],
+    "items": [],
+    "enemies": []
+  },
+  {
+    "id": "CARD_HEARTHSTONE",
+    "index": 89,
+    "name": "Town of Hearthstone",
+    "description": "Hearthstone is a charming town nestled in a peaceful valley.\nWith its cozy cottages, lush farmlands, and scenic countryside, it exudes a warm, welcoming atmosphere.\nThe quiet streets are lined with flower-filled gardens,\nand the air is fresh with the scent of nearby forests and fields.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "north",
+        "to": "CARD_COTTAGE_2"
+      },
+      {
+        "cmd": "south",
+        "to": "CARD_MARSH_EXIT"
+      },
+      {
+        "cmd": "east",
+        "to": "CARD_HEARTHSTONE_ROAD"
+      },
+      {
+        "cmd": "west",
+        "to": "CARD_COTTAGE_1"
+      },
+      {
+        "cmd": "path",
+        "to": "CARD_AJ"
+      },
+      {
+        "cmd": "store",
+        "to": "CARD_HEARTHSTONE_STORE"
+      }
+    ],
+    "items": [
+      "ITEM_HEALTH_POTION",
+      "ITEM_HEALTH_POTION",
+      "ITEM_MANA_POTION",
+      "ITEM_MANA_POTION"
+    ],
+    "enemies": []
+  },
+  {
+    "id": "CARD_HEARTHSTONE_STORE",
+    "index": 90,
+    "name": "Willow and Wares",
+    "description": "You are in a small store.\nBuy items.",
+    "isStore": true,
+    "links": [
+      {
+        "cmd": "town",
+        "to": "CARD_HEARTHSTONE"
+      }
+    ],
+    "items": [],
+    "enemies": []
+  },
+  {
+    "id": "CARD_COTTAGE_1",
+    "index": 91,
+    "name": "Thistlehill Cottage",
+    "description": "Thistlehill Cottage is a charming little retreat perched on a hillside,\nsurrounded by wildflowers and the gentle rustle of the breeze.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "north",
+        "to": "CARD_FARM_BAKER"
+      },
+      {
+        "cmd": "east",
+        "to": "CARD_HEARTHSTONE"
+      }
+    ],
+    "items": [
+      "ITEM_HEALTH_POTION",
+      "ITEM_HEALTH_POTION"
+    ],
+    "enemies": []
+  },
+  {
+    "id": "CARD_COTTAGE_2",
+    "index": 92,
+    "name": "Sunbeam Cottage",
+    "description": "A bright, welcoming home bathed in natural light.\nWith its large windows that let the sun spill in,\nthe cottage feels warm and cheerful all year round.\nInside are soft wooden beams and colorful, hand-crafted decor",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "south",
+        "to": "CARD_HEARTHSTONE"
+      },
+      {
+        "cmd": "west",
+        "to": "CARD_FARM_BAKER"
+      }
+    ],
+    "items": [
+      "ITEM_HEALTH_POTION",
+      "ITEM_HEALTH_POTION"
+    ],
+    "enemies": []
+  },
+  {
+    "id": "CARD_FARM_BAKER",
+    "index": 93,
+    "name": "Baker Farm",
+    "description": "The Baker Farm is a cozy,\npicturesque homestead nestled at the edge of Hearthstone,\nwhere the sweet scent of fresh bread and earthy fields mingle in the air.\nThe farmhouse,\nwith its red-brick chimney and whitewashed walls,\nstands proudly beside neat rows of crops and flourishing orchards.\nThere is a beet plant here.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "south",
+        "to": "CARD_COTTAGE_1"
+      },
+      {
+        "cmd": "east",
+        "to": "CARD_COTTAGE_2"
+      },
+      {
+        "cmd": "west",
+        "to": "CARD_FARM_TURNEY"
+      }
+    ],
+    "items": [
+      "ITEM_BOOK"
+    ],
+    "enemies": []
+  },
+  {
+    "id": "CARD_AJ",
+    "index": 94,
+    "name": "Old Man Aj's",
+    "description": "Old Man Aj's house is a weathered,\nyet sturdy cottage nestled at the edge of Hearthstone.\nIts timbered walls are worn with age, and the roof, patched in places, is thick with moss.\nThe front porch is cluttered with an assortment of tools, jars of dried herbs, and an odd collection of knick-knacks.\nThere is a fireplace here.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "path",
+        "to": "CARD_HEARTHSTONE"
+      }
+    ],
+    "items": [
+      "ITEM_MANA_POTION",
+      "ITEM_MANA_POTION",
+      "ITEM_MANA_POTION",
+      "ITEM_MANA_POTION"
+    ],
+    "enemies": []
+  },
+  {
+    "id": "CARD_HEARTHSTONE_ROAD",
+    "index": 95,
+    "name": "Road near Hearthstone",
+    "description": "The Road near Hearthstone winds gently through lush meadows and wooded glades,\noffering peaceful views of the surrounding countryside.\nPaved with cobblestones that have worn smooth over the years,\nit's flanked by wildflowers and tall grasses that sway in the breeze.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "west",
+        "to": "CARD_HEARTHSTONE"
+      },
+      {
+        "cmd": "pub",
+        "to": "CARD_PUB"
+      }
+    ],
+    "items": [],
+    "enemies": []
+  },
+  {
+    "id": "CARD_FARM_TURNEY",
+    "index": 96,
+    "name": "Turney Farm",
+    "description": "A nice, quiet, farm house in the country-side.\nLooks like a good place for a read.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "east",
+        "to": "CARD_FARM_BAKER"
+      }
+    ],
+    "items": [
+      "ITEM_BOOK"
+    ],
+    "enemies": []
+  },
+  {
+    "id": "CARD_PUB",
+    "index": 97,
+    "name": "The Stumbling Goat",
+    "description": "A humorous, rustic tavern with a quirky feel, often the heart of village gossip.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "road",
+        "to": "CARD_HEARTHSTONE_ROAD"
+      }
+    ],
+    "items": [],
+    "enemies": []
+  },
+  {
+    "id": "CARD_WRENWOOD_ROAD",
+    "index": 98,
+    "name": "Road east of Wrenwood",
+    "description": "You travel miles east of Wrenwood.\nIt looks like another town is nearby",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "east",
+        "to": "CARD_BELLEVILLE"
+      },
+      {
+        "cmd": "west",
+        "to": "CARD_WRENWOOD"
+      }
+    ],
+    "items": [],
+    "enemies": [
+      {
+        "type": "ENEMY_ORC",
+        "health": 1000,
+        "damage": 100
+      }
+    ]
+  },
+  {
+    "id": "CARD_BELLEVILLE",
+    "index": 99,
+    "name": "Belleville",
+    "description": "At the center of Belleville lies a modest square,\ndominated by an ancient oak tree whose gnarled branches stretch wide,\ncasting dappled shadows over the market stalls below.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "books",
+        "to": "CARD_BELLEVILLE_LIBRARY"
+      },
+      {
+        "cmd": "store",
+        "to": "CARD_BELLEVILLE_STORE"
+      },
+      {
+        "cmd": "west",
+        "to": "CARD_WRENWOOD_ROAD"
+      },
+      {
+        "cmd": "north",
+        "to": "CARD_STARLIT_LANE"
+      }
+    ],
+    "items": [],
+    "enemies": []
+  },
+  {
+    "id": "CARD_BELLEVILLE_STORE",
+    "index": 100,
+    "name": "Ye Ol'e Dog House",
+    "description": "A quaint small shop known for its ice cream.",
+    "isStore": true,
+    "links": [
+      {
+        "cmd": "town",
+        "to": "CARD_BELLEVILLE"
+      }
+    ],
+    "items": [],
+    "enemies": []
+  },
+  {
+    "id": "CARD_BELLEVILLE_LIBRARY",
+    "index": 101,
+    "name": "Belleville Public Library",
+    "description": "A public library for old and young.\nA good place for a read.\nThere is a fireplace here.",
+    "isStore": false,
+    "links": [
+      {
+        "cmd": "town",
+        "to": "CARD_BELLEVILLE"
+      },
+      {
+        "cmd": "archive",
+        "to": "CARD_BELLEVILLE_ARCHIVE"
+      }
+    ],
+    "items": [
+      "ITEM_BOOK"
+    ],
+    "enemies": []
+  },
+  {
+    "id": "CARD_BELLEVILLE_ARCHIVE",
+    "index": 102,
+    "name": "The Dusty Archive",
+    "isStore": false,
+    "description": "Behind the Belleville Public Library is a narrow archive room stacked floor to ceiling with sealed ledgers, cracked maps, and old blue candles. One shelf hums whenever Jovi walks past it.",
+    "links": [
+      {
+        "cmd": "library",
+        "to": "CARD_BELLEVILLE_LIBRARY"
+      },
+      {
+        "cmd": "lane",
+        "to": "CARD_STARLIT_LANE"
+      }
+    ],
+    "items": [
+      "ITEM_BOOK",
+      "ITEM_COINS"
+    ],
+    "enemies": []
+  },
+  {
+    "id": "CARD_STARLIT_LANE",
+    "index": 103,
+    "name": "Starlit Lane",
+    "isStore": false,
+    "description": "A silver lane curls north from Belleville into fields of blue grass. The stars seem too close, as if someone hung them from the oak branches with fishing line.",
+    "links": [
+      {
+        "cmd": "archive",
+        "to": "CARD_BELLEVILLE_ARCHIVE"
+      },
+      {
+        "cmd": "gate",
+        "to": "CARD_FINAL_GATE"
+      }
+    ],
+    "items": [
+      "ITEM_MANA_POTION"
+    ],
+    "enemies": [
+      {
+        "type": "ENEMY_WOLF",
+        "health": 60,
+        "damage": 15
+      },
+      {
+        "type": "ENEMY_GOBLIN",
+        "health": 80,
+        "damage": 20
+      }
+    ]
+  },
+  {
+    "id": "CARD_FINAL_GATE",
+    "index": 104,
+    "name": "The Blue Gate",
+    "isStore": false,
+    "description": "A gate of blue fire blocks the end of Starlit Lane. It has no lock, no hinges, and no handle. The old words carved above it read: Open only to the ring, the map, and the faithful dog.",
+    "links": [
+      {
+        "cmd": "lane",
+        "to": "CARD_STARLIT_LANE"
+      }
+    ],
+    "items": [],
+    "enemies": []
+  },
+  {
+    "id": "CARD_DOGSTAR_HILL",
+    "index": 105,
+    "name": "Dogstar Hill",
+    "isStore": false,
+    "description": "You step through the Blue Gate and climb a hill where every blade of grass shines like a tiny moon. Jovi plants her paws on a stone and barks at the brightest star.",
+    "links": [
+      {
+        "cmd": "gate",
+        "to": "CARD_FINAL_GATE"
+      },
+      {
+        "cmd": "library",
+        "to": "CARD_LAST_LIBRARY"
+      }
+    ],
+    "items": [
+      "ITEM_BOOK",
+      "ITEM_HEALTH_POTION"
+    ],
+    "enemies": []
+  },
+  {
+    "id": "CARD_LAST_LIBRARY",
+    "index": 106,
+    "name": "The Last Library",
+    "isStore": false,
+    "description": "The Last Library stands open under the night sky. Its shelves are carved into living trees, and the final book waits on a pedestal. An orc captain guards it with embarrassing seriousness.",
+    "links": [
+      {
+        "cmd": "hill",
+        "to": "CARD_DOGSTAR_HILL"
+      },
+      {
+        "cmd": "feast",
+        "to": "CARD_ENDING_FEAST"
+      }
+    ],
+    "items": [
+      "ITEM_BOOK"
+    ],
+    "enemies": [
+      {
+        "type": "ENEMY_ORC",
+        "health": 250,
+        "damage": 45
+      }
+    ]
+  },
+  {
+    "id": "CARD_ENDING_FEAST",
+    "index": 107,
+    "name": "The Feast Under the Oak",
+    "isStore": false,
+    "description": "Belleville gathers beneath the ancient oak. The Blue Wizard, Alistair, Old Man Jeffers, Old Man McCann, Williams, and Jovi all sit around one gigantic table. The adventure is not over forever, but this chapter finally has a proper ending.",
+    "links": [
+      {
+        "cmd": "library",
+        "to": "CARD_LAST_LIBRARY"
+      },
+      {
+        "cmd": "town",
+        "to": "CARD_BELLEVILLE"
+      }
+    ],
+    "items": [
+      "ITEM_COINS"
+    ],
+    "enemies": []
+  }
+];
+
+const ITEM_NAMES = {
+  ITEM_SWORD: 'sword',
+  ITEM_MAP: 'map',
+  ITEM_HEALTH_POTION: 'health potion',
+  ITEM_MANA_POTION: 'mana potion',
+  ITEM_COINS: 'coins',
+  ITEM_BOOK: 'book'
+};
+
+const ENEMY_NAMES = {
+  ENEMY_OGRE: 'ogre',
+  ENEMY_WOLF: 'wolf',
+  ENEMY_BEAR: 'bear',
+  ENEMY_GOBLIN: 'goblin',
+  ENEMY_ORC: 'orc'
+};
+
+const ENEMY_ATTACKS = {
+  ENEMY_OGRE: 'hits',
+  ENEMY_WOLF: 'bites',
+  ENEMY_BEAR: 'bites',
+  ENEMY_GOBLIN: 'stabs',
+  ENEMY_ORC: 'stabs'
+};
+
+const FIREPLACE_CARDS = {
+  CARD_HOME: ['home', 'homeFirePlaceIsLit', 'home'],
+  CARD_OLD_MAN_JEFFERS: ['jeffers', 'jeffersFirePlaceIsLit', 'old man Jeffers'],
+  CARD_CINDERSPIRE: ['spire', 'cinderSpireFirePlaceIsLit', 'Cinderspire'],
+  CARD_OLD_MAN_MCCANN: ['mccann', 'mccannsFirePlaceIsLit', "old man McCann's"],
+  CARD_WILLIAMS_TOWN_HALL: ['williams', 'williamsFirePlaceIsLit', 'Williams Town Hall'],
+  CARD_STACK_HOMESTEAD: ['stack', 'stackFirePlaceIsLit', 'Stack Homestead'],
+  CARD_VILLAGE: ['village', 'villageFirePlaceIsLit', 'The Enchanted Village'],
+  CARD_AJ: ['aj', 'ajFirePlaceIsLit', "old man AJ's"],
+  CARD_BELLEVILLE_LIBRARY: ['belleville', 'bellevilleFirePlaceIsLit', 'The Belleville Library']
+};
+
+const MAP_DESTINATIONS = {
+  home: ['homeFirePlaceIsLit', 'CARD_HOME', 'went home.'],
+  jeffers: ['jeffersFirePlaceIsLit', 'CARD_OLD_MAN_JEFFERS', 'went to old man Jeffers.'],
+  spire: ['cinderSpireFirePlaceIsLit', 'CARD_CINDERSPIRE', 'went to Cinderspire.'],
+  mccann: ['mccannsFirePlaceIsLit', 'CARD_OLD_MAN_MCCANN', "went to old man McCann's."],
+  williams: ['williamsFirePlaceIsLit', 'CARD_WILLIAMS_TOWN_HALL', 'went to Williams Town Hall.'],
+  stack: ['stackFirePlaceIsLit', 'CARD_STACK_HOMESTEAD', 'went to Stack Homestead.'],
+  village: ['villageFirePlaceIsLit', 'CARD_VILLAGE', 'went to The Enchanted Village.'],
+  aj: ['ajFirePlaceIsLit', 'CARD_AJ', "went to old man AJ's."],
+  belleville: ['bellevilleFirePlaceIsLit', 'CARD_BELLEVILLE_LIBRARY', 'went to Belleville Public Library.']
+};
+
+const canvas = document.getElementById('terminal');
+const ctx = canvas.getContext('2d');
+let dpr = 1;
+let term = {
+  lines: [],
+  input: '',
+  mode: 'main',
+  prompt: 'Enter a command',
+  history: [],
+  historyIndex: -1,
+  scroll: 0,
+  blink: true,
+  focused: true
+};
+
+function makeCardMap() {
+  const map = {};
+  for (const c of BASE_CARDS) {
+    map[c.id] = {
+      ...c,
+      links: (c.links || []).map(l => ({ ...l })),
+      items: [...(c.items || [])],
+      enemies: (c.enemies || []).map(e => ({ ...e }))
+    };
+  }
+  return map;
+}
+
+function makeInitialState() {
+  return {
+    deck: makeCardMap(),
+    currentCard: 'CARD_HOME',
+    gameLooper: true,
+    cheating: false,
+    health: 100,
+    mana: 100,
+    money: 400,
+    xp: 0,
+    books: 0,
+    booksDeliveredToAlistair: 0,
+    loops: 0,
+    hasSword: false,
+    hasMap: false,
+    hasRing: false,
+    hasLastPage: false,
+    endingSeen: false,
+    collectedCards: {},
+    events: {
+      ringEventHasHappened: false,
+      kingEventHasHappened: false,
+      tomBomEventHasHappened: false,
+      squirrelEventHasHappened: false,
+      echoEventHasHappened: false,
+      treeFallEventHasHappened: false,
+      elderfernEventHasHappened: false,
+      stackTreeFallEventHasHappened: false,
+      chasmEventHasHappened: false,
+      jovi1EventHasHappened: false,
+      jovi2EventHasHappened: false,
+      jovi3EventHasHappened: false,
+      jovi4EventHasHappened: false,
+      jovi5EventHasHappened: false,
+      jovi6EventHasHappened: false,
+      pub1EventHasHappened: false,
+      pub2EventHasHappened: false,
+      ghostEventHasHappened: false,
+      archiveEventHasHappened: false
+    },
+    fireplaces: {
+      homeFirePlaceIsLit: false,
+      jeffersFirePlaceIsLit: false,
+      cinderSpireFirePlaceIsLit: false,
+      mccannsFirePlaceIsLit: false,
+      williamsFirePlaceIsLit: false,
+      stackFirePlaceIsLit: false,
+      villageFirePlaceIsLit: false,
+      ajFirePlaceIsLit: false,
+      bellevilleFirePlaceIsLit: false
+    },
+    emberfellTowerChestOpened: false
+  };
+}
+
+let state = makeInitialState();
+
+function card(id = state.currentCard) { return state.deck[id]; }
+function enemyName(type) { return ENEMY_NAMES[type] || '(n/a)'; }
+function enemyAttack(type) { return ENEMY_ATTACKS[type] || 'bonks'; }
+function normalizeInput(s) { return String(s || '').trim().toLowerCase(); }
+function titleOf(id) { return state.deck[id]?.name || id; }
+
+function print(text = '') {
+  const parts = String(text).replace(/\r/g, '').split('\n');
+  for (const p of parts) term.lines.push(p);
+  if (term.lines.length > 2400) term.lines.splice(0, term.lines.length - 2400);
+  term.scroll = 0;
+  requestDraw();
+}
+
+function printBlock(text = '') { print(text.replace(/^\n+/, '').replace(/\n+$/, '')); }
+
+function setMode(mode, prompt) {
+  term.mode = mode;
+  term.prompt = prompt || 'Enter a command';
+  term.input = '';
+  requestDraw();
+}
+
+function resetMode() { setMode('main', 'Enter a command'); }
+
+function requestDraw() {
+  if (!requestDraw.pending) {
+    requestDraw.pending = true;
+    requestAnimationFrame(() => { requestDraw.pending = false; draw(); });
+  }
+}
+requestDraw.pending = false;
+
+function resizeCanvas() {
+  dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+  const w = Math.floor(window.innerWidth * dpr);
+  const h = Math.floor(window.innerHeight * dpr);
+  if (canvas.width !== w || canvas.height !== h) {
+    canvas.width = w;
+    canvas.height = h;
+  }
+  requestDraw();
+}
+window.addEventListener('resize', resizeCanvas);
+
+function wrapText(text, maxWidth, font) {
+  ctx.font = font;
+  const raw = String(text);
+  if (raw === '') return [''];
+  const out = [];
+  for (const sourceLine of raw.split('\n')) {
+    let line = '';
+    const words = sourceLine.split(/(\s+)/);
+    for (const word of words) {
+      const test = line + word;
+      if (line && ctx.measureText(test).width > maxWidth) {
+        out.push(line.trimEnd());
+        line = word.trimStart();
+      } else {
+        line = test;
+      }
+    }
+    out.push(line.trimEnd());
+  }
+  return out;
+}
+
+function draw() {
+  const w = canvas.width;
+  const h = canvas.height;
+  ctx.clearRect(0, 0, w, h);
+
+  const bg = ctx.createLinearGradient(0, 0, 0, h);
+  bg.addColorStop(0, '#101a12');
+  bg.addColorStop(1, '#020402');
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, w, h);
+
+  ctx.save();
+  ctx.globalAlpha = 0.12;
+  ctx.strokeStyle = '#9cff9a';
+  const scan = Math.max(3, Math.floor(4 * dpr));
+  for (let y = 0; y < h; y += scan) {
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+  }
+  ctx.restore();
+
+  const pad = Math.floor(18 * dpr);
+  const fontSize = Math.max(14, Math.floor(17 * dpr));
+  const smallFontSize = Math.max(11, Math.floor(12 * dpr));
+  const lineHeight = Math.floor(fontSize * 1.35);
+  const font = `${fontSize}px Consolas, Menlo, monospace`;
+  const smallFont = `${smallFontSize}px Consolas, Menlo, monospace`;
+  const headerH = Math.floor(42 * dpr);
+
+  ctx.fillStyle = 'rgba(0, 0, 0, 0.28)';
+  ctx.fillRect(pad / 2, pad / 2, w - pad, h - pad);
+  ctx.strokeStyle = 'rgba(124, 255, 117, 0.35)';
+  ctx.lineWidth = Math.max(1, dpr);
+  ctx.strokeRect(pad / 2, pad / 2, w - pad, h - pad);
+
+  ctx.font = smallFont;
+  ctx.fillStyle = '#95ff91';
+  const header = `ADVENTURE // ${titleOf(state.currentCard)} // HP ${state.health} MP ${state.mana} XP ${state.xp} $${state.money} Books ${state.books}`;
+  ctx.fillText(header, pad, pad + smallFontSize);
+
+  ctx.font = font;
+  const maxTextW = w - pad * 2;
+  const visual = [];
+  for (const l of term.lines) {
+    const wrapped = wrapText(l, maxTextW, font);
+    for (const sub of wrapped) visual.push(sub);
+  }
+  const caret = term.blink && term.focused ? '█' : ' ';
+  const promptLine = `${term.prompt}> ${term.input}${caret}`;
+  for (const sub of wrapText(promptLine, maxTextW, font)) visual.push(sub);
+
+  const available = h - pad * 2 - headerH;
+  const visibleCount = Math.max(1, Math.floor(available / lineHeight));
+  const end = Math.max(0, visual.length - term.scroll);
+  const start = Math.max(0, end - visibleCount);
+  let y = pad + headerH;
+  for (let i = start; i < end; i++) {
+    const line = visual[i];
+    if (line.startsWith('>') || line.includes('> ')) ctx.fillStyle = '#e7ffe5';
+    else if (line.startsWith('***') || line.includes('received') || line.includes('Got ')) ctx.fillStyle = '#ffe7a6';
+    else if (line.toLowerCase().includes('you died') || line.toLowerCase().includes('loss of')) ctx.fillStyle = '#ff9d9d';
+    else ctx.fillStyle = '#b9ffb5';
+    ctx.fillText(line, pad, y);
+    y += lineHeight;
+  }
+}
+
+function printHelp() {
+  print('Commands:');
+  print(' - help        -> display this help menu');
+  print(' - look        -> describe the current card and reveal items');
+  print(' - move        -> choose a linked card');
+  print(' - move <name> -> shortcut, same as choosing after move');
+  print(' - map         -> jump to places where you lit a fireplace');
+  print(' - status      -> print health, money, mana, books, etc.');
+  print(' - sword / s   -> swing sword if you have it');
+  print(' - cast        -> cast fire, grow, or open if you have the ring');
+  print(' - buy         -> buy potions in stores');
+  print(' - jovi        -> talk to Jovi, your best friend dog');
+  print(' - save/load   -> save or load browser progress');
+  print(' - quit        -> stop accepting commands');
+  print('Tip: press Ctrl+C to enable the old cheat prompt.');
+}
+
+function printStatus() {
+  print('Current Status:');
+  print(` - health       :  ${state.health}`);
+  print(` - mana         :  ${state.mana}`);
+  print(` - ex_points    :  ${state.xp}`);
+  print(` - money        : $${state.money}`);
+  print(` - books        :  ${state.books}`);
+  if (state.booksDeliveredToAlistair > 0) print(`  ( ${state.booksDeliveredToAlistair} books delivered to Alistair )`);
+  print(` - loops        :  ${state.loops}`);
+  if (state.hasSword) print(' - you are holding a sword');
+  if (state.hasSword) print(` - damage       :  ${getDamage()}`);
+  if (state.hasMap) print(' - you have a map');
+  if (state.hasRing) print(' - you have a magic ring');
+  if (state.hasLastPage) print(' - you found the last page of the map');
+}
+
+function getDamage() {
+  const xp = state.xp;
+  if (xp > 9000) return 1000;
+  if (xp > 8000) return 900;
+  if (xp > 7000) return 800;
+  if (xp > 6000) return 700;
+  if (xp > 5000) return 600;
+  if (xp > 4000) return 500;
+  if (xp > 3000) return 400;
+  if (xp > 2000) return 300;
+  if (xp > 1000) return 200;
+  if (xp > 500) return 150;
+  if (xp > 200) return 120;
+  if (xp > 100) return 100;
+  if (xp > 50) return 50;
+  if (xp > 40) return 40;
+  if (xp > 30) return 30;
+  return 20;
+}
+
+function printAndHandleItem(itemType) {
+  switch (itemType) {
+    case 'ITEM_SWORD': print('Got the sword'); state.hasSword = true; break;
+    case 'ITEM_MAP': print('Got the map'); state.hasMap = true; break;
+    case 'ITEM_HEALTH_POTION': print('Found health potion'); state.health += 100; break;
+    case 'ITEM_MANA_POTION': print('Found mana potion'); state.mana += 100; break;
+    case 'ITEM_COINS': print('Found some coins'); state.money += 100; break;
+    case 'ITEM_BOOK': print('Found a book'); state.books += 1; break;
+    default: print('Did not recognize item type'); break;
+  }
+}
+
+function look() {
+  const c = card();
+  print('');
+  print(`${c.name}:`);
+  print(c.description || '(no description)');
+  print('');
+  if (!state.collectedCards[c.id] && c.items.length > 0) {
+    for (const item of c.items) printAndHandleItem(item);
+    state.collectedCards[c.id] = true;
+  } else if (state.collectedCards[c.id]) {
+    print('(nothing new to pick up here)');
+  }
+  if (aliveEnemies(c).length) printEnemies(c);
+}
+
+function aliveEnemies(c = card()) { return (c.enemies || []).filter(e => e.health > 0); }
+
+function printEnemies(c = card()) {
+  const enemies = aliveEnemies(c);
+  if (!enemies.length) return;
+  print('Enemies here:');
+  for (const enemy of enemies) print(` - ${enemyName(enemy.type)} ( ${enemy.health} health, does ${enemy.damage} damage )`);
+}
+
+function printMoveChoices() {
+  const c = card();
+  if (!c.links.length) { print('There is nowhere obvious to move.'); return; }
+  print('Places to move to:');
+  for (const link of c.links) print(` - ${link.cmd} - ${titleOf(link.to)}`);
+}
+
+function moveToChoice(raw) {
+  const choice = normalizeInput(raw);
+  const c = card();
+  const link = c.links.find(l => normalizeInput(l.cmd) === choice);
+  if (!link) { print('(No Move Made)'); return false; }
+  // A tiny bit of finish-work: the final gate is a spell gate, not just a hallway.
+  if (link.to === 'CARD_FINAL_GATE' && aliveEnemies(c).length > 0) {
+    print('The monsters block the way. Deal with them first.');
+    return false;
+  }
+  state.currentCard = link.to;
+  print(`moved to ${titleOf(state.currentCard)}`);
+  onEnterCard();
+  if (aliveEnemies().length) printEnemies();
+  return true;
+}
+
+function onEnterCard() {
+  if (state.currentCard === 'CARD_FINAL_GATE' && !state.hasRing) {
+    print('The Blue Gate flares and throws you back. You need the magic ring.');
+    state.currentCard = 'CARD_STARLIT_LANE';
+  }
+}
+
+function buyChoice(raw) {
+  const choice = normalizeInput(raw);
+  if (!card().isStore) { print('You are not currently in a store.'); return; }
+  if (state.money <= 0) { print('You do not have any money.'); return; }
+  if (choice === 'health') {
+    state.money -= 10; state.health += 100;
+    print('(received 100 health)'); print('(cost $10)');
+  } else if (choice === 'mana') {
+    state.money -= 10; state.mana += 100;
+    print('(received 100 mana)'); print('(cost $10)');
+  } else {
+    print("The store clerk says 'I dont have that item.'");
+  }
+}
+
+function swingSword() {
+  if (!state.hasSword) { print('You do not have the sword.'); return; }
+  print('You swing the sword and ...');
+  const c = card();
+  const target = c.enemies.find(e => e.health > 0);
+  if (!target) { print('There is nothing here to hit.'); return; }
+  const damage = getDamage();
+  print(`You hit the ${enemyName(target.type)} with the sword, they lose ${damage} health`);
+  target.health -= damage;
+  if (target.health <= 0) {
+    print(`The ${enemyName(target.type)} is dead (gained 10 xp points)`);
+    state.xp += 10;
+  }
+  if (!aliveEnemies(c).length) {
+    print('All enemies have been delt with.');
+  }
+}
+
+function handleFightSequence() {
+  const enemies = aliveEnemies();
+  for (const enemy of enemies) {
+    print(`the ${enemyName(enemy.type)} ${enemyAttack(enemy.type)} you, loss of ${enemy.damage} health`);
+    state.health -= enemy.damage;
+  }
+  if (state.health <= 0) {
+    print(''); print('you died...'); print('');
+    state.currentCard = 'CARD_HOME';
+    state.health = 100;
+    print('You wake up back home with 100 health.');
+  }
+}
+
+function addLink(cardId, cmd, to) {
+  const c = state.deck[cardId];
+  if (!c.links.some(l => l.cmd === cmd && l.to === to)) c.links.push({ cmd, to });
+}
+
+function allEnemiesDead(cardId) { return aliveEnemies(state.deck[cardId]).length === 0; }
+
+function handleEvents() {
+  const c = state.currentCard;
+  const e = state.events;
+  if (c === 'CARD_HOME' && !e.ringEventHasHappened && state.loops > 10) {
+    e.ringEventHasHappened = true;
+    print('');
+    print('There is a knock at the door...');
+    print('You open the door and standing there is the Blue Wizard.');
+    print('He hands you a magic ring, and then he leaves.');
+    print('');
+    print('You got the ring');
+    state.hasRing = true;
+  } else if (c === 'CARD_TOWN_SQUARE' && !e.kingEventHasHappened && state.loops > 50) {
+    e.kingEventHasHappened = true;
+    print('');
+    print('The king arrives...');
+    print('Trumpets blare to announce his arrival.');
+    print('There is a large crowd gathered to hear him speak.');
+    print("'I am the king of this land, and though I wear the crown, it is you who may be its true heir. The trials ahead will test your resolve, your courage, and your very soul.'");
+    if (state.hasMap) { print("The King says 'I see you have the map, I trust you can make your way.'"); state.xp += 50; print('(received 50 experience points)'); }
+    print('The king leaves and the crowd disbands.');
+  } else if (c === 'CARD_WILD_GARDEN' && !e.tomBomEventHasHappened && state.loops > 25) {
+    e.tomBomEventHasHappened = true;
+    print('');
+    print('A strange man walks out of the forest, singing about rivers, hills, birds, flowers, and being wild like Old Tom Bombadil.');
+    print("He says, 'No need to fret, youre in good hands. All that matters is the now!' Then he walks back into the forest.");
+    state.xp += 50; print('(received 50 experience points)');
+    state.health += 100; print('(received 100 health)');
+  } else if (c === 'CARD_DEAD_END' && !e.squirrelEventHasHappened) {
+    e.squirrelEventHasHappened = true;
+    print(''); print('A squirrel runs out of the forest...'); print('Jovi sees the squirrel and points toward it.'); print('The squirrel runs back into the forest and disappears.');
+    state.xp += 5; print('(received 5 experience points)');
+  } else if (c === 'CARD_ECHOING_HOLLOW' && !e.echoEventHasHappened) {
+    e.echoEventHasHappened = true;
+    print(''); print("You shout 'Hello!'"); print('You hear the echo.'); print('hello ...'); print('  ... hello ...'); print('           ... hello ...');
+    state.xp += 5; print('(received 5 experience points)');
+  } else if (c === 'CARD_SECOND_PATH' && !e.treeFallEventHasHappened && state.loops > 100) {
+    e.treeFallEventHasHappened = true;
+    print(''); print('A tree falls and lands like a bridge across the river...'); print('There is now a path to cross the river.');
+    addLink('CARD_SECOND_PATH', 'tree', 'CARD_OTHER_SIDE_RIVER');
+    state.deck.CARD_SECOND_PATH.description = 'You take the path deep into the woods.\nThe path continues to a garden.\nThere is also a deep river nearby.\nA tree has fallen across the river so you can cross to the other side.';
+  } else if (c === 'CARD_ELDERFERN_2' && !e.elderfernEventHasHappened) {
+    e.elderfernEventHasHappened = true;
+    print(''); print('The mist of the forest is too thick, you cant see...'); print('You can hear the howl of wolves.');
+  } else if (c === 'CARD_GREY' && state.books > 0) {
+    print(''); print("Alistair says 'Great, you brought me some books!'");
+    while (state.books > 0) { print('(received 1000 coins)'); state.money += 1000; state.booksDeliveredToAlistair += 1; state.books -= 1; }
+  } else if (c === 'CARD_STACK_HOMESTEAD' && !e.stackTreeFallEventHasHappened && state.xp > 250) {
+    e.stackTreeFallEventHasHappened = true;
+    print(''); print('A tree falls and lands like a bridge across the river...'); print('There is now a path to cross the river.');
+    addLink('CARD_STACK_HOMESTEAD', 'tree', 'CARD_STACK_RIVER');
+    state.deck.CARD_STACK_HOMESTEAD.description = 'You are at the Stack Homestead.\nThere is a mountain to the north.\nOn the far western side of the homestead, there is a river.\nA tree has fallen across the river so you can cross to the other side.\nThere is a pumpkin patch.\nThere is a fireplace here.';
+  } else if (c === 'CARD_FORSAKEN_ROAD' && !e.chasmEventHasHappened && state.xp > 120 && allEnemiesDead('CARD_FORSAKEN_ROAD') && state.loops > 600) {
+    e.chasmEventHasHappened = true;
+    print(''); print('The Blue Wizard appears and repairs the vast chasm with blue light.'); print('The chasm is now repaired. You can continue north.');
+    addLink('CARD_FORSAKEN_ROAD', 'north', 'CARD_FORSAKEN_ROAD_2');
+    state.deck.CARD_FORSAKEN_ROAD.description = 'A desolate, overgrown path, once traveled but now abandoned.\nThe chasm is repaired. You can go north or south.';
+  } else if (c === 'CARD_EMBERFELL_CHAMBER' && !e.ghostEventHasHappened) {
+    e.ghostEventHasHappened = true;
+    print(''); print('A ghost appears. Its very spooky. Jovi barks at it.'); print('The ghost glides back into the wall and disappears.');
+  } else if (c === 'CARD_FIRST_ROAD_RIGHT' && !e.jovi1EventHasHappened) { e.jovi1EventHasHappened = true; print(''); print('Jovi barks...');
+  } else if (c === 'CARD_CAVE_DEEP' && !e.jovi2EventHasHappened) { e.jovi2EventHasHappened = true; print(''); print('Jovi barks...');
+  } else if (c === 'CARD_MIRKWOOD_ENTER' && !e.jovi3EventHasHappened) { e.jovi3EventHasHappened = true; print(''); print('Jovi barks...');
+  } else if (c === 'CARD_TOMBS' && !e.jovi4EventHasHappened) { e.jovi4EventHasHappened = true; print(''); print('Jovi barks...');
+  } else if (c === 'CARD_MARSH_11' && !e.jovi5EventHasHappened) { e.jovi5EventHasHappened = true; print(''); print('Jovi barks...');
+  } else if (c === 'CARD_FARM_BAKER' && !e.jovi6EventHasHappened) { e.jovi6EventHasHappened = true; print(''); print('Jovi barks...');
+  } else if (c === 'CARD_PUB' && !e.pub1EventHasHappened) {
+    e.pub1EventHasHappened = true;
+    print(''); print("'Hey there young fellow!'"); print('A drunk patron walks over to you.'); print("'Whats your deal!' says the patron");
+  } else if (c === 'CARD_PUB' && e.pub1EventHasHappened && !e.pub2EventHasHappened && state.hasSword) {
+    e.pub2EventHasHappened = true;
+    print(''); print('The drunk patron punches you.'); print('You fall backward, but quickly get back up and draw your sword.'); print("'... I dont want no trouble' says the patron."); print('He walks away.');
+    state.xp += 50; print('(received 50 experience points)');
+  } else if (c === 'CARD_BELLEVILLE_ARCHIVE' && !e.archiveEventHasHappened) {
+    e.archiveEventHasHappened = true;
+    print(''); print('A blue candle lights itself in the archive. A loose page slides out of an atlas and lands in your hand.');
+    state.hasLastPage = true; state.xp += 200;
+    print('(found the last page of the map)'); print('(received 200 experience points)');
+  } else if (c === 'CARD_ENDING_FEAST' && !state.endingSeen) {
+    state.endingSeen = true;
+    print(''); print('*** CHAPTER COMPLETE ***');
+    print('The oak leaves glow blue. Jovi gets the first plate. The Blue Wizard raises a cup and says that the road will call again soon.');
+    state.xp += 1000; state.money += 1000;
+    print('(received 1000 experience points)'); print('(received 1000 coins)');
+  }
+}
+
+function handleCast(spellRaw) {
+  const spell = normalizeInput(spellRaw);
+  if (state.mana <= 0) { print('no mana'); return; }
+  const manaCost = 5;
+  print(`( ${manaCost} mana used )`);
+  state.mana -= manaCost;
+  if (spell === 'fire') {
+    print('You cast fire...');
+    const fp = FIREPLACE_CARDS[state.currentCard];
+    if (fp) { state.fireplaces[fp[1]] = true; print(`The fire place is lit at ${fp[2]}.`); }
+    else if (state.currentCard === 'CARD_TOWN_HOUSE') { print("The woman screams 'What are you doing, you are going to burn the place down!'."); state.xp += 5; print('(received 5 xp)'); }
+    else print('no effect');
+  } else if (spell === 'grow') {
+    print('You cast grow...');
+    const grow = {
+      CARD_JEFFERS_GARDEN: ['tomatoes', 800],
+      CARD_WILD_GARDEN: ['apples', 500],
+      CARD_MCCANN_GARDEN: ['tomatoes', 800],
+      CARD_STACK_HOMESTEAD: ['pumpkins', 600],
+      CARD_EMBERFELL_GARDEN: ['tomatoes', 800],
+      CARD_FARM_BAKER: ['beets', 1200]
+    }[state.currentCard];
+    if (grow) { print(`One of the ${grow[0]} grows incredibly large.`); print('You eat it.'); state.health += grow[1]; print(`(received ${grow[1]} health)`); }
+    else print('no effect');
+  } else if (spell === 'open') {
+    const openTargets = {
+      CARD_WILD_GARDEN: ['The locked shed door opens.', 'You enter the gardening shed.', 'CARD_FIRST_SHED'],
+      CARD_IRONWOOD_CLEARING: ["The locked shed door opens.", "You enter the workman's shed.", 'CARD_SECOND_SHED'],
+      CARD_MCCANN_GARDEN: ["The locked shed door opens.", "You enter the McCann's gardening shed.", 'CARD_THIRD_SHED'],
+      CARD_WILLIAMS: ['The locked door to Town Hall opens.', 'You enter the Williams Town Hall.', 'CARD_WILLIAMS_TOWN_HALL'],
+      CARD_EMBERFELL_CASTLE_ENTER: ['The locked door to Emberfell Castle opens.', 'You enter The Grand Emberfell Hall.', 'CARD_EMBERFELL_HALL'],
+      CARD_CAVE_DEEP: ['The locked door to the Hidden Passage opens.', 'You enter the Hidden Passage.', 'CARD_HIDDEN_PASSAGE'],
+      CARD_CAVERNS: ['The locked door to the Hidden Passage opens.', 'You enter the Hidden Passage.', 'CARD_HIDDEN_PASSAGE'],
+      CARD_FINAL_GATE: ['The Blue Gate opens like a page turning.', 'You step through to Dogstar Hill.', 'CARD_DOGSTAR_HILL']
+    };
+    if (state.currentCard === 'CARD_EMBERFELL_TOWER' && !state.emberfellTowerChestOpened) {
+      state.emberfellTowerChestOpened = true; print('The locked treasure chest opens.'); state.money += 1000; print('(received 1000 coins)');
+    } else if (openTargets[state.currentCard]) {
+      const [a, b, target] = openTargets[state.currentCard];
+      if (state.currentCard === 'CARD_FINAL_GATE' && (!state.hasRing || !state.hasMap)) {
+        print('The gate glows, but the spell fizzles. You need the ring and the map.');
+      } else {
+        print(a); print(b); state.currentCard = target; onEnterCard();
+      }
+    } else print('no effect');
+  } else {
+    print('I dont know that spell.');
+  }
+}
+
+function printMapOptions() {
+  if (!state.hasMap) { print('You do not have the map yet.'); return false; }
+  print('Places you can jump to:');
+  let any = false;
+  for (const [name, [flag]] of Object.entries(MAP_DESTINATIONS)) {
+    if (state.fireplaces[flag]) { print(` - ${name}`); any = true; }
+  }
+  if (!any) print(' (no lit fireplaces yet)');
+  return true;
+}
+
+function mapChoice(raw) {
+  const choice = normalizeInput(raw);
+  const dest = MAP_DESTINATIONS[choice];
+  if (dest && state.fireplaces[dest[0]]) {
+    state.currentCard = dest[1];
+    print(dest[2]);
+    onEnterCard();
+  } else {
+    print('Thats not on the map.');
+  }
+}
+
+function handleJovi(raw) {
+  const input = normalizeInput(raw);
+  const responses = [
+    "Jovi says: Bark! I support this plan, but I recommend snacks first.",
+    "Jovi says: Ruff ruff. The smell of adventure is coming from the north.",
+    "Jovi says: I am only a dog, but even I know that glowing doors want magic.",
+    "Jovi says: Books are good because people drop crumbs between the pages.",
+    "Jovi says: Woof. Stay brave. Also, please do not forget I am a very good girl."
+  ];
+  let hash = 0;
+  for (let i = 0; i < input.length; i++) hash = ((hash << 5) - hash + input.charCodeAt(i)) | 0;
+  print(responses[Math.abs(hash) % responses.length]);
+}
+
+function cheatChoice(raw) {
+  const s = normalizeInput(raw);
+  if (s === 'give me money') { state.money += 400; print('received $400'); }
+  else if (s === 'xp') { state.xp += 100; print('received 100 xp'); }
+  else if (s === 'mana') { state.mana += 100; print('received 100 mana'); }
+  else if (s === 'to be young') { state.health += 100; print('received 100 health'); }
+  else if (s === 'map') { state.hasMap = true; print('Got the Map'); }
+  else if (s === 'ring') { state.hasRing = true; print('Got the ring'); }
+  else if (s === 'loop de loop') { state.loops += 100; print('gameloop counter incremented by 100'); }
+  else if (s === 'devel') {
+    print('developer mode');
+    state.money = 100000; state.loops = 100000; state.health = 100000; state.mana = 100000; state.xp = 100000;
+    state.hasRing = true; state.hasSword = true; state.hasMap = true; state.hasLastPage = true;
+    for (const key of Object.keys(state.fireplaces)) state.fireplaces[key] = true;
+  } else if (s === 'goto') {
+    print('All Cards:');
+    for (const c of Object.values(state.deck).sort((a, b) => a.index - b.index)) print(` - ${c.index} - ${c.name}`);
+    setMode('goto', 'Card');
+    return 'hold';
+  } else {
+    print('That cheat code did nothing.');
+  }
+}
+
+function gotoChoice(raw) {
+  const s = normalizeInput(raw);
+  const byIndex = Object.values(state.deck).find(c => String(c.index) === s);
+  const byId = state.deck[s.toUpperCase()] || Object.values(state.deck).find(c => normalizeInput(c.name) === s);
+  const target = byIndex || byId;
+  if (target) { state.currentCard = target.id; print(`jumped to ${target.name}`); onEnterCard(); }
+  else print('That was not a valid card.');
+}
+
+function saveGame() {
+  localStorage.setItem('adventureCanvasSave', JSON.stringify(state));
+  print('(game saved to this browser)');
+}
+
+function loadGame() {
+  const raw = localStorage.getItem('adventureCanvasSave');
+  if (!raw) { print('(no save found in this browser)'); return; }
+  try {
+    const loaded = JSON.parse(raw);
+    state = loaded;
+    // Make sure future versions can still see all base/extra cards.
+    const fresh = makeCardMap();
+    state.deck = { ...fresh, ...(state.deck || {}) };
+    print('(game loaded)');
+    print(`You are at ${titleOf(state.currentCard)}.`);
+  } catch (err) {
+    print('(save file could not be loaded)');
+  }
+}
+
+function advanceTurn() {
+  if (!state.gameLooper) return;
+  state.loops += 1;
+  handleEvents();
+  handleFightSequence();
+}
+
+function handleMainCommand(raw) {
+  const input = normalizeInput(raw);
+  if (input !== '') print(`*You entered: ${input}`);
+  if (input === '') return;
+
+  const [verb, ...restWords] = input.split(/\s+/);
+  const rest = restWords.join(' ');
+
+  if (input === 'help') { printHelp(); advanceTurn(); }
+  else if (input === 'look' || input === 'l') { look(); advanceTurn(); }
+  else if (verb === 'move' || verb === 'go') {
+    if (rest) { moveToChoice(rest); advanceTurn(); }
+    else { printMoveChoices(); setMode('move', 'Where to move?'); }
+  }
+  else if (input === 'status') { printStatus(); advanceTurn(); }
+  else if (input === 'buy') {
+    if (!card().isStore) { print('You are not currently in a store.'); advanceTurn(); }
+    else { print('Items to purchase:'); print(' - health - health potion - $10'); print(' - mana   - mana   potion - $10'); setMode('buy', 'Purchase'); }
+  }
+  else if (input === 'sword' || input === 's') { swingSword(); advanceTurn(); }
+  else if (verb === 'map') {
+    if (rest) { if (state.hasMap) mapChoice(rest); else print('You do not have the map yet.'); advanceTurn(); }
+    else { if (printMapOptions()) setMode('map', 'Map'); else advanceTurn(); }
+  }
+  else if (verb === 'jovi') {
+    if (rest) { handleJovi(rest); advanceTurn(); }
+    else { print('Talk to Jovi:'); setMode('jovi', 'Jovi'); }
+  }
+  else if (verb === 'cast') {
+    if (!state.hasRing) { print('Cannot cast spells without a magical object...'); advanceTurn(); }
+    else if (rest) { handleCast(rest); advanceTurn(); }
+    else { print('Spellbook:'); print(' - fire'); print(' - grow'); print(' - open'); setMode('cast', 'Spell'); }
+  }
+  else if (input === 'cheat' && state.cheating) { print('...dirty cheater...'); setMode('cheat', 'Cheat'); }
+  else if (input === 'save') { saveGame(); advanceTurn(); }
+  else if (input === 'load') { loadGame(); advanceTurn(); }
+  else if (input === 'restart') { state = makeInitialState(); print('Restarted.'); printIntro(); }
+  else if (['quit', 'q', 'exit', 'x'].includes(input)) { print('Good Bye!'); state.gameLooper = false; }
+  else { print('I dont recognize that command. (type help for help)'); advanceTurn(); }
+}
+
+function submitInput() {
+  const raw = term.input;
+  if (!state.gameLooper && normalizeInput(raw) !== 'restart') { print('(refresh or type restart to play again)'); term.input = ''; requestDraw(); return; }
+  const shownPrompt = term.prompt;
+  term.input = '';
+  if (raw !== '') { term.history.push(raw); term.historyIndex = term.history.length; }
+  print(`${shownPrompt}> ${raw}`);
+
+  if (term.mode === 'main') { handleMainCommand(raw); }
+  else if (term.mode === 'move') { moveToChoice(raw); resetMode(); advanceTurn(); }
+  else if (term.mode === 'buy') { buyChoice(raw); resetMode(); advanceTurn(); }
+  else if (term.mode === 'map') { mapChoice(raw); resetMode(); advanceTurn(); }
+  else if (term.mode === 'jovi') { handleJovi(raw); resetMode(); advanceTurn(); }
+  else if (term.mode === 'cast') { handleCast(raw); resetMode(); advanceTurn(); }
+  else if (term.mode === 'cheat') { const r = cheatChoice(raw); if (r !== 'hold') { resetMode(); advanceTurn(); } }
+  else if (term.mode === 'goto') { gotoChoice(raw); resetMode(); advanceTurn(); }
+}
+
+function printIntro() {
+  print('Welcome to Adventure!');
+  print('');
+  print('This is the browser/canvas terminal rewrite. Type help for commands, look to inspect your current card, and move to travel.');
+  print('');
+  print(`${card().name}:`);
+  print(card().description);
+}
+
+canvas.addEventListener('click', () => { canvas.focus(); term.focused = true; requestDraw(); });
+canvas.addEventListener('focus', () => { term.focused = true; requestDraw(); });
+canvas.addEventListener('blur', () => { term.focused = false; requestDraw(); });
+
+window.addEventListener('keydown', (ev) => {
+  if (ev.ctrlKey && ev.key.toLowerCase() === 'c') {
+    if (!state.cheating) { print(''); print('***Cheats enabled***'); state.cheating = true; }
+    ev.preventDefault(); return;
+  }
+  if (ev.ctrlKey && ev.key.toLowerCase() === 'l') {
+    term.lines = []; ev.preventDefault(); requestDraw(); return;
+  }
+  if (ev.key === 'Enter') { submitInput(); ev.preventDefault(); return; }
+  if (ev.key === 'Backspace') { term.input = term.input.slice(0, -1); ev.preventDefault(); requestDraw(); return; }
+  if (ev.key === 'Escape') { resetMode(); term.input = ''; ev.preventDefault(); requestDraw(); return; }
+  if (ev.key === 'ArrowUp') {
+    if (term.history.length) { term.historyIndex = Math.max(0, term.historyIndex - 1); term.input = term.history[term.historyIndex] || ''; }
+    ev.preventDefault(); requestDraw(); return;
+  }
+  if (ev.key === 'ArrowDown') {
+    if (term.history.length) { term.historyIndex = Math.min(term.history.length, term.historyIndex + 1); term.input = term.history[term.historyIndex] || ''; }
+    ev.preventDefault(); requestDraw(); return;
+  }
+  if (ev.key === 'PageUp') { term.scroll += 8; ev.preventDefault(); requestDraw(); return; }
+  if (ev.key === 'PageDown') { term.scroll = Math.max(0, term.scroll - 8); ev.preventDefault(); requestDraw(); return; }
+  if (ev.key.length === 1 && !ev.metaKey && !ev.altKey && !ev.ctrlKey) {
+    term.input += ev.key;
+    ev.preventDefault(); requestDraw();
+  }
+});
+
+canvas.addEventListener('wheel', (ev) => {
+  term.scroll = Math.max(0, term.scroll + Math.sign(ev.deltaY) * 4);
+  ev.preventDefault(); requestDraw();
+}, { passive: false });
+
+setInterval(() => { term.blink = !term.blink; requestDraw(); }, 520);
+resizeCanvas();
+canvas.focus();
+printIntro();</script>
+</body>
+</html>
